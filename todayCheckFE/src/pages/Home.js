@@ -104,18 +104,21 @@ export default Home;
 
 const MainContainer = styled.div`
   display: flex;
-  width: 75vw;
+  width: 83vw;
+  margin-left: 16vw;
+  background-color: #eeeeff;
 `;
 
 const RightSection = styled.div`
   display: fixed;
   left: 225px;
   width: 100%;
-  background-color: #eeeeff;
 `;
 
 const HomeBoxContainer = styled.div`
   display: flex;
+  width: 100vw;
+  height: 100vh;
   overflow: scroll;
   justify-content: space-evenly;
   align-content: center;
