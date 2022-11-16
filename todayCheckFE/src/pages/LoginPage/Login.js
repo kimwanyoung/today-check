@@ -83,6 +83,11 @@ const Login = () => {
     }
   };
 
+  axios
+    .get('../../../public/mock/test.js')
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+
   return (
     <LoginWrapper>
       <LoginBox>

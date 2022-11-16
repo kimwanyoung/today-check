@@ -10,7 +10,6 @@ import { FaUser } from 'react-icons/fa';
 
 const Navigation = () => {
   const location = useLocation();
-  console.log(location.pathname);
   return (
     <HeaderContainer>
       {/* 로고 */}
@@ -56,8 +55,9 @@ const LoginMove = styled(Link)`
 `;
 
 const HeaderContainer = styled.div`
+  position: absolute;
   display: flex;
-  width: 16vw;
+  width: 240px;
   height: 100vh;
   flex-direction: column;
   border-right: 4.5px solid #f0f0f0;
@@ -109,7 +109,7 @@ const HomeNavButton = styled.li`
     background-color: #BFBFFF;
     color: #5151FF;
     opacity: 0.8;
-  }
+  };
 `;
 
 const PostingNavButton = styled.li`
