@@ -9,6 +9,7 @@ const GlobalStyles = createGlobalStyle`
     body {
         background-color: rgb(240, 240, 240);
     }
+    
 `;
 
 export default GlobalStyles;

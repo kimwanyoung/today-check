@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Logo from './Logo';
+import { COMMENT } from '../../public/mock/test';
 import { Link } from 'react-router-dom';
 
 const Navigation = () => {
