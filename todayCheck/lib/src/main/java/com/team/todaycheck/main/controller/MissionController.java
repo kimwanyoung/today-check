@@ -1,6 +1,7 @@
 package com.team.todaycheck.main.controller;
 
 import com.team.todaycheck.main.DTO.MissionDTO;
+import com.team.todaycheck.main.DTO.ParticipantDTO;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,21 +40,43 @@ public class MissionController {
 
         MissionDTO dto = new MissionDTO();
         dto.setId(1L);
-        dto.setAdminName("박철진");
-        dto.setAdminPicture("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa");
+        ParticipantDTO admin = new ParticipantDTO();
+        admin.setId(1);
+        admin.setName("박철진");
+        admin.setAvater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa");
+        dto.setAdmin(admin);
 
         dto.setPostPicture("https://via.placeholder.com/350x150");
         dto.setPostTitle("매일 운동하기");
         dto.setPostContent("두달동안 하루도 빠짐없이 운동하자!");
+        
+        List<ParticipantDTO> participants = new ArrayList<ParticipantDTO>();
+        participants.add(admin);
+        ParticipantDTO p = new ParticipantDTO();
+        participants.add(p);
+        
+        p.setId(3);
+        p.setName("홍길동");
+        p.setAvater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa");
+        p.setImage("https://img3.daumcdn.net/thumb/R658x0.q70/?fname=http://t1.daumcdn.net/news/201704/21/KorMedi/20170421131403186ajck.jpg");
+        
+        p.setId(4);
+        p.setName("김철수");
+        p.setAvater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa");
+        p.setImage("https://cdn.mindgil.com/news/photo/202009/69795_4370_1604.jpg");
 
+        dto.setParticipants(participants);
         dto.setStartDate(LocalDateTime.of(2022, 11, 1, 0, 0, 0));
         dto.setEndDate(LocalDateTime.of(2022, 12, 31, 0, 0, 0));
         list.add(dto);
 
         dto = new MissionDTO();
         dto.setId(2L);
-        dto.setAdminName("권혁빈");
-        dto.setAdminPicture("https://w.namu.la/s/26347546f9950e03e2002698fe3543b59c04f7c36b9f72f3877428419038fcbc82f3a48eb7fc1f51574f2fe2acce2aece3ba7007e08aaa12fca78f3a0125fc5c38999a7a1b5cbcadcaf1ac44e95e1c8a3bdc6f90513ca86d9f2911037289ed48e95cee62fe488a76d02802e71446bef4");
+        admin = new ParticipantDTO();
+        admin.setId(2);
+        admin.setName("권혁빈");
+        admin.setAvater("https://w.namu.la/s/26347546f9950e03e2002698fe3543b59c04f7c36b9f72f3877428419038fcbc82f3a48eb7fc1f51574f2fe2acce2aece3ba7007e08aaa12fca78f3a0125fc5c38999a7a1b5cbcadcaf1ac44e95e1c8a3bdc6f90513ca86d9f2911037289ed48e95cee62fe488a76d02802e71446bef4");
+        dto.setAdmin(admin);
 
         dto.setPostPicture("https://via.placeholder.com/350x150");
         dto.setPostTitle("매일 책 읽기");
@@ -87,13 +110,26 @@ public class MissionController {
     	
     	MissionDTO dto = new MissionDTO();
         dto.setId(1L);
-        dto.setAdminName("박철진");
-        dto.setAdminPicture("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa");
+        ParticipantDTO admin = new ParticipantDTO();
+        admin.setId(1);
+        admin.setName("박철진");
+        admin.setAvater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa");
+        dto.setAdmin(admin);
 
         dto.setPostPicture("https://via.placeholder.com/350x150");
         dto.setPostTitle("같이 매일 운동하기");
         dto.setPostContent("두달동안 하루도 빠짐없이 운동하자!");
+        
+        List<ParticipantDTO> participants = new ArrayList<ParticipantDTO>();
+        participants.add(admin);
+        ParticipantDTO p = new ParticipantDTO();
+        participants.add(p);
+        
+        p.setId(3);
+        p.setName("홍길동");
+        p.setAvater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa");
 
+        dto.setParticipants(participants);
         dto.setStartDate(LocalDateTime.of(2022, 11, 1, 0, 0, 0));
         dto.setEndDate(LocalDateTime.of(2022, 12, 31, 0, 0, 0));
         
