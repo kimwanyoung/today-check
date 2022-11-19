@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Navigation from '../components/Navigation';
 
 // images
 import codingTest from '../images/codingTest.png';
@@ -8,7 +7,7 @@ import englishStudy from '../images/englishStudy.jpeg';
 import cat from '../images/cat.jpeg';
 
 //components
-import HomeBox from '../components/home/homeBox';
+import HomeBox from '../components/home/HomeBox';
 
 // 예시 데이터 추후 삭제할 예정
 const homeData = [
@@ -25,8 +24,9 @@ const homeData = [
     adminName: '홍길동',
     adminPicture: cat,
     participants: 10,
-    postTitle: '영어 스터디 모집합니다!!!',
-    postContent: '영어 공부 하루에 한시간씩 하실 분 구합니다.',
+    postTitle: '영어 스터디 모집합니다!!! 어서 참여하세요!!',
+    postContent:
+      '영어 공부 하루에 한시간씩 하실 분 구합니다. 정말 열심히 할 계획이니 신중히 참여해주세요!!',
   },
   {
     postPicture: englishStudy,
@@ -80,46 +80,37 @@ const homeData = [
 
 const Home = () => {
   return (
-    <MainContainer>
-      <RightSection>
-        <HomeBoxContainer>
-          {homeData.map((data, index) => (
-            <HomeBox
-              key={index}
-              postPicture={data.postPicture}
-              adminName={data.adminName}
-              adminPicture={data.adminPicture}
-              participants={data.participants}
-              postTitle={data.postTitle}
-              postContent={data.postContent}
-            />
-          ))}
-        </HomeBoxContainer>
-      </RightSection>
-    </MainContainer>
+    <RightContainer>
+      <HomeBoxContainer>
+        {homeData.map((data, index) => (
+          <HomeBox
+            key={index}
+            postPicture={data.postPicture}
+            adminName={data.adminName}
+            adminPicture={data.adminPicture}
+            participants={data.participants}
+            postTitle={data.postTitle}
+            postContent={data.postContent}
+          />
+        ))}
+      </HomeBoxContainer>
+    </RightContainer>
   );
 };
 
 export default Home;
 
-const MainContainer = styled.div`
-  display: flex;
-  width: 83vw;
-  margin-left: 16vw;
+const RightContainer = styled.div`
+  float: right;
+  height: 100vh;
   background-color: #eeeeff;
-`;
-
-const RightSection = styled.div`
-  display: fixed;
-  left: 225px;
-  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding-bottom: 1rem;
 `;
 
 const HomeBoxContainer = styled.div`
   display: flex;
-  width: 100vw;
-  height: 100vh;
-  overflow: scroll;
   justify-content: space-evenly;
   align-content: center;
   flex-flow: row wrap;
