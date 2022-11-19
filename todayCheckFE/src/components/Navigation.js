@@ -10,7 +10,6 @@ import { FaUser } from 'react-icons/fa';
 
 const Navigation = () => {
   const location = useLocation();
-  console.log(location.pathname);
   return (
     <HeaderContainer>
       {/* 로고 */}
@@ -20,7 +19,7 @@ const Navigation = () => {
 
       <NavWrapper>
         {/* 홈 버튼 */}
-        <Link to="/home">
+        <Link to="/">
           <HomeNavButton pageName={location.pathname}>
             <BiHomeAlt className="Home" /> Home
           </HomeNavButton>
@@ -42,7 +41,7 @@ const Navigation = () => {
         </Link>
       </NavWrapper>
       <LoginMove to="/login">
-        <h1>LogIn</h1>
+        <Login>LogIn</Login>
       </LoginMove>
     </HeaderContainer>
   );
@@ -50,18 +49,16 @@ const Navigation = () => {
 
 export default Navigation;
 
-const LoginMove = styled(Link)`
-  text-decoration: none;
-  color: black;
-`;
-
 const HeaderContainer = styled.div`
-  display: flex;
-  width: 16vw;
+  width: 240px;
   height: 100vh;
-  flex-direction: column;
+  float: left;
   border-right: 4.5px solid #f0f0f0;
   background-color: white;
+`;
+
+const LogoWrapper = styled.div`
+  display: block;
 `;
 
 const TodayCheckLogo = styled.img`
@@ -70,15 +67,10 @@ const TodayCheckLogo = styled.img`
   margin: 25px 15px;
 `;
 
-const LogoWrapper = styled.div`
-  display: block;
-`;
-
 const NavWrapper = styled.ul`
   display: flex;
   flex-direction: column;
   width: 225px;
-  height: 100vh;
 `;
 
 const HomeNavButton = styled.li`
@@ -92,9 +84,9 @@ const HomeNavButton = styled.li`
   border-radius: 5px;
   font-size: 15px;
   font-weight: 900;
-  background-color: ${props => (props.pageName === '/home' ? '#BFBFFF' : '')};
-  color: ${props => (props.pageName === '/home' ? '#5151FF' : '#828282')};
-  opacity: ${props => (props.pageName === '/home' ? '0.8' : '')};
+  background-color: ${props => (props.pageName === '/' ? '#BFBFFF' : '')};
+  color: ${props => (props.pageName === '/' ? '#5151FF' : '#828282')};
+  opacity: ${props => (props.pageName === '/' ? '0.8' : '')};
   font-family: 'HallymGothic-Regular';
   transition-property: background-color;
   transition-duration: 0.5s;
@@ -109,7 +101,7 @@ const HomeNavButton = styled.li`
     background-color: #BFBFFF;
     color: #5151FF;
     opacity: 0.8;
-  }
+  };
 `;
 
 const PostingNavButton = styled.li`
@@ -174,4 +166,37 @@ const MypageNavButton = styled.li`
     opacity: 0.8;
     font-family: 'HallymGothic-Regular';
   }
+`;
+
+const Login = styled.li`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 43px;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 900;
+  background-color: #bfbfff;
+  color: #5151ff;
+  opacity: 0.8;
+  font-family: 'HallymGothic-Regular';
+  transition-property: background-color;
+  transition-duration: 0.5s;
+
+  &:hover {
+    background-color: #6565ff;
+    color: white;
+  }
+`;
+
+const LoginMove = styled(Link)`
+  display: block;
+  position: absolute;
+  bottom: 5px;
+  left: 4px;
+  text-decoration: none;
+  color: #5151ff;
 `;

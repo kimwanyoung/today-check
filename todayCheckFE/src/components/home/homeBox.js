@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { HiUserGroup } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 
 const HomeBox = ({
   postPicture,
@@ -35,7 +36,9 @@ const HomeBox = ({
           <HiUserGroup className="HomeBoxUserIcon" />
           {participants} 참여중
         </HomeBoxParticipants>
-        <HomeBoxButton>참여하기</HomeBoxButton>
+        <Link to="/missionDetail">
+          <HomeBoxButton>참여하기</HomeBoxButton>
+        </Link>
       </HomeBoxBottom>
     </HomeBoxContainer>
   );
@@ -46,7 +49,7 @@ export default HomeBox;
 const HomeBoxContainer = styled.div`
   width: 240px;
   height: 300px;
-  border-radius: 3px;
+  border-radius: 5px;
   background-color: white;
   margin-top: 20px;
 `;
@@ -56,6 +59,7 @@ const HomeBoxHead = styled.div`
   justify-content: start;
   align-items: center;
   margin: 3px 0;
+  padding-left: 5px;
   width: 100%;
   height: 25px;
   font-size: 12px;
@@ -82,9 +86,18 @@ const HomeBoxTopic = styled.div`
 const HomeBoxTitle = styled.div`
   margin: 3px 0;
   font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
-const HomeBoxContent = styled.div``;
+const HomeBoxContent = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+`;
 
 const HomeBoxBottom = styled.div`
   display: flex;
@@ -113,7 +126,7 @@ const HomeBoxButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 150px;
+  width: 100px;
   height: 34px;
   background-color: #bfbfff;
   &:active,
