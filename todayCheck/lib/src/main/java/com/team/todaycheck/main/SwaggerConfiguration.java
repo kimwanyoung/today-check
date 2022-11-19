@@ -22,7 +22,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
         		.groupName("groupName1")
         		.apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("main"))
+                .apis(RequestHandlerSelectors.basePackage("com.team.todaycheck.main"))
                 .paths(PathSelectors.any())
                 .build();
     }
