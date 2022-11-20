@@ -1,11 +1,14 @@
 import styled from 'styled-components';
 import Navigation from '../components/Navigation';
+import axios from 'axios';
 
 // images
 import codingTest from '../images/codingTest.png';
 import dog from '../images/dog.jpeg';
 import englishStudy from '../images/englishStudy.jpeg';
 import cat from '../images/cat.jpeg';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 //components
 import HomeBox from '../components/home/homeBox';

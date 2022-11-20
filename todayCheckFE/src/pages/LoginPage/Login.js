@@ -1,26 +1,38 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Logo from '../../components/Logo';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { SiNaver } from 'react-icons/si';
-import { FcGoogle } from 'react-icons/fc';
 import { SlLogin } from 'react-icons/sl';
+import { SiNaver } from 'react-icons/si';
+import { FaGoogle } from 'react-icons/fa';
 import { IoPersonAdd } from 'react-icons/io5';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { setAccessToken, setRefreshToken } from '../../cookie/Cookie';
+
+const CLIENT_ID =
+  '33798723249-7235eh6dkueqvlb5982qulnrv11tlqdj.apps.googleusercontent.com';
+
+// const CLIENT_PW = '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';
 
 const Login = () => {
+  const { naver } = window;
   const [isLoginClick, setIsLoginClick] = useState(false);
   const [isSignUpClick, setIsSignUpClick] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    Id: '',
-    Pw: '',
+    id: '',
+    password: '',
   });
   const navigate = useNavigate();
+  const oAuthURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&response_type=token&redirect_uri=http://localhost:3000/login/callback&scope=https://www.googleapis.com/auth/userinfo.email`;
+
+  const oAuthHandler = () => {
+    window.location.assign(oAuthURL);
+  };
 
   const onClickBtn = setterFunc => {
     setterFunc(prev => !prev);
@@ -55,7 +67,7 @@ const Login = () => {
         .then(response => {
           console.log(response);
         })
-        .catch(function (error) {
+        .catch(error => {
           console.log(error);
         });
       setIsLoginClick(prev => !prev);
@@ -67,26 +79,37 @@ const Login = () => {
 
   const handleLogin = e => {
     e.preventDefault();
-    if (userInfo.Id && userInfo.Pw) {
+    if (userInfo.id && userInfo.password) {
       axios
         .post('/login', userInfo)
-        .then(res => {
-          localStorage.setItem('accessToken', res.accessToken);
-          localStorage.setItem('refreshToken', res.refreshToken);
+        .then(response => {
+          setAccessToken(response.data.accessToken);
+          setRefreshToken(response.data.accessToken);
+          navigate('/');
         })
         .catch(err => {
-          return err;
+          return alert('아이디 비밀번호를 확인해주세요!');
         });
-      navigate('/');
     } else {
       alert('아이디 및 비밀번호를 확인해주세요!');
     }
   };
 
-  axios
-    .get('../../../public/mock/test.js')
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+  const initializeNaverLogin = () => {
+    const naverLogin = new naver.LoginWithNaverId({
+      clientId: 'Va8Dlfp7L1f0k4UXZXaw',
+      callbackUrl: 'http://localhost:3000/login/navercallback',
+      isPopup: false, // popup 형식으로 띄울것인지 설정
+      loginButton: {
+        type: 1,
+      }, //버튼의 스타일, 타입, 크기를 지정
+    });
+    naverLogin.init();
+  };
+
+  useEffect(() => {
+    initializeNaverLogin();
+  }, []);
 
   return (
     <LoginWrapper>
@@ -191,17 +214,26 @@ const Login = () => {
                 </div>
               </Button>
 
-              <Button variant="contained" size="large" color="error">
+              <Button
+                variant="contained"
+                size="large"
+                color="error"
+                onClick={oAuthHandler}
+              >
                 <div>
-                  <FcGoogle />
-                  구글로 시작하기
+                  <FaGoogle />
+                  <p>구글로 시작하기</p>
                 </div>
               </Button>
-              <Button variant="contained" size="large" color="success">
-                <div>
-                  <SiNaver />
-                  <p>네이버로 시작하기</p>
-                </div>
+              <Button
+                variant="contained"
+                size="large"
+                color="success"
+                onClick={oAuthHandler}
+              >
+                <div id="naverIdLogin" />
+                <SiNaver />
+                <p>네이버로 시작하기</p>
               </Button>
             </>
           )}
@@ -250,8 +282,15 @@ const BtnWrapper = styled(Stack)`
   justify-content: center;
   align-items: center;
   width: 100%;
+
+  #naverIdLogin {
+    position: absolute;
+    width: 90%;
+  }
   Button {
     display: flex;
+    justify-content: center;
+    align-items: center;
     padding: auto;
     width: 90%;
     div {
