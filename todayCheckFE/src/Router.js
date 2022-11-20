@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import Home from './pages/Home';
 import Mypage from './pages/Mypage';
 import Posting from './pages/Posting';
-import MissionDetail from './components/home/MissionDetail';
+import MissionDetail from './pages/MissionDetail';
 
 const Router = () => {
   return (
