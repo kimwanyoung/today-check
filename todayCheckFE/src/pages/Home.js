@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Navigation from '../components/Navigation';
 import axios from 'axios';
+import { getAccessToken } from '../cookie/Cookie';
 
 // images
 import codingTest from '../images/codingTest.png';
@@ -11,7 +12,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 //components
-import HomeBox from '../components/home/HomeBox';
+import HomeBox from '../components/home/homeBox';
 
 // 예시 데이터 추후 삭제할 예정
 const homeData = [

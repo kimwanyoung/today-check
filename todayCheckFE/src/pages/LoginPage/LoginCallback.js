@@ -23,17 +23,17 @@ const LoginCallback = () => {
         )
         .then(data => {
           console.log(data.config.headers.authorization);
-          setToken(data.config.headers.authorization);
           axios
-            .post(`/login?code=${token}`)
+            .post(
+              `/login?code=${data.config.headers.authorization.split(' ')[1]}`
+            )
             .then(response => {
+              console.log(response);
               setAccessToken(response.data.accessToken);
               setRefreshToken(response.data.accessToken);
               navigate('/');
             })
-            .catch(err => {
-              alert('로그인 실패!');
-            });
+            .catch(err => console.log(err));
         })
         .catch(e => console.log('oAuth token expired'));
     }
