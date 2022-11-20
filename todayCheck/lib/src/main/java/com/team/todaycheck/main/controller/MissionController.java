@@ -9,10 +9,12 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -28,7 +30,7 @@ public class MissionController {
 	 * 현재 등록된 모든 미션을 조회한다
 	 * @return 등록된 모든 미션
 	 */
-    @GetMapping("")
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "모든 미션 조회", notes = "현재 등록된 모든 미션을 조회한다")
     @ApiResponses(value = { 
     		@ApiResponse(code = 200, message = "성공적으로 조회됨"),
@@ -95,7 +97,7 @@ public class MissionController {
      * @param id	검색할 미션
      * @return 검색된 미션
      */
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "주어진 아이디를 가진 미션 조회", notes = "주어진 아이디를 가진 미션을 조회한다")
     @ApiResponses(value = { 
     		@ApiResponse(code = 200, message = "성공적으로 조회됨"),

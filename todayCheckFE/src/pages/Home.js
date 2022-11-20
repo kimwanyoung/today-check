@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
-//components
-import HomeBox from '../components/home/homeBox';
-
 const Home = () => {
   const [missions, setMissions] = useState([]);
 
