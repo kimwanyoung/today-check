@@ -42,8 +42,8 @@ public class LoginService {
 				.id(result.getId())
 				.password(result.getPassword())
 				.code("1")
-				.AccessToken(tokenDTO.getAccessToken())
-				.RefreshToken(tokenDTO.getRefreshToken())
+				.accessToken(tokenDTO.getAccessToken())
+				.refreshToken(tokenDTO.getRefreshToken())
 				.grantType(tokenDTO.getGrantType())
 				.build();
 	}
