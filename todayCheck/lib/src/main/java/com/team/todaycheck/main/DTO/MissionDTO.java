@@ -1,5 +1,7 @@
 package com.team.todaycheck.main.DTO;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +13,8 @@ import io.swagger.annotations.ApiParam;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MissionDTO {
 	@ApiParam(value = "½Äº°ÀÚ")
     private Long id;
