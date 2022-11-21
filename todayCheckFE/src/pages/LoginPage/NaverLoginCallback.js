@@ -12,7 +12,7 @@ const NaverLoginCallback = () => {
       const token = location.hash.split('=')[1].split('&')[0];
       console.log(token);
       axios
-        .post(`/login?code=${token}`)
+        .post(`/naverlogin?code=${token}`)
         .then(response => {
           setAccessToken(response.data.accessToken);
           setRefreshToken(response.data.accessToken);

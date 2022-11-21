@@ -4,7 +4,6 @@ import { setAccessToken, setRefreshToken } from '../../cookie/Cookie';
 import axios from 'axios';
 
 const LoginCallback = () => {
-  const [token, setToken] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -22,10 +21,12 @@ const LoginCallback = () => {
           }
         )
         .then(data => {
-          console.log(data.config.headers.authorization);
+          console.log(data);
           axios
             .post(
-              `/login?code=${data.config.headers.authorization.split(' ')[1]}`
+              `/googlelogin?code=${
+                data.config.headers.authorization.split(' ')[1]
+              }`
             )
             .then(response => {
               console.log(response);
