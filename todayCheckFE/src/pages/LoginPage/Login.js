@@ -41,19 +41,19 @@ const Login = () => {
   const handleChangeId = e => {
     setUserInfo({
       ...userInfo,
-      Id: e.target.value,
+      id: e.target.value,
     });
   };
 
   const handleChangePw = e => {
     setUserInfo({
       ...userInfo,
-      Pw: e.target.value,
+      password: e.target.value,
     });
   };
 
   const validationPw = e => {
-    if (e.target.value === userInfo.Pw) {
+    if (e.target.value === userInfo.password) {
       setIsValid(prev => !prev);
     }
   };
@@ -83,6 +83,9 @@ const Login = () => {
       axios
         .post('/login', userInfo)
         .then(response => {
+          if (response.data.code === '-1') {
+            return alert('아이디 비밀번호를 확인해주세요!');
+          }
           setAccessToken(response.data.accessToken);
           setRefreshToken(response.data.accessToken);
           navigate('/');
@@ -102,6 +105,7 @@ const Login = () => {
       isPopup: false, // popup 형식으로 띄울것인지 설정
       loginButton: {
         type: 1,
+        height: 20,
       }, //버튼의 스타일, 타입, 크기를 지정
     });
     naverLogin.init();
@@ -225,12 +229,7 @@ const Login = () => {
                   <p>구글로 시작하기</p>
                 </div>
               </Button>
-              <Button
-                variant="contained"
-                size="large"
-                color="success"
-                onClick={oAuthHandler}
-              >
+              <Button variant="contained" size="large" color="success">
                 <div id="naverIdLogin" />
                 <SiNaver />
                 <p>네이버로 시작하기</p>

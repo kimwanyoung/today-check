@@ -52,6 +52,8 @@ const HomeBoxContainer = styled.div`
   border-radius: 5px;
   background-color: white;
   margin-top: 20px;
+  margin-left: 1rem;
+  margin-right: 1rem;
 `;
 
 const HomeBoxHead = styled.div`

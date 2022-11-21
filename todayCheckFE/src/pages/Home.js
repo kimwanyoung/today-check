@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import HomeBox from '../components/home/HomeBox.js';
 
 const Home = () => {
   const [missions, setMissions] = useState([]);
@@ -9,6 +10,7 @@ const Home = () => {
     axios
       .get('/mission')
       .then(response => {
+        console.log(response);
         setMissions(response.data);
       })
       .catch(function (error) {
@@ -38,8 +40,8 @@ const Home = () => {
 export default Home;
 
 const RightContainer = styled.div`
-  float: right;
   height: 100vh;
+  width: 100vw;
   background-color: #eeeeff;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -48,7 +50,7 @@ const RightContainer = styled.div`
 
 const HomeBoxContainer = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-content: center;
   flex-flow: row wrap;
   flex-grow: 2;
