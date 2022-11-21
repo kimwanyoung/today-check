@@ -7,7 +7,7 @@ import styled from 'styled-components';
 //components
 import Home from './pages/Home';
 import Mypage from './pages/Mypage';
-import Posting from './pages/Posting';
+import Posting from './pages/PostingPage/Posting';
 import MissionDetail from './pages/MissionDetail';
 import LoginCallback from './pages/LoginPage/LoginCallback';
 import NaverLoginCallback from './pages/LoginPage/NaverLoginCallback';
@@ -25,6 +25,7 @@ const Router = () => {
           <Route path="/login/*" element={<Login />} />
           <Route path="/login/callback" element={<LoginCallback />} />
           <Route path="/login/navercallback" element={<NaverLoginCallback />} />
+          <Route path="/posting" element={<Posting />} />
         </Routes>
       </Container>
     </BrowserRouter>
