@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import styled from 'styled-components';
 import logo from '../images/todayCheckLogo.png';
+import { getAccessToken, removeAccessToken } from '../cookie/Cookie';
 
 // icons
 import { BiHomeAlt } from 'react-icons/bi';
@@ -9,7 +11,20 @@ import { MdCreate } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
 
 const Navigation = () => {
+  const [isLogin, setIsLogin] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    if (getAccessToken()) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  });
+
+  const handleLogout = () => {
+    removeAccessToken();
+  };
   return (
     <HeaderContainer>
       {/* 로고 */}
@@ -40,9 +55,15 @@ const Navigation = () => {
           </MypageNavButton>
         </Link>
       </NavWrapper>
-      <LoginMove to="/login">
-        <Login>LogIn</Login>
-      </LoginMove>
+      {isLogin ? (
+        <LoginMove onClick={handleLogout}>
+          <Login>Log Out</Login>
+        </LoginMove>
+      ) : (
+        <LoginMove to="/login">
+          <Login>Log In</Login>
+        </LoginMove>
+      )}
     </HeaderContainer>
   );
 };
