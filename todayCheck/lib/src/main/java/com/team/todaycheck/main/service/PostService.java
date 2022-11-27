@@ -7,10 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.team.todaycheck.main.DTO.CommentDTO;
 import com.team.todaycheck.main.DTO.PostDTO;
+import com.team.todaycheck.main.entity.Comment;
 import com.team.todaycheck.main.entity.Post;
 import com.team.todaycheck.main.entity.UserEntity;
 import com.team.todaycheck.main.exception.UnknownPostException;
+import com.team.todaycheck.main.repository.CommentRepository;
 import com.team.todaycheck.main.repository.PostRepository;
 import com.team.todaycheck.main.repository.UserRepository;
 
@@ -20,6 +23,7 @@ public class PostService {
 	
 	@Autowired PostRepository postRepos;
 	@Autowired UserRepository userRepos;
+	@Autowired CommentRepository commentRepos;
 	
 	public void addPost(PostDTO post) {
 		UserEntity user = userRepos.findById(post.getUserId());
@@ -31,6 +35,7 @@ public class PostService {
 	}
 	
 	public Post getOnePost(int postnumber) {
+		postRepos.updateView(postnumber);
 		return postRepos.findByPostKey(postnumber);
 	}
 	
@@ -68,5 +73,20 @@ public class PostService {
 		post.setDescription(postData.getDescription());
 		post.setThumbnail(postData.getThumbnail());
 		post.setTitle(postData.getTitle());
+	}
+
+	public boolean increaseRecommendation(String postNumber , String userId) {
+		return postRepos.increaseRecommander(Integer.parseInt(postNumber), userId);
+	}
+
+	public void addComment(String postNumber, CommentDTO CommentDTO, String userId) {
+		Post result = postRepos.findByPostKey(Integer.parseInt(postNumber));
+		result.addComment(Comment.builder()
+				.content(CommentDTO.getContent())
+				.build());
+	}
+
+	public void deleteComment(String commentId) {
+		commentRepos.deleteByCommentId(Long.parseLong(commentId));
 	}
 }

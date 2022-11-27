@@ -18,6 +18,8 @@ public class PostDTO {
 	private String thumbnail;
 	private String date;
 	private int postKey;
+	private int views;
+	private int recommendation;
 	@Override
 	public String toString() {
 		return "PostDTO [title=" + title + ", userId=" + userId + ", description=" + description + ", thumbnail="

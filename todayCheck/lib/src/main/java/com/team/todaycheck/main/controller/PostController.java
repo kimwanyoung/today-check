@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.team.todaycheck.main.DTO.CommentDTO;
 import com.team.todaycheck.main.DTO.MessageDTO;
 import com.team.todaycheck.main.DTO.PostDTO;
 import com.team.todaycheck.main.entity.Post;
@@ -56,6 +57,40 @@ public class PostController {
 		return MessageDTO.builder()
 				.code("1")
 				.message("게시글이 수정되었습니다")
+				.build();
+	}
+	
+	@RequestMapping(value = "/post/{postNumber}/{userId}" , method = RequestMethod.PATCH)
+	public MessageDTO increaseRecommendation(@PathVariable(name = "postNumber") String postNumber , @PathVariable(name = "userId") String userId) {
+		if(postService.increaseRecommendation(postNumber , userId)) {
+			return MessageDTO.builder()
+					.code("1")
+					.message("해당 게시물을 추천했습니다.")
+					.build();
+		} else {
+			return MessageDTO.builder()
+					.code("1")
+					.message("이미 추천한 게시물입니다.")
+					.build();			
+		}
+	}
+	
+	@RequestMapping(value = "/comment/{postNumber}/{userId}" , method = RequestMethod.POST)
+	public MessageDTO addCommentData(@PathVariable(name = "postNumber") String postNumber , 
+			@PathVariable(name = "userId") String userId , @RequestBody CommentDTO CommentDTO) {
+		postService.addComment(postNumber , CommentDTO , userId);
+		return MessageDTO.builder()
+				.code("1")
+				.message("댓글을 등록했습니다.")
+				.build();
+	}
+	
+	@RequestMapping(value = "/comment/{commentId}" , method = RequestMethod.DELETE)
+	public MessageDTO removeCommentData(@PathVariable(name = "commentId") String commentId) {
+		postService.deleteComment(commentId);
+		return MessageDTO.builder()
+				.code("1")
+				.message("댓글을 삭제했습니다.")
 				.build();
 	}
 }
