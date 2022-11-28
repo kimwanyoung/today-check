@@ -1,56 +1,61 @@
 import styled from 'styled-components';
+import { useState } from 'react';
 
 const Posting = () => {
-  const testData = [
-    {
-      title: 'title test',
-      userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
-      thumbnail: 'https://via.placeholder.com/350x200',
-      date: '2022-11-10',
-      key: 1,
-    },
-    {
-      title: 'title test',
-      userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
-      thumbnail: 'https://via.placeholder.com/350x200',
-      date: '2022-11-10',
-      key: 2,
-    },
-    {
-      title: 'title test',
-      userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
-      thumbnail: 'https://via.placeholder.com/350x200',
-      date: '2022-11-10',
-      key: 3,
-    },
-    {
-      title: 'title test',
-      userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
-      thumbnail: 'https://via.placeholder.com/350x200',
-      date: '2022-11-10',
-      key: 4,
-    },
-    {
-      title: 'title test',
-      userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
-      thumbnail: 'https://via.placeholder.com/350x200',
-      date: '2022-11-10',
-      key: 5,
-    },
-    {
-      title: 'title test',
-      userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
-      thumbnail: 'https://via.placeholder.com/350x200',
-      date: '2022-11-10',
-      key: 6,
-    },
-  ];
+  const [testData, setTestData] =
+    useState[
+      [
+        {
+          title: 'title test',
+          userId: 'wanyoung',
+          description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+          thumbnail: 'https://via.placeholder.com/350x200',
+          date: '2022-11-10',
+          postKey: 1,
+        },
+        {
+          title: 'title test',
+          userId: 'wanyoung',
+          description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+          thumbnail: 'https://via.placeholder.com/350x200',
+          date: '2022-11-10',
+          postKey: 2,
+        },
+        {
+          title: 'title test',
+          userId: 'wanyoung',
+          description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+          thumbnail: 'https://via.placeholder.com/350x200',
+          date: '2022-11-10',
+          postKey: 3,
+        },
+        {
+          title: 'title test',
+          userId: 'wanyoung',
+          description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+          thumbnail: 'https://via.placeholder.com/350x200',
+          date: '2022-11-10',
+          postKey: 4,
+        },
+        {
+          title: 'title test',
+          userId: 'wanyoung',
+          description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+          thumbnail: 'https://via.placeholder.com/350x200',
+          date: '2022-11-10',
+          postKey: 5,
+        },
+        {
+          title: 'title test',
+          userId: 'wanyoung',
+          description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+          thumbnail: 'https://via.placeholder.com/350x200',
+          date: '2022-11-10',
+          postKey: 6,
+        },
+      ]
+    ];
+
   return (
     <PostingWrapper>
       {testData.map((props, idx) => (
