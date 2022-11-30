@@ -15,7 +15,7 @@ public class LoginResponseDTO {
 	private String password;
 	private String code;
 	private String grantType;
-	private String Key;
-	private String RefreshToken;
-	private String AccessToken;
+	private String key;
+	private String refreshToken;
+	private String accessToken;
 }
