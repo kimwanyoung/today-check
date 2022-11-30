@@ -40,6 +40,9 @@ public class Comment {
 
 	@Column(nullable = false , length = 500)
 	private String content;
+	
+	@Column(nullable = false , length = 45)
+	private String writer;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
 	@Temporal(TemporalType.TIMESTAMP)

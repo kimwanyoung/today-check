@@ -1,7 +1,11 @@
 package com.team.todaycheck.main.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +27,10 @@ public class PostController {
 	@Autowired PostService postService;
 	
 	@RequestMapping(value = "/post" , method = RequestMethod.POST)
-	public MessageDTO addPost(@RequestBody PostDTO postData) {
-		postService.addPost(postData);
+	public MessageDTO addPost(@RequestBody PostDTO postData , HttpServletRequest request) throws UnsupportedEncodingException {
+		String header = request.getHeader("Authorization");
+		
+		postService.addPost(postData , header);
 		return MessageDTO.builder()
 				.code("1")
 				.message("게시글이 성공적으로 게시되었습니다.")
@@ -33,7 +39,7 @@ public class PostController {
 	
 	// /wholePost?page=0&size=20&sort=postKey,desc
 	@RequestMapping(value = "/wholePost" , method = RequestMethod.GET)
-	public Page<Post> getAllPost(Pageable pageable) {
+	public List<PostDTO> getAllPost(Pageable pageable) {
 		return postService.getAllPost(pageable);
 	}
 	
@@ -43,8 +49,10 @@ public class PostController {
 	}
 	
 	@RequestMapping(value = "/post/{postNumber}" , method = RequestMethod.DELETE)
-	public MessageDTO deletePost(@PathVariable(name = "postNumber") String postNumber) {
-		postService.deletePost(postNumber);
+	public MessageDTO deletePost(@PathVariable(name = "postNumber") String postNumber , HttpServletRequest request) {
+		String header = request.getHeader("Authorization");
+		postService.deletePost(postNumber , header);
+		
 		return MessageDTO.builder()
 				.code("1")
 				.message("게시글이 삭제되었습니다")
@@ -52,17 +60,21 @@ public class PostController {
 	}
 	
 	@RequestMapping(value = "/post/{postNumber}" , method = RequestMethod.PATCH)
-	public MessageDTO modifyPost(@PathVariable(name = "postNumber") String postNumber , @RequestBody PostDTO postData) {
-		postService.modifyPost(postData , Integer.parseInt(postNumber));
+	public MessageDTO modifyPost(@PathVariable(name = "postNumber") String postNumber , @RequestBody PostDTO postData , HttpServletRequest request) {
+		String header = request.getHeader("Authorization");
+		postService.modifyPost(postData , Integer.parseInt(postNumber) , header);
+		
 		return MessageDTO.builder()
 				.code("1")
 				.message("게시글이 수정되었습니다")
 				.build();
 	}
 	
-	@RequestMapping(value = "/post/{postNumber}/{userId}" , method = RequestMethod.PATCH)
-	public MessageDTO increaseRecommendation(@PathVariable(name = "postNumber") String postNumber , @PathVariable(name = "userId") String userId) {
-		if(postService.increaseRecommendation(postNumber , userId)) {
+	@RequestMapping(value = "/post/recommendation/{postNumber}" , method = RequestMethod.PATCH)
+	public MessageDTO increaseRecommendation(@PathVariable(name = "postNumber") String postNumber , HttpServletRequest request) {
+		String header = request.getHeader("Authorization");
+		
+		if(postService.increaseRecommendation(postNumber , header)) {
 			return MessageDTO.builder()
 					.code("1")
 					.message("해당 게시물을 추천했습니다.")
@@ -75,10 +87,12 @@ public class PostController {
 		}
 	}
 	
-	@RequestMapping(value = "/comment/{postNumber}/{userId}" , method = RequestMethod.POST)
+	@RequestMapping(value = "/comment/{postNumber}" , method = RequestMethod.POST)
 	public MessageDTO addCommentData(@PathVariable(name = "postNumber") String postNumber , 
-			@PathVariable(name = "userId") String userId , @RequestBody CommentDTO CommentDTO) {
-		postService.addComment(postNumber , CommentDTO , userId);
+			HttpServletRequest request , @RequestBody CommentDTO CommentDTO) {
+		String header = request.getHeader("Authorization");
+		
+		postService.addComment(postNumber , CommentDTO , header);
 		return MessageDTO.builder()
 				.code("1")
 				.message("댓글을 등록했습니다.")
@@ -86,8 +100,9 @@ public class PostController {
 	}
 	
 	@RequestMapping(value = "/comment/{commentId}" , method = RequestMethod.DELETE)
-	public MessageDTO removeCommentData(@PathVariable(name = "commentId") String commentId) {
-		postService.deleteComment(commentId);
+	public MessageDTO removeCommentData(@PathVariable(name = "commentId") String commentId , HttpServletRequest request) {
+		String header = request.getHeader("Authorization");
+		postService.deleteComment(commentId , header);
 		return MessageDTO.builder()
 				.code("1")
 				.message("댓글을 삭제했습니다.")
