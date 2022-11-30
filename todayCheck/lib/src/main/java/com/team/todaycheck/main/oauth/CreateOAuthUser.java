@@ -31,12 +31,12 @@ public class CreateOAuthUser {
 
 	public Token createNaverUser(String token) {
 
-		String reqURL = "https://kapi.kakao.com/v2/user/me"; // access_token을 이용하여 사용자 정보 조회
+		String reqURL = "https://openapi.naver.com/v1/nid/me"; // access_token을 이용하여 사용자 정보 조회
 		try {
 			URL url = new URL(reqURL);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-			conn.setRequestMethod("POST");
+			conn.setRequestMethod("GET");
 			conn.setDoOutput(true);
 			conn.setRequestProperty("Authorization", "Bearer " + token); // 전송할 header 작성, access_token전송
 
@@ -59,9 +59,10 @@ public class CreateOAuthUser {
 			JsonParser parser = new JsonParser();
 			JsonElement element = parser.parse(result);
 
+			System.out.println(element);
+			
 			// int id = element.getAsJsonObject().get("id").getAsInt();
-			String nickName = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("profile")
-					.getAsJsonObject().get("nickname").getAsString();
+			String nickName = element.getAsJsonObject().get("response").getAsJsonObject().get("email").getAsString().split("@")[0];
 			br.close();
 
 			UserEntity user = userRepos.findById(nickName);
@@ -78,6 +79,8 @@ public class CreateOAuthUser {
 
 			Token tokenDTO = jwtTokenProvider.createAccessToken(user.getUsername(), user.getRoles());
 			jwtService.login(tokenDTO);
+			tokenDTO.setId(nickName);
+			tokenDTO.setCode("1");
 			return tokenDTO;
 
 		} catch (IOException e) {

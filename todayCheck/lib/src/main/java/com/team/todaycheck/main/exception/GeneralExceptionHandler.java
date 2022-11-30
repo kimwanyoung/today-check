@@ -14,6 +14,7 @@ import com.team.todaycheck.main.DTO.MessageDTO;
 public class GeneralExceptionHandler {
 	@ExceptionHandler({
 		AccountException.class , AccountNotFoundException.class , NotAuthorizationException.class , NoSuchElementException.class
+		, UnknownPostException.class
 	})
 	public MessageDTO handleBadRequestException(Exception e) {
 	    return MessageDTO.builder()

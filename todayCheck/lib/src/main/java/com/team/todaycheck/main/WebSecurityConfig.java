@@ -98,8 +98,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
          .logout()
              .permitAll()
-             .logoutUrl("/logout") // ·Î±×¾Æ¿ô url
-             //.logoutSuccessUrl("/")
+             // .logoutUrl("/logout") // ·Î±×¾Æ¿ô url
+             .deleteCookies("refreshToken")
+             // .logoutSuccessUrl("/")
              .and()
              .oauth2Login()
 				.loginPage("/expireAccess")
