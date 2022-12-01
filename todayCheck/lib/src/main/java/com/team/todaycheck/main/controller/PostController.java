@@ -1,18 +1,28 @@
 package com.team.todaycheck.main.controller;
 
-import java.io.UnsupportedEncodingException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.team.todaycheck.main.DTO.CommentDTO;
 import com.team.todaycheck.main.DTO.MessageDTO;
@@ -26,15 +36,45 @@ public class PostController {
 
 	@Autowired PostService postService;
 	
-	@RequestMapping(value = "/post" , method = RequestMethod.POST)
-	public MessageDTO addPost(@RequestBody PostDTO postData , HttpServletRequest request) throws UnsupportedEncodingException {
-		String header = request.getHeader("Authorization");
+	// 만약 415 Unsupported MediaType ERROR 에러를 만난다면 적절한 MediaType 을 설정했는지 확인
+	/*
+	 * 요청 방식 :
+	 * form-data 형식
+	 * 1 . JSON 데이터 요청
+	 * key : request 
+	 * Content-type : application/json 
+	 * value : # JSON 값 #
+	 * 2 . ImageFile 요청
+	 * key : image
+	 * Content-type : image/jpeg , image/png ... 클라이언트에서 확장자에 맞게 설정
+	 * value : # image #
+	 */
+	@RequestMapping(value = "/post" , method = RequestMethod.POST , consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+	public MessageDTO addPost(@RequestPart(value="request") PostDTO postData , @RequestPart(value="image") MultipartFile imgFile 
+			, HttpServletRequest request) throws IllegalStateException, IOException {
 		
-		postService.addPost(postData , header);
+		String header = request.getHeader("Authorization");
+		postService.addPost(postData , imgFile , header);
 		return MessageDTO.builder()
 				.code("1")
 				.message("게시글이 성공적으로 게시되었습니다.")
 				.build();
+	}
+	
+	// 단일 이미지 전송
+	@RequestMapping(value = "/getImageData/{postNumber}" , method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getImageData(@PathVariable("postNumber") String postNumber) throws FileNotFoundException {
+		ResponseEntity<byte[]> result = null;
+		File imageFile = postService.getImageData(postNumber);
+		HttpHeaders header = new HttpHeaders();
+		
+		try {
+			header.add("Content-Type" , Files.probeContentType(imageFile.toPath()));
+			result = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK);
+		} catch (IOException e) {
+			throw new FileNotFoundException("이미지 파일을 찾지 못했습니다.");
+		}
+		return result;
 	}
 	
 	// /wholePost?page=0&size=20&sort=postKey,desc

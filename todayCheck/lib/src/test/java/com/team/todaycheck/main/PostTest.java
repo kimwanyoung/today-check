@@ -76,7 +76,7 @@ public class PostTest {
 				.thumbnail("thumbnail")
 				.build();
 		
-		postService.addPost(post , testerHeader1);
+		// postService.addPost(post , testerHeader1);
 		postNumber = postRepos.getPostKeyMaxValue();
 	}
 	
@@ -103,7 +103,7 @@ public class PostTest {
 				.build();
 		
 		//Assertions.assertThatCode(() -> postService.addPost(post , testerHeader1)).doesNotThrowAnyException();
-		Assertions.assertDoesNotThrow(() -> postService.addPost(post , testerHeader1));
+		// Assertions.assertDoesNotThrow(() -> postService.addPost(post , testerHeader1));
 		// 예외가 발생하지 않았을 떄 저장된 post키를 반환
 		postNumber = postRepos.getPostKeyMaxValue();
 	}

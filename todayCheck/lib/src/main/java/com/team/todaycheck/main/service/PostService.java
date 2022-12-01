@@ -1,6 +1,9 @@
 package com.team.todaycheck.main.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -8,6 +11,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -17,9 +21,9 @@ import com.team.todaycheck.main.entity.Comment;
 import com.team.todaycheck.main.entity.Post;
 import com.team.todaycheck.main.entity.UserEntity;
 import com.team.todaycheck.main.exception.FalsifyTokenException;
+import com.team.todaycheck.main.exception.InvalidateTokenException;
 import com.team.todaycheck.main.exception.NotAuthorizationException;
 import com.team.todaycheck.main.exception.UnknownPostException;
-import com.team.todaycheck.main.exception.InvalidateTokenException;
 import com.team.todaycheck.main.repository.CommentRepository;
 import com.team.todaycheck.main.repository.PostRepository;
 import com.team.todaycheck.main.repository.UserRepository;
@@ -32,14 +36,28 @@ public class PostService {
 	@Autowired UserRepository userRepos;
 	@Autowired CommentRepository commentRepos;
 	
-	public void addPost(PostDTO post , String header) {
+	private String fileDir = "C:\\devtool\\upload\\";
+	
+	public void addPost(PostDTO post , MultipartFile imgFile , String header) throws IllegalStateException, IOException {
 		String userId = getUserIdFromToken(header);
 		UserEntity user = userRepos.findById(userId);
 		
 		if(user == null) throw new FalsifyTokenException("토큰이 변조되었거나 손상되었습니다.");
 
 		post.setUserId(userId);
-		user.addpost(toEntity(post));
+		Post postData = toEntity(post);
+		// 이미지 추출
+		if(!imgFile.isEmpty()) {
+			String origName = imgFile.getOriginalFilename();
+			String uuid = UUID.randomUUID().toString(); // 중복을 처리하기 위한 UUID
+			String extension = origName.substring(origName.lastIndexOf(".")); // 확장자 추출
+			String savedName = uuid + extension;
+			
+			imgFile.transferTo(new File(fileDir + savedName)); // 파일 저장
+			postData.setThumbnail(savedName);
+		}
+		
+		user.addpost(postData);
 	}
 	
 	public List<PostDTO> getAllPost(Pageable pageable) {
@@ -132,5 +150,10 @@ public class PostService {
 				
 				return element.getAsJsonObject().get("sub").getAsString();
 				// parsing END
+	}
+
+	public File getImageData(String postNumber) {
+		String fileName = postRepos.getImagefileName(Integer.parseInt(postNumber));
+		return new File(fileDir + fileName);
 	}
 }

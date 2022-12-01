@@ -1,5 +1,6 @@
 package com.team.todaycheck.main.exception;
 
+import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 
 import javax.security.auth.login.AccountException;
@@ -18,7 +19,7 @@ public class GeneralExceptionHandler {
 	 */
 	@ExceptionHandler({
 		AccountException.class , AccountNotFoundException.class , NotAuthorizationException.class , NoSuchElementException.class
-		, UnknownPostException.class
+		, UnknownPostException.class , FileNotFoundException.class
 	})
 	public MessageDTO handleBadRequestException(Exception e) {
 	    return MessageDTO.builder()
