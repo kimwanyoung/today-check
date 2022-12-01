@@ -54,10 +54,10 @@ public class PostController {
 			, HttpServletRequest request) throws IllegalStateException, IOException {
 		
 		String header = request.getHeader("Authorization");
-		postService.addPost(postData , imgFile , header);
+		int number = postService.addPost(postData , imgFile , header);
 		return MessageDTO.builder()
 				.code("1")
-				.message("게시글이 성공적으로 게시되었습니다.")
+				.message(Integer.toString(number))
 				.build();
 	}
 	

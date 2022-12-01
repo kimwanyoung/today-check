@@ -38,7 +38,7 @@ public class PostService {
 	
 	private String fileDir = "C:\\devtool\\upload\\";
 	
-	public void addPost(PostDTO post , MultipartFile imgFile , String header) throws IllegalStateException, IOException {
+	public int addPost(PostDTO post , MultipartFile imgFile , String header) throws IllegalStateException, IOException {
 		String userId = getUserIdFromToken(header);
 		UserEntity user = userRepos.findById(userId);
 		
@@ -58,6 +58,8 @@ public class PostService {
 		}
 		
 		user.addpost(postData);
+		
+		return postRepos.getPostKeyMaxValue();
 	}
 	
 	public List<PostDTO> getAllPost(Pageable pageable) {
