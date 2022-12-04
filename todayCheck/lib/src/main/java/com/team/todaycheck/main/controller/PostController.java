@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.team.todaycheck.main.DTO.CommentDTO;
 import com.team.todaycheck.main.DTO.MessageDTO;
 import com.team.todaycheck.main.DTO.PostDTO;
-import com.team.todaycheck.main.entity.Post;
 import com.team.todaycheck.main.service.PostService;
 
 @RestController
@@ -84,7 +83,7 @@ public class PostController {
 	}
 	
 	@RequestMapping(value = "/onePost" , method = RequestMethod.GET)
-	public Post getOnePost(@RequestParam(name = "number") String postNumber) {
+	public PostDTO getOnePost(@RequestParam(name = "number") String postNumber) {
 		return postService.getOnePost(Integer.parseInt(postNumber));
 	}
 	
