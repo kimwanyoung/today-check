@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -56,11 +55,13 @@ public class Post {
 	@Column(nullable = false , length=100)
 	private String thumbnail;
 	
+	@Builder.Default
 	@Column(nullable = false)
-	private Integer views;
+	private int views = 0;
 	
+	@Builder.Default
 	@Column(nullable = false)
-	private Integer recommendation;
+	private int recommendation = 0;
 	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -75,14 +76,6 @@ public class Post {
 	@Builder.Default
 	@OneToMany(mappedBy = "post" , cascade = CascadeType.PERSIST , fetch = FetchType.LAZY , orphanRemoval = true)
 	private List<Comment> comment = new LinkedList<Comment>();
-	
-	/**
-     * insert 되기전 (persist 되기전) 실행된다.
-     * */
-	@PrePersist
-	public void prePersist() {
-		this.views = this.recommendation == null ? 0 : this.views;
-	}
 	
 	// 연관관계 편의 메소드
 	public void addRecommander(Recommander rc) {
