@@ -106,6 +106,7 @@ public class MissionService implements IMissionService {
 		for (UserEntity entity : mission.getParticipants()) {
 			ParticipantDTO dto = ParticipantDTO.builder()
 					.id(entity.getUserId())
+					.email(entity.getId())
 					.name(entity.getId())
 					.avater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa")
 					.build();
@@ -116,6 +117,7 @@ public class MissionService implements IMissionService {
 				.id(mission.getId())
 				.admin(ParticipantDTO.builder()
 						.id(mission.getAdmin().getUserId())
+						.email(mission.getAdmin().getId())
 						.name(mission.getAdmin().getId())
 						.avater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa")
 						.build())
