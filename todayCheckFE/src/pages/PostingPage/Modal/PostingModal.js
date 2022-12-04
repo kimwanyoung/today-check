@@ -1,14 +1,15 @@
 import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
 import { Button, FilledInput } from '@mui/material';
+import { getAccessToken } from '../../../cookie/Cookie';
 import { useState } from 'react';
+import axios from 'axios';
 
 const PostingModal = () => {
-  const [imageSrc, setImageSrc] = useState('');
+  const [imageSrc, setImageSrc] = useState();
   const [postInfo, setPostInfo] = useState({
     title: '',
     description: '',
-    thumbnail: '',
   });
 
   const encodeFileToBase64 = fileBlob => {
@@ -20,6 +21,25 @@ const PostingModal = () => {
         resolve();
       };
     });
+  };
+
+  const handleSubmit = e => {
+    let userForm = new FormData();
+    userForm.append('title', postInfo.title);
+    userForm.append('description', postInfo.description);
+    userForm.append('img', imageSrc);
+    console.log(postInfo.title);
+
+    axios
+      .post(`/post/post`, {
+        headers: {
+          Authorization: getAccessToken(),
+          'Content-type': 'application/json',
+        },
+        userForm,
+      })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
   };
 
   const handlePostInfo = e => {
@@ -61,7 +81,7 @@ const PostingModal = () => {
             type="file"
             accept="image/*"
             onChange={e => {
-              setImageSrc(e.target.value);
+              setImageSrc(() => e.target.files[0]);
               encodeFileToBase64(e.target.files[0]);
             }}
           />
@@ -72,11 +92,7 @@ const PostingModal = () => {
           )}
         </PostImageWrapper>
         <SubmitWrapper>
-          <SubmitBtn
-            variant="outlined"
-            color="success"
-            onClick={() => console.log(postInfo)}
-          >
+          <SubmitBtn variant="outlined" color="success" onClick={handleSubmit}>
             Submit
           </SubmitBtn>
         </SubmitWrapper>
@@ -117,7 +133,7 @@ const ModalBoxWrapper = styled.div`
   }
 `;
 
-const TitleBox = styled.div`
+const TitleBox = styled.form`
   width: 100%;
   height: 3rem;
   margin-top: 1rem;

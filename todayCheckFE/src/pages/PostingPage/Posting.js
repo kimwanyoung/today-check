@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { GrAddCircle } from 'react-icons/gr';
 import axios from 'axios';
 import PostingModal from './Modal/PostingModal';
+import { getAccessToken } from '../../cookie/Cookie';
 
 const Posting = () => {
   const [posts, setPosts] = useState([]);
@@ -10,7 +11,12 @@ const Posting = () => {
 
   useEffect(() => {
     axios
-      .get('/post/wholePost')
+      .get('/post/wholePost/', {
+        headers: {
+          Authorization: getAccessToken(),
+          'Content-type': 'application/json',
+        },
+      })
       .then(data => {
         console.log(data);
         setPosts(data.data);
