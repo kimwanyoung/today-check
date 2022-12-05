@@ -25,10 +25,7 @@ const PostingModal = () => {
 
   const handleSubmit = e => {
     let userForm = new FormData();
-    userForm.append('title', postInfo.title);
-    userForm.append('description', postInfo.description);
     userForm.append('img', imageSrc);
-    console.log(postInfo.title);
 
     axios
       .post(`/post/post`, {
