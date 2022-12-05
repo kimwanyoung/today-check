@@ -20,7 +20,7 @@ const Navigation = () => {
     } else {
       setIsLogin(false);
     }
-  });
+  }, []);
 
   const handleLogout = () => {
     removeAccessToken();

@@ -1,6 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { setAccessToken, setRefreshToken } from '../../cookie/Cookie';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setAccessKey,
+} from '../../cookie/Cookie';
 import axios from 'axios';
 
 const LoginCallback = () => {
@@ -32,6 +36,7 @@ const LoginCallback = () => {
               console.log(response);
               setAccessToken(response.data.accessToken);
               setRefreshToken(response.data.accessToken);
+              setAccessKey(response.data.key);
               navigate('/');
             })
             .catch(err => console.log(err));

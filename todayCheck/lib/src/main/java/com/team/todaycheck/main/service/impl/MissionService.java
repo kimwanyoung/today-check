@@ -65,8 +65,8 @@ public class MissionService implements IMissionService {
 				endDate.plusMonths(1);
 					
 				Mission mission = Mission.builder()
-						.title("매일 운동하기")
-						.content("두달동안 하루도 빠짐없이 운동하자!")
+						.title("go gym everyday")
+						.content("to go gym every day in 2 months!")
 						.thumbnail("https://via.placeholder.com/350x150")
 						.admin(UserEntity.builder().userId(1L).build())
 						.participants(participants)
@@ -106,6 +106,7 @@ public class MissionService implements IMissionService {
 		for (UserEntity entity : mission.getParticipants()) {
 			ParticipantDTO dto = ParticipantDTO.builder()
 					.id(entity.getUserId())
+					.email(entity.getId())
 					.name(entity.getId())
 					.avater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa")
 					.build();
@@ -116,6 +117,7 @@ public class MissionService implements IMissionService {
 				.id(mission.getId())
 				.admin(ParticipantDTO.builder()
 						.id(mission.getAdmin().getUserId())
+						.email(mission.getAdmin().getId())
 						.name(mission.getAdmin().getId())
 						.avater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa")
 						.build())
@@ -146,5 +148,11 @@ public class MissionService implements IMissionService {
 				.startDate(dto.getStartDate())
 				.endDate(dto.getEndDate())
 				.build();
+	}
+
+	@Override
+	public MissionDTO addParticipant(MissionDTO dto, ParticipantDTO participant) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -1,104 +1,100 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-
-const missionData = {
-  postPicture: 'https://via.placeholder.com/350x200',
-  adminName: '이예진',
-  adminPicture: 'https://via.placeholder.com/350x200',
-  participants: 3,
-  postTitle: '코딩테스트 공부하실 분',
-  postContent:
-    '코딩테스트 매일 하나씩 풀 예정입니다. 함께 하실 분 모집합니다. 열심히 하실 분만 참여해주세요. 라고한번 적어봅니다 그냥 한분이라도 와주시면 감사',
-};
-
-const userData = [
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '이예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '김예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '박예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '손예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '이예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '김예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '박예진',
-  },
-  {
-    userPicture: 'https://via.placeholder.com/350x200',
-    userName: '손예진',
-  },
-];
+import { getAccessKey } from '../../cookie/Cookie';
 
 const MissionDetail = () => {
   const [missionDetail, setMissionDetail] = useState([]);
-  const [join, setJoin] = useState(false);
+  const userName = String(getAccessKey());
   const params = useParams();
   const paramsData = params.id;
+  const startDate = String(missionDetail.startDate).slice(0, 10);
+  const endDate = String(missionDetail.endDate).slice(0, 10);
+  const [join, setJoin] = useState();
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8080/mission/${paramsData}`, { id: paramsData })
-      .then(response => {
-        console.log(response);
-        setMissionDetail(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, []);
+  axios
+    .get(`/mission/${paramsData}`, { id: paramsData })
+    .then(response => {
+      setMissionDetail(response.data);
+      const participantsList = missionDetail.participants?.map(
+        props => props.name
+      );
+      const participantsInclude = participantsList?.includes(userName);
+      setJoin(participantsInclude);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
-  console.log(missionDetail);
-  console.log(userData.map(user => user.userName));
+  const handleJoin = async e => {
+    e.preventDefault();
+    try {
+      await axios
+        .post(`/participant/${paramsData}`, {
+          id: paramsData,
+        })
+        .then(response => {
+          setJoin(!join);
+        })
+        .catch(error => {
+          console.log(error);
+          alert('로그인 후 이용해주세요');
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDelete = async e => {
+    e.preventDefault();
+    try {
+      await axios
+        .delete(`/participant/${paramsData}`, {
+          id: paramsData,
+        })
+        .then(response => {
+          setJoin(!join);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <MissionWrapper>
       <MissionHeader>
         <MissionImage>
-          <img src={missionData.postPicture} />
+          <img src={missionDetail.postPicture} />
         </MissionImage>
         <MissionInfBox>
-          <MissionTitle>{missionData.postTitle}</MissionTitle>
-          <MissionContent>{missionData.postContent}</MissionContent>
-          <MissionDate>기간: 2022.11.25 ~ 2022.12.30</MissionDate>
+          <MissionTitle>{missionDetail.postTitle}</MissionTitle>
+          <MissionContent>{missionDetail.postContent}</MissionContent>
+          <MissionDate>
+            기간: {startDate} ~ {endDate}
+          </MissionDate>
           {join ? (
-            <CompletionButton onClick={() => setJoin(!join)}>
-              참여완료🌈
-            </CompletionButton>
+            <CompletionButton onClick={handleDelete}>참여취소</CompletionButton>
           ) : (
-            <MissionButton onClick={() => setJoin(!join)}>참여중</MissionButton>
+            <MissionButton onClick={handleJoin}>참여하기</MissionButton>
           )}
         </MissionInfBox>
       </MissionHeader>
 
       <ParticipantWrapper>
-        {userData.map((props, index) => (
-          <ParticipantBox key={index}>
+        {missionDetail.participants?.map(props => (
+          <ParticipantBox key={props.id}>
             <ParticipantInfo>
               <ParticipantImage>
-                <img src={props.userPicture} />
+                <img src={props.avater} />
               </ParticipantImage>
-              <ParticipantName>{props.userName}</ParticipantName>
+              <ParticipantName>{props.name}</ParticipantName>
             </ParticipantInfo>
             <Picture>
-              <img src={props.userPicture} />
+              <img src={props.image} />
             </Picture>
           </ParticipantBox>
         ))}
