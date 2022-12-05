@@ -2,6 +2,8 @@ package com.team.todaycheck.main.DTO;
 
 import java.util.Date;
 
+import org.springframework.http.ResponseEntity;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -25,6 +27,7 @@ public class PostDTO {
 	private int postKey;
 	private int views;
 	private int recommendation;
+	private ResponseEntity<byte[]> image;
 	@Override
 	public String toString() {
 		return "PostDTO [title=" + title + ", userId=" + userId + ", description=" + description + ", thumbnail="

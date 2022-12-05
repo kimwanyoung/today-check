@@ -13,6 +13,8 @@ import lombok.Setter;
 @Builder
 public class ParticipantDTO {
 	private long id;
+	
+	private String email;
 	private String name;
 	private String avater;
 	private String image;

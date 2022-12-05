@@ -1,5 +1,6 @@
 package com.team.todaycheck.main.exception;
 
+import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 
 import javax.security.auth.login.AccountException;
@@ -18,7 +19,7 @@ public class GeneralExceptionHandler {
 	 */
 	@ExceptionHandler({
 		AccountException.class , AccountNotFoundException.class , NotAuthorizationException.class , NoSuchElementException.class
-		, UnknownPostException.class
+		, UnknownPostException.class , FileNotFoundException.class , NullPointerException.class
 	})
 	public MessageDTO handleBadRequestException(Exception e) {
 	    return MessageDTO.builder()
@@ -58,5 +59,16 @@ public class GeneralExceptionHandler {
 	    		.code("-4")
 	    		.message(e.getMessage())
 	    		.build();
+	}
+	
+	// AccessToken 만료되어 새로운 refreshToken 발급해야함
+	@ExceptionHandler({
+		ExpireAccessTokenException.class
+	})
+	public MessageDTO handleExpireAccessTokenException(Exception e) {
+		return MessageDTO.builder()
+				.code("-5")
+				.message(e.getMessage())
+				.build();
 	}
 }

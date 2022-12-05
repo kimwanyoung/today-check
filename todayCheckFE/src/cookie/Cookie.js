@@ -4,10 +4,11 @@ const cookies = new Cookies();
 
 export const setRefreshToken = refreshToken => {
   const today = new Date();
-  const expireDate = today.setDate(today.getDate() + 30);
+  const expireDate = today.setDate(today.getDate() + 5);
 
   return cookies.set('refreshToken', refreshToken, {
     expires: new Date(expireDate),
+    httpOnly: false,
     sameSite: 'strict',
     path: '/',
   });
@@ -19,6 +20,7 @@ export const setAccessToken = accessToken => {
 
   return cookies.set('accessToken', accessToken, {
     expires: new Date(expireDate),
+    httpOnly: false,
     sameSite: 'strict',
     path: '/',
   });

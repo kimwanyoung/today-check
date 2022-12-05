@@ -14,4 +14,5 @@ public interface CustomPostRepository {
 	public Long deleteOnePost(int post_key , String userId);
 	public Post findByPostKey(int post_key , String userId);
 	int getPostKeyMaxValue();
+	public String getImagefileName(int post_key);
 }

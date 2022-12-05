@@ -86,8 +86,8 @@ const Login = () => {
           if (response.data.code === '-1') {
             return alert('아이디 비밀번호를 확인해주세요!');
           }
+          setRefreshToken(response.data.refreshToken);
           setAccessToken(response.data.accessToken);
-          setRefreshToken(response.data.accessToken);
           navigate('/');
         })
         .catch(err => {

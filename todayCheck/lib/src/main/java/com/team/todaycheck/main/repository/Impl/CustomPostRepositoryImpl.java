@@ -111,4 +111,9 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	public int getPostKeyMaxValue() {
 		return queryFactory.select(post.postKey.max()).from(post).fetchOne();
 	}
+
+	@Override
+	public String getImagefileName(int post_key) {
+		return queryFactory.select(post.thumbnail).from(post).where(post.postKey.eq(post_key)).fetchOne();
+	}
 }
