@@ -3,11 +3,8 @@ import { useState, useEffect } from 'react';
 import { GrAddCircle } from 'react-icons/gr';
 import axios from 'axios';
 import PostingModal from './Modal/PostingModal';
-import {
-  getRefreshToken,
-  setAccessToken,
-  setRefreshToken,
-} from '../../cookie/Cookie';
+import { getAccessToken, setAccessToken } from '../../cookie/Cookie';
+axios.defaults.headers.common.Authorization = getAccessToken();
 
 const Posting = () => {
   const [posts, setPosts] = useState([]);

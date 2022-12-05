@@ -7,6 +7,7 @@ import axios from 'axios';
 axios.defaults.headers.common.Authorization = getAccessToken();
 
 const PostingModal = () => {
+  const [image, setImage] = useState();
   const [imageSrc, setImageSrc] = useState();
   const [postInfo, setPostInfo] = useState({
     title: '',
@@ -30,7 +31,7 @@ const PostingModal = () => {
       title: postInfo.title,
       description: postInfo.description,
     });
-    userForm.append('imgage', imageSrc);
+    userForm.append('imgage', image);
 
     axios
       .post(`/post/post`, {
@@ -98,7 +99,7 @@ const PostingModal = () => {
             type="file"
             accept="image/*"
             onChange={e => {
-              setImageSrc(() => e.target.files[0]);
+              setImage(e.target.files[0]);
               encodeFileToBase64(e.target.files[0]);
             }}
           />
