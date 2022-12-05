@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class Token {
+	private String id;
+	private String code;
     private String grantType;
     private String accessToken;
     private String refreshToken;

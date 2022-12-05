@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -12,12 +13,14 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +36,7 @@ import lombok.Setter;
 public class UserEntity implements UserDetails {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
 	private Long userId;
 	
 	@Column(length=50 , nullable = false)
@@ -49,6 +52,27 @@ public class UserEntity implements UserDetails {
 	@Column(name = "ADMIN" , length = 10 , nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Admin admin;
+	
+	@JsonIgnore
+	@Builder.Default
+	@OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL , mappedBy = "userEntity" , orphanRemoval = true)
+	private List<Post> post = new ArrayList<Post>();
+	
+	@JsonIgnore
+	@Builder.Default
+	@OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL , mappedBy = "admin" , orphanRemoval = true)
+	private List<Mission> mission = new ArrayList<Mission>();
+	
+	
+	// 연관관계 편의 메소드
+	public void addpost(Post postData) {
+		post.add(postData);
+		postData.setUserEntity(this);
+	}
+	public void addMission(Mission missionData) {
+		mission.add(missionData);
+		missionData.setAdmin(this);
+	}
 	
 	public enum Admin {
 		ADMin , GENERAL
