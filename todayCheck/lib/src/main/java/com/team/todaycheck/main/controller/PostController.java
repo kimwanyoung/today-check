@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,7 @@ import com.team.todaycheck.main.DTO.PostDTO;
 import com.team.todaycheck.main.service.PostService;
 
 @RestController
+@CrossOrigin(origins = "*" , allowedHeaders = "*")
 @RequestMapping("/post")
 public class PostController {
 

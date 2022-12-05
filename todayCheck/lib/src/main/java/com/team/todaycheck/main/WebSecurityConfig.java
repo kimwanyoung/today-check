@@ -107,7 +107,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
              // .logoutSuccessUrl("/")
              .and()
              .oauth2Login()
-				.loginPage("/refresh") // 인가되지 않은 접근 시
+				.loginPage("/requestRefreshToken") // 인가되지 않은 접근 시
 				.clientRegistrationRepository(clientRegistrationRepository())
 				.authorizedClientService(authorizedClientService())
 				.and()

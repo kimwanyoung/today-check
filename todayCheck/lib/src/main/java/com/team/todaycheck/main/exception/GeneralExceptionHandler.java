@@ -60,4 +60,15 @@ public class GeneralExceptionHandler {
 	    		.message(e.getMessage())
 	    		.build();
 	}
+	
+	// AccessToken 만료되어 새로운 refreshToken 발급해야함
+	@ExceptionHandler({
+		ExpireAccessTokenException.class
+	})
+	public MessageDTO handleExpireAccessTokenException(Exception e) {
+		return MessageDTO.builder()
+				.code("-5")
+				.message(e.getMessage())
+				.build();
+	}
 }
