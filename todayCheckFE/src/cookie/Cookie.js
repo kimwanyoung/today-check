@@ -8,6 +8,9 @@ export const setRefreshToken = refreshToken => {
 
   return cookies.set('refreshToken', refreshToken, {
     expires: new Date(expireDate),
+    httpOnly: false,
+    sameSite: 'strict',
+    path: '/',
   });
 };
 
@@ -17,6 +20,9 @@ export const setAccessToken = accessToken => {
 
   return cookies.set('accessToken', accessToken, {
     expires: new Date(expireDate),
+    httpOnly: false,
+    sameSite: 'strict',
+    path: '/',
   });
 };
 

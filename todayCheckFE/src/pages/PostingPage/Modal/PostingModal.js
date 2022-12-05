@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
 import { Button, FilledInput } from '@mui/material';
-import { getAccessToken } from '../../../cookie/Cookie';
+import { getAccessToken, setAccessToken } from '../../../cookie/Cookie';
 import { useState } from 'react';
 import axios from 'axios';
+axios.defaults.headers.common.Authorization = getAccessToken();
 
 const PostingModal = () => {
   const [imageSrc, setImageSrc] = useState();
@@ -22,7 +23,7 @@ const PostingModal = () => {
       };
     });
   };
-
+  console.log(getAccessToken());
   const handleSubmit = e => {
     let userForm = new FormData();
     userForm.append('request', {
@@ -33,13 +34,28 @@ const PostingModal = () => {
 
     axios
       .post(`/post/post`, {
-        headers: {
-          Authorization: getAccessToken(),
-          'Content-type': 'application/json',
-        },
         userForm,
       })
-      .then(res => console.log(res))
+      .then(res => {
+        console.log(res);
+        if (res.data.code === '-5') {
+          axios
+            .get('/refreshToken')
+            .then(res => {
+              setAccessToken(res.data.message);
+              console.log(res);
+              axios
+                .post('/post/post', {
+                  userForm,
+                })
+                .then(res => {
+                  console.log(res);
+                })
+                .catch(err => console.log(err));
+            })
+            .catch(err => console.log(err));
+        }
+      })
       .catch(err => console.log(err));
   };
 

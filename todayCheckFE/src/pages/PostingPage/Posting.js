@@ -3,6 +3,11 @@ import { useState, useEffect } from 'react';
 import { GrAddCircle } from 'react-icons/gr';
 import axios from 'axios';
 import PostingModal from './Modal/PostingModal';
+import {
+  getRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from '../../cookie/Cookie';
 
 const Posting = () => {
   const [posts, setPosts] = useState([]);
@@ -10,10 +15,19 @@ const Posting = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/post/post`)
+      .get(`/post/wholePost`)
       .then(data => {
-        console.log(data);
-        // setPosts(data.data);
+        if (data.data.code === '-5') {
+          axios
+            .get('/refreshToken')
+            .then(data => {
+              setAccessToken(data.data.message);
+              axios.get('/post/wholePost').then(data => {
+                console.log(data);
+              });
+            })
+            .catch(err => console.log(err));
+        }
       })
       .catch(err => console.log(err));
   }, []);
