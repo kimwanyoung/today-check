@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import HomeBox from '../components/home/HomeBox.js';
+import HomeBox from '../../components/home/homeBox';
 
 const Home = () => {
   const [missions, setMissions] = useState([]);
+  const iconv = require('iconv-lite');
 
   useEffect(() => {
-    axios
-      .get('/mission')
+    axios({
+      url: '/mission',
+      method: 'get',
+      // responseType: 'arraybuffer',
+    })
       .then(response => {
-        console.log(response);
+        // const decoded = iconv.decode(response, 'EUC-KR');
+        // console.log(decoded);
         setMissions(response.data);
       })
       .catch(function (error) {
@@ -24,6 +29,7 @@ const Home = () => {
         {missions.map(data => (
           <HomeBox
             key={data.id}
+            id={data.id}
             postPicture={data.postPicture}
             adminName={data.admin.name}
             adminPicture={data.admin.avater}
@@ -50,7 +56,7 @@ const RightContainer = styled.div`
 
 const HomeBoxContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-evenly;
   align-content: center;
   flex-flow: row wrap;
   flex-grow: 2;

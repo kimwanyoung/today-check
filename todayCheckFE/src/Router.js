@@ -5,12 +5,12 @@ import Navigation from './components/Navigation';
 import styled from 'styled-components';
 
 //components
-import Home from './pages/Home';
 import Mypage from './pages/Mypage';
 import Posting from './pages/PostingPage/Posting';
-import MissionDetail from './pages/MissionDetail';
 import LoginCallback from './pages/LoginPage/LoginCallback';
 import NaverLoginCallback from './pages/LoginPage/NaverLoginCallback';
+import Home from './pages/HomePage/Home';
+import MissionDetail from './pages/HomePage/MissionDetail';
 
 const Router = () => {
   return (
@@ -21,7 +21,7 @@ const Router = () => {
           <Route path="/" element={<Home />} />
           <Route path="/posting" element={<Posting />} />
           <Route path="/mypage" element={<Mypage />} />
-          <Route path="/missionDetail" element={<MissionDetail />} />
+          <Route path="/missionDetail/:id" element={<MissionDetail />} />
           <Route path="/login/*" element={<Login />} />
           <Route path="/login/callback" element={<LoginCallback />} />
           <Route path="/login/navercallback" element={<NaverLoginCallback />} />
