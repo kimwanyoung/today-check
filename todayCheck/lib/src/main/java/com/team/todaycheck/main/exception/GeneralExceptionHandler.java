@@ -19,7 +19,7 @@ public class GeneralExceptionHandler {
 	 */
 	@ExceptionHandler({
 		AccountException.class , AccountNotFoundException.class , NotAuthorizationException.class , NoSuchElementException.class
-		, UnknownPostException.class , FileNotFoundException.class
+		, UnknownPostException.class , FileNotFoundException.class , NullPointerException.class
 	})
 	public MessageDTO handleBadRequestException(Exception e) {
 	    return MessageDTO.builder()

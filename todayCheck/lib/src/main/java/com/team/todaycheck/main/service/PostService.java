@@ -2,6 +2,7 @@ package com.team.todaycheck.main.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,7 +11,11 @@ import javax.transaction.Transactional;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.JsonElement;
@@ -63,12 +68,35 @@ public class PostService {
 	}
 	
 	public List<PostDTO> getAllPost(Pageable pageable) {
-		return postRepos.getAllPost(pageable);
+		HttpHeaders header = new HttpHeaders();
+		List<PostDTO> result = postRepos.getAllPost(pageable);
+		File imageFile;
+		for(PostDTO data : result) {
+			imageFile = new File(fileDir + data.getThumbnail());
+			try {
+				if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
+				data.setImage(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
+			} catch (IOException e) { // 썸네일이 없을 때
+				data.setImage(null);
+			}
+		}
+		
+		return result;
 	}
 	
-	public Post getOnePost(int postnumber) {
+	public PostDTO getOnePost(int postnumber) {
 		postRepos.updateView(postnumber);
-		return postRepos.findByPostKey(postnumber);
+		HttpHeaders header = new HttpHeaders();
+		PostDTO data = PostService.fromEntity(postRepos.findByPostKey(postnumber));
+		File imageFile = new File(fileDir + data.getThumbnail());
+		try {
+			if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
+			data.setImage(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
+		} catch (IOException e) { // 썸네일파일을 찾을 수 없을 때
+			data.setImage(null);
+		}
+		
+		return data;
 	}
 	
 	public static Post toEntity(PostDTO post) {
@@ -89,6 +117,8 @@ public class PostService {
 				.description(post.getDescription())
 				.thumbnail(post.getThumbnail())
 				.date(post.getDate())
+				.views(post.getViews())
+				.recommendation(post.getRecommendation())
 				.build();
 	}
 

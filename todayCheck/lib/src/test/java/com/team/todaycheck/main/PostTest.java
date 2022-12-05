@@ -27,7 +27,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.team.todaycheck.main.DTO.CommentDTO;
 import com.team.todaycheck.main.DTO.PostDTO;
 import com.team.todaycheck.main.controller.PostController;
-import com.team.todaycheck.main.entity.Post;
 import com.team.todaycheck.main.entity.UserEntity;
 import com.team.todaycheck.main.entity.UserEntity.Admin;
 import com.team.todaycheck.main.exception.InvalidateTokenException;
@@ -122,7 +121,7 @@ public class PostTest {
 	@DisplayName("특정 포스트 가져오기")
 	public void getPostOne() {
 		addPostAndReturnNumber();
-		Post result = postService.getOnePost(postNumber);
+		PostDTO result = postService.getOnePost(postNumber);
 		Assertions.assertNotNull(result);
 	}
 	
