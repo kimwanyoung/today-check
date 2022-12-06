@@ -20,6 +20,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public static final QUserEntity userEntity = new QUserEntity("userEntity");
 
+    public final StringPath address = createString("address");
+
     public final EnumPath<UserEntity.Admin> admin = createEnum("admin", UserEntity.Admin.class);
 
     public final StringPath id = createString("id");
@@ -27,6 +29,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
     public final ListPath<Mission, QMission> mission = this.<Mission, QMission>createList("mission", Mission.class, QMission.class, PathInits.DIRECT2);
 
     public final StringPath password = createString("password");
+
+    public final StringPath phoneNumber = createString("phoneNumber");
 
     public final ListPath<Post, QPost> post = this.<Post, QPost>createList("post", Post.class, QPost.class, PathInits.DIRECT2);
 

@@ -40,9 +40,9 @@ public class QPost extends EntityPathBase<Post> {
 
     public final QUserEntity userEntity;
 
-    public final StringPath userId = createString("userId");
-
     public final NumberPath<Integer> views = createNumber("views", Integer.class);
+
+    public final StringPath writer = createString("writer");
 
     public QPost(String variable) {
         this(Post.class, forVariable(variable), INITS);
