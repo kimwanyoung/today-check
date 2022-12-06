@@ -114,6 +114,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          .exceptionHandling()
 			.accessDeniedPage("/accessDenied_page"); // 권한이 없는 대상이 접속을시도했을 때
 		
+		/*
+		http.exceptionHandling()
+		.authenticationEntryPoint((request, response, authException) -> {
+            response.sendRedirect("/securityException");
+		});
+		*/
+		
 		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), // 필터
 				UsernamePasswordAuthenticationFilter.class);
 	}

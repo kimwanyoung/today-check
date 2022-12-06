@@ -19,7 +19,7 @@ import lombok.Setter;
 @Builder
 public class PostDTO {
 	private String title;
-	private String userId;
+	private String writer;
 	private String description;
 	private String thumbnail;
 	@JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
@@ -30,7 +30,7 @@ public class PostDTO {
 	private ResponseEntity<byte[]> image;
 	@Override
 	public String toString() {
-		return "PostDTO [title=" + title + ", userId=" + userId + ", description=" + description + ", thumbnail="
+		return "PostDTO [title=" + title + ", writer=" + writer + ", description=" + description + ", thumbnail="
 				+ thumbnail + ", date=" + date + ", postKey=" + postKey + "]";
 	}
 	
