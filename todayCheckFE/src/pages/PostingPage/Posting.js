@@ -1,56 +1,89 @@
 import styled from 'styled-components';
+import { useState, useEffect } from 'react';
+import { GrAddCircle } from 'react-icons/gr';
+import axios from 'axios';
+import PostingModal from './Modal/PostingModal';
+import { getAccessToken, setAccessToken } from '../../cookie/Cookie';
+axios.defaults.headers.common.Authorization = getAccessToken();
 
 const Posting = () => {
+  const [posts, setPosts] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(`/post/wholePost`)
+      .then(data => {
+        if (data.data.code === '-5') {
+          axios
+            .get('/refreshToken')
+            .then(data => {
+              setAccessToken(data.data.message);
+              axios.get('/post/wholePost').then(data => {
+                console.log(data);
+              });
+            })
+            .catch(err => console.log(err));
+        }
+      })
+      .catch(err => console.log(err));
+  }, []);
+
+  const handleOpenModal = () => {
+    setOpenModal(prev => !prev);
+  };
+
   const testData = [
     {
       title: 'title test',
       userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
       thumbnail: 'https://via.placeholder.com/350x200',
       date: '2022-11-10',
-      key: 1,
+      postKey: 1,
     },
     {
       title: 'title test',
       userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
       thumbnail: 'https://via.placeholder.com/350x200',
       date: '2022-11-10',
-      key: 2,
+      postKey: 2,
     },
     {
       title: 'title test',
       userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
       thumbnail: 'https://via.placeholder.com/350x200',
       date: '2022-11-10',
-      key: 3,
+      postKey: 3,
     },
     {
       title: 'title test',
       userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
       thumbnail: 'https://via.placeholder.com/350x200',
       date: '2022-11-10',
-      key: 4,
+      postKey: 4,
     },
     {
       title: 'title test',
       userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
       thumbnail: 'https://via.placeholder.com/350x200',
       date: '2022-11-10',
-      key: 5,
+      postKey: 5,
     },
     {
       title: 'title test',
       userId: 'wanyoung',
-      desc: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
       thumbnail: 'https://via.placeholder.com/350x200',
       date: '2022-11-10',
-      key: 6,
+      postKey: 6,
     },
   ];
+
   return (
     <PostingWrapper>
       {testData.map((props, idx) => (
@@ -58,16 +91,31 @@ const Posting = () => {
           <img src={props.thumbnail} alt="thumbnail" />
           <PostCardContent>
             <PostTitle>{props.title}</PostTitle>
-            <PostDesc>{props.desc}</PostDesc>
+            <PostDesc>{props.description}</PostDesc>
           </PostCardContent>
           <PostUser>{props.userId}</PostUser>
         </PostCard>
       ))}
+      {openModal && <PostingModal />}
+      <AddIcon onClick={handleOpenModal} />
     </PostingWrapper>
   );
 };
 
 export default Posting;
+
+const AddIcon = styled(GrAddCircle)`
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+  width: 3rem;
+  height: 3rem;
+  transition: all 0.3s ease-in-out;
+
+  :hover {
+    transform: rotate(45deg);
+  }
+`;
 
 const PostingWrapper = styled.section`
   display: flex;

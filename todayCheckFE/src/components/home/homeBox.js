@@ -4,6 +4,7 @@ import { HiUserGroup } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 
 const HomeBox = ({
+  id,
   postPicture,
   adminName,
   adminPicture,
@@ -36,7 +37,7 @@ const HomeBox = ({
           <HiUserGroup className="HomeBoxUserIcon" />
           {participants} 참여중
         </HomeBoxParticipants>
-        <Link to="/missionDetail">
+        <Link to={`/missionDetail/${id}`}>
           <HomeBoxButton>참여하기</HomeBoxButton>
         </Link>
       </HomeBoxBottom>
