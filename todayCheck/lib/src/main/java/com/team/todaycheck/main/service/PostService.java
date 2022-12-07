@@ -36,37 +36,37 @@ import com.team.todaycheck.main.repository.UserRepository;
 @Service
 @Transactional
 public class PostService {
-	
+
 	@Autowired PostRepository postRepos;
 	@Autowired UserRepository userRepos;
 	@Autowired CommentRepository commentRepos;
-	
+
 	private String fileDir = "C:\\devtool\\upload\\";
-	
+
 	public int addPost(PostDTO post , MultipartFile imgFile , String header) throws IllegalStateException, IOException {
 		String userId = getUserIdFromToken(header);
 		UserEntity user = userRepos.findById(userId);
-		
-		if(user == null) throw new FalsifyTokenException("ÅäÅ«ÀÌ º¯Á¶µÇ¾ú°Å³ª ¼Õ»óµÇ¾ú½À´Ï´Ù.");
+
+		if(user == null) throw new FalsifyTokenException("í† í°ì´ ë³€ì¡°ë˜ì—ˆê±°ë‚˜ ì†ìƒë˜ì—ˆìŠµë‹ˆë‹¤.");
 
 		post.setUserId(userId);
 		Post postData = toEntity(post);
-		// ÀÌ¹ÌÁö ÃßÃâ
+		// ì´ë¯¸ì§€ ì¶”ì¶œ
 		if(!imgFile.isEmpty()) {
 			String origName = imgFile.getOriginalFilename();
-			String uuid = UUID.randomUUID().toString(); // Áßº¹À» Ã³¸®ÇÏ±â À§ÇÑ UUID
-			String extension = origName.substring(origName.lastIndexOf(".")); // È®ÀåÀÚ ÃßÃâ
+			String uuid = UUID.randomUUID().toString(); // ì¤‘ë³µì„ ì²˜ë¦¬í•˜ê¸° ìœ„í•œ UUID
+			String extension = origName.substring(origName.lastIndexOf(".")); // í™•ì¥ì ì¶”ì¶œ
 			String savedName = uuid + extension;
-			
-			imgFile.transferTo(new File(fileDir + savedName)); // ÆÄÀÏ ÀúÀå
+
+			imgFile.transferTo(new File(fileDir + savedName)); // íŒŒì¼ ì €ì¥
 			postData.setThumbnail(savedName);
 		}
-		
+
 		user.addpost(postData);
-		
+
 		return postRepos.getPostKeyMaxValue();
 	}
-	
+
 	public List<PostDTO> getAllPost(Pageable pageable) {
 		HttpHeaders header = new HttpHeaders();
 		List<PostDTO> result = postRepos.getAllPost(pageable);
@@ -76,14 +76,14 @@ public class PostService {
 			try {
 				if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
 				data.setImage(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
-			} catch (IOException e) { // ½æ³×ÀÏÀÌ ¾øÀ» ¶§
+			} catch (IOException e) { // ì¸ë„¤ì¼ì´ ì—†ì„ ë•Œ
 				data.setImage(null);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public PostDTO getOnePost(int postnumber) {
 		postRepos.updateView(postnumber);
 		HttpHeaders header = new HttpHeaders();
@@ -92,13 +92,13 @@ public class PostService {
 		try {
 			if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
 			data.setImage(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
-		} catch (IOException e) { // ½æ³×ÀÏÆÄÀÏÀ» Ã£À» ¼ö ¾øÀ» ¶§
+		} catch (IOException e) { // ì¸ë„¤ì¼íŒŒì¼ì„ ì°¾ì„ ìˆ˜ ì—†ì„ ë•Œ
 			data.setImage(null);
 		}
-		
+
 		return data;
 	}
-	
+
 	public static Post toEntity(PostDTO post) {
 		return Post.builder()
 				.postKey(post.getPostKey())
@@ -108,7 +108,7 @@ public class PostService {
 				.thumbnail(post.getThumbnail())
 				.build();
 	}
-	
+
 	public static PostDTO fromEntity(Post post) {
 		return PostDTO.builder()
 				.postKey(post.getPostKey())
@@ -124,18 +124,18 @@ public class PostService {
 
 	public void deletePost(String postNumber , String header) {
 		String userId = getUserIdFromToken(header);
-		
+
 		if(postRepos.deleteOnePost(Integer.parseInt(postNumber) , userId) != 1L) {
-			throw new NotAuthorizationException("°Ô½Ã¹° ¹øÈ£°¡ Àß¸øµÇ¾ú°Å³ª , ÇØ´ç °Ô½Ã±ÛÀº ÀÛ¼ºÀÚ¸¸ Áö¿ï ¼ö ÀÖ½À´Ï´Ù.");
+			throw new NotAuthorizationException("ê²Œì‹œë¬¼ ë²ˆí˜¸ê°€ ì˜ëª»ë˜ì—ˆê±°ë‚˜ , í•´ë‹¹ ê²Œì‹œê¸€ì€ ì‘ì„±ìë§Œ ì§€ìš¸ ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
 		}
 	}
 
 	public void modifyPost(PostDTO postData , int postNumber , String header) {
 		String userId = getUserIdFromToken(header);
 		Post post = postRepos.findByPostKey(postNumber , userId);
-		
+
 		if(post == null) {
-			throw new UnknownPostException("ÀÛ¼ºÀÚ°¡ ´Ù¸£°Å³ª , ¾Ë ¼ö ¾ø´Â ÆäÀÌÁöÀÔ´Ï´Ù.");
+			throw new UnknownPostException("ì‘ì„±ìê°€ ë‹¤ë¥´ê±°ë‚˜ , ì•Œ ìˆ˜ ì—†ëŠ” í˜ì´ì§€ì…ë‹ˆë‹¤.");
 		}
 		post.setDescription(postData.getDescription());
 		post.setThumbnail(postData.getThumbnail());
@@ -144,13 +144,13 @@ public class PostService {
 
 	public boolean increaseRecommendation(String postNumber , String header) {
 		String userId = getUserIdFromToken(header);
-		
+
 		return postRepos.increaseRecommander(Integer.parseInt(postNumber), userId);
 	}
 
 	public void addComment(String postNumber, CommentDTO CommentDTO, String header) {
 		String userId = getUserIdFromToken(header);
-		
+
 		Post result = postRepos.findByPostKey(Integer.parseInt(postNumber));
 		result.addComment(Comment.builder()
 				.writer(userId)
@@ -161,27 +161,27 @@ public class PostService {
 	public void deleteComment(String commentId , String header) {
 		String userId = getUserIdFromToken(header);
 		if (commentRepos.deleteComment(Long.parseLong(commentId) , userId) != 1L) {
-			throw new InvalidateTokenException("´ñ±Û ID°¡ Àß¸øµÇ¾ú°Å³ª , ÇØ´ç °Ô½Ã±ÛÀº ÀÛ¼ºÀÚ¸¸ Áö¿ï ¼ö ÀÖ½À´Ï´Ù.");
+			throw new InvalidateTokenException("ëŒ“ê¸€ IDê°€ ì˜ëª»ë˜ì—ˆê±°ë‚˜ , í•´ë‹¹ ê²Œì‹œê¸€ì€ ì‘ì„±ìë§Œ ì§€ìš¸ ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
 		};
 	}
-	
+
 	public static String getUserIdFromToken(String header) {
-				// We need a signing key, so we'll create one just for this example. Usually
-				// the key would be read from your application configuration instead.
-				String[] split_string = header.split("\\.");
-		        String base64EncodedBody = split_string[1];
-		        Base64 base64Url = new Base64(true);
-		        
-		        //~~~~~~~~~ JWT Body ~~~~~~~~~
-		        String body = new String(base64Url.decode(base64EncodedBody));
-		        // System.out.println("JWT Body : "+body);
-		        // JWT Body Ex ) {"sub":"thisisid","roles":["ROLE_USER"],"iat":1669686350,"exp":1669688150}
-		        
-		        JsonParser parser = new JsonParser();
-				JsonElement element = parser.parse(body);
-				
-				return element.getAsJsonObject().get("sub").getAsString();
-				// parsing END
+		// We need a signing key, so we'll create one just for this example. Usually
+		// the key would be read from your application configuration instead.
+		String[] split_string = header.split("\\.");
+		String base64EncodedBody = split_string[1];
+		Base64 base64Url = new Base64(true);
+
+		//~~~~~~~~~ JWT Body ~~~~~~~~~
+		String body = new String(base64Url.decode(base64EncodedBody));
+		// System.out.println("JWT Body : "+body);
+		// JWT Body Ex ) {"sub":"thisisid","roles":["ROLE_USER"],"iat":1669686350,"exp":1669688150}
+
+		JsonParser parser = new JsonParser();
+		JsonElement element = parser.parse(body);
+
+		return element.getAsJsonObject().get("sub").getAsString();
+		// parsing END
 	}
 
 	public File getImageData(String postNumber) {

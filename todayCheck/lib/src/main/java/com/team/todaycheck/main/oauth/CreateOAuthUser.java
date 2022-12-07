@@ -21,7 +21,7 @@ import com.team.todaycheck.main.service.JwtService;
 
 @Service
 public class CreateOAuthUser {
-	
+
 	@Autowired
 	UserRepository userRepos;
 	@Autowired
@@ -31,20 +31,20 @@ public class CreateOAuthUser {
 
 	public Token createNaverUser(String token) {
 
-		String reqURL = "https://openapi.naver.com/v1/nid/me"; // access_tokenÀ» ÀÌ¿ëÇÏ¿© »ç¿ëÀÚ Á¤º¸ Á¶È¸
+		String reqURL = "https://openapi.naver.com/v1/nid/me"; // access_tokenì„ ì´ìš©í•˜ì—¬ ì‚¬ìš©ì ì •ë³´ ì¡°íšŒ
 		try {
 			URL url = new URL(reqURL);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
 			conn.setRequestMethod("GET");
 			conn.setDoOutput(true);
-			conn.setRequestProperty("Authorization", "Bearer " + token); // Àü¼ÛÇÒ header ÀÛ¼º, access_tokenÀü¼Û
+			conn.setRequestProperty("Authorization", "Bearer " + token); // ì „ì†¡í•  header ì‘ì„±, access_tokenì „ì†¡
 
-			// °á°ú ÄÚµå°¡ 200ÀÌ¶ó¸é ¼º°ø
+			// ê²°ê³¼ ì½”ë“œê°€ 200ì´ë¼ë©´ ì„±ê³µ
 			int responseCode = conn.getResponseCode();
 			System.out.println("responseCode : " + responseCode);
 
-			// ¿äÃ»À» ÅëÇØ ¾òÀº JSONÅ¸ÀÔÀÇ Response ¸Ş¼¼Áö ÀĞ¾î¿À±â
+			// ìš”ì²­ì„ í†µí•´ ì–»ì€ JSONíƒ€ì…ì˜ Response ë©”ì„¸ì§€ ì½ì–´ì˜¤ê¸°
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line = "";
 			String result = "";
@@ -54,19 +54,19 @@ public class CreateOAuthUser {
 			}
 			System.out.println("response body : " + result);
 
-			// Gson ¶óÀÌºê·¯¸®·Î JSONÆÄ½Ì
+			// Gson ë¼ì´ë¸ŒëŸ¬ë¦¬ë¡œ JSONíŒŒì‹±
 
 			JsonParser parser = new JsonParser();
 			JsonElement element = parser.parse(result);
 
 			System.out.println(element);
-			
+
 			// int id = element.getAsJsonObject().get("id").getAsInt();
 			String nickName = element.getAsJsonObject().get("response").getAsJsonObject().get("email").getAsString().split("@")[0];
 			br.close();
 
 			UserEntity user = userRepos.findById(nickName);
-			if (user == null) { // ½Å±Ô °¡ÀÔ
+			if (user == null) { // ì‹ ê·œ ê°€ì…
 				UserEntity createId = new UserEntity();
 				createId.setRoles(Arrays.asList("ROLE_USER"));
 				createId.setId(nickName);
@@ -100,37 +100,37 @@ public class CreateOAuthUser {
 			conn.setDoOutput(true);
 			conn.setRequestProperty("Authorization", "Bearer " + token);
 
-			// ¿äÃ»À» ÅëÇØ ¾òÀº JSONÅ¸ÀÔÀÇ Response ¸Ş¼¼Áö ÀĞ¾î¿À±â
+			// ìš”ì²­ì„ í†µí•´ ì–»ì€ JSONíƒ€ì…ì˜ Response ë©”ì„¸ì§€ ì½ì–´ì˜¤ê¸°
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line = "";
 			String result = "";
 
 			int responseCode = conn.getResponseCode();
 			System.out.println("responseCode : " + responseCode);
-			
+
 			while ((line = br.readLine()) != null) {
 				result += line;
 			}
-			
-			// Gson ¶óÀÌºê·¯¸®·Î JSONÆÄ½Ì
+
+			// Gson ë¼ì´ë¸ŒëŸ¬ë¦¬ë¡œ JSONíŒŒì‹±
 			JsonParser parser = new JsonParser();
 			JsonElement element = parser.parse(result);
-			
+
 			String nickName = element.getAsJsonObject().get("email").getAsString().split("@")[0];
 			System.out.println(nickName);
-			
+
 			UserEntity user = userRepos.findById(nickName);
-			if (user == null) { // ½Å±Ô °¡ÀÔ
+			if (user == null) { // ì‹ ê·œ ê°€ì…
 				UserEntity createId = new UserEntity();
 				createId.setRoles(Arrays.asList("ROLE_USER"));
 				createId.setId(nickName);
 				createId.setAdmin(Admin.GENERAL);
 				createId.setPassword("3SY2qeoLnho3BqI6jUmPFXTj3ejHEUKz");
-				
+
 				userRepos.save(createId);
 				user = createId;
 			}
-			
+
 			br.close();
 
 			Token tokenDTO = jwtTokenProvider.createAccessToken(user.getUsername(), user.getRoles());
@@ -138,8 +138,8 @@ public class CreateOAuthUser {
 			tokenDTO.setId(nickName);
 			tokenDTO.setCode("1");
 			return tokenDTO;
-			
-			
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

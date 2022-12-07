@@ -16,27 +16,27 @@ import io.swagger.annotations.ApiParam;
 @AllArgsConstructor
 @Builder
 public class MissionDTO {
-	@ApiParam(value = "½Äº°ÀÚ")
+	@ApiParam(value = "ï¿½Äºï¿½ï¿½ï¿½")
     private Long id;
 	
-	@ApiParam(value = "ÁøÇàÀÚ")
+	@ApiParam(value = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")
     private ParticipantDTO admin;
 	
-	@ApiParam(value = "Âü¿©ÀÚµé")
+	@ApiParam(value = "ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½")
 	private List<ParticipantDTO> participants;
 
-	@ApiParam(value = "¹Ì¼Ç Æ÷½ºÆ® Å¸ÀÌÆ²")
+	@ApiParam(value = "ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® Å¸ï¿½ï¿½Æ²")
     private String postTitle;
 	
-	@ApiParam(value = "Æ÷½ºÆ® ½æ³×ÀÏ")
+	@ApiParam(value = "ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½")
     private String postPicture;
 	
-	@ApiParam(value = "¹Ì¼Ç Æ÷½ºÆ® ³»¿ë")
+	@ApiParam(value = "ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½")
     private String postContent;
 
-	@ApiParam(value = "¹Ì¼Ç ½ÃÀÛ ³¯ÀÚ")
+	@ApiParam(value = "ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")
     private LocalDateTime startDate;
 	
-	@ApiParam(value = "¹Ì¼Ç Á¾·á ³¯ÀÚ")
+	@ApiParam(value = "ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")
     private LocalDateTime endDate;
 }

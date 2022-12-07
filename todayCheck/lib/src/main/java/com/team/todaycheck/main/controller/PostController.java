@@ -36,24 +36,24 @@ import com.team.todaycheck.main.service.PostService;
 public class PostController {
 
 	@Autowired PostService postService;
-	
-	// ¸¸¾à 415 Unsupported MediaType ERROR ¿¡·¯¸¦ ¸¸³­´Ù¸é ÀûÀıÇÑ MediaType À» ¼³Á¤Çß´ÂÁö È®ÀÎ
+
+	// ë§Œì•½ 415 Unsupported MediaType ERROR ì—ëŸ¬ë¥¼ ë§Œë‚œë‹¤ë©´ ì ì ˆí•œ MediaType ì„ ì„¤ì •í–ˆëŠ”ì§€ í™•ì¸
 	/*
-	 * ¿äÃ» ¹æ½Ä :
-	 * form-data Çü½Ä
-	 * 1 . JSON µ¥ÀÌÅÍ ¿äÃ»
-	 * key : request 
-	 * Content-type : application/json 
-	 * value : # JSON °ª #
-	 * 2 . ImageFile ¿äÃ»
+	 * ìš”ì²­ ë°©ì‹ :
+	 * form-data í˜•ì‹
+	 * 1 . JSON ë°ì´í„° ìš”ì²­
+	 * key : request
+	 * Content-type : application/json
+	 * value : # JSON ê°’ #
+	 * 2 . ImageFile ìš”ì²­
 	 * key : image
-	 * Content-type : image/jpeg , image/png ... Å¬¶óÀÌ¾ğÆ®¿¡¼­ È®ÀåÀÚ¿¡ ¸Â°Ô ¼³Á¤
+	 * Content-type : image/jpeg , image/png ... í´ë¼ì´ì–¸íŠ¸ì—ì„œ í™•ì¥ìì— ë§ê²Œ ì„¤ì •
 	 * value : # image #
 	 */
 	@RequestMapping(value = "/post" , method = RequestMethod.POST , consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
-	public MessageDTO addPost(@RequestPart(value="request") PostDTO postData , @RequestPart(value="image") MultipartFile imgFile 
+	public MessageDTO addPost(@RequestPart(value="request") PostDTO postData , @RequestPart(value="image") MultipartFile imgFile
 			, HttpServletRequest request) throws IllegalStateException, IOException {
-		
+
 		String header = request.getHeader("Authorization");
 		int number = postService.addPost(postData , imgFile , header);
 		return MessageDTO.builder()
@@ -61,92 +61,92 @@ public class PostController {
 				.message(Integer.toString(number))
 				.build();
 	}
-	
-	// ´ÜÀÏ ÀÌ¹ÌÁö Àü¼Û
+
+	// ë‹¨ì¼ ì´ë¯¸ì§€ ì „ì†¡
 	@RequestMapping(value = "/getImageData/{postNumber}" , method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getImageData(@PathVariable("postNumber") String postNumber) throws FileNotFoundException {
 		ResponseEntity<byte[]> result = null;
 		File imageFile = postService.getImageData(postNumber);
 		HttpHeaders header = new HttpHeaders();
-		
+
 		try {
 			header.add("Content-Type" , Files.probeContentType(imageFile.toPath()));
 			result = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK);
 		} catch (IOException e) {
-			throw new FileNotFoundException("ÀÌ¹ÌÁö ÆÄÀÏÀ» Ã£Áö ¸øÇß½À´Ï´Ù.");
+			throw new FileNotFoundException("ì´ë¯¸ì§€ íŒŒì¼ì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
 		}
 		return result;
 	}
-	
+
 	// /wholePost?page=0&size=20&sort=postKey,desc
 	@RequestMapping(value = "/wholePost" , method = RequestMethod.GET)
 	public List<PostDTO> getAllPost(Pageable pageable) {
 		return postService.getAllPost(pageable);
 	}
-	
+
 	@RequestMapping(value = "/onePost" , method = RequestMethod.GET)
 	public PostDTO getOnePost(@RequestParam(name = "number") String postNumber) {
 		return postService.getOnePost(Integer.parseInt(postNumber));
 	}
-	
+
 	@RequestMapping(value = "/post/{postNumber}" , method = RequestMethod.DELETE)
 	public MessageDTO deletePost(@PathVariable(name = "postNumber") String postNumber , HttpServletRequest request) {
 		String header = request.getHeader("Authorization");
 		postService.deletePost(postNumber , header);
-		
+
 		return MessageDTO.builder()
 				.code("1")
-				.message("°Ô½Ã±ÛÀÌ »èÁ¦µÇ¾ú½À´Ï´Ù")
+				.message("ê²Œì‹œê¸€ì´ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤")
 				.build();
 	}
-	
+
 	@RequestMapping(value = "/post/{postNumber}" , method = RequestMethod.PATCH)
 	public MessageDTO modifyPost(@PathVariable(name = "postNumber") String postNumber , @RequestBody PostDTO postData , HttpServletRequest request) {
 		String header = request.getHeader("Authorization");
 		postService.modifyPost(postData , Integer.parseInt(postNumber) , header);
-		
+
 		return MessageDTO.builder()
 				.code("1")
-				.message("°Ô½Ã±ÛÀÌ ¼öÁ¤µÇ¾ú½À´Ï´Ù")
+				.message("ê²Œì‹œê¸€ì´ ìˆ˜ì •ë˜ì—ˆìŠµë‹ˆë‹¤")
 				.build();
 	}
-	
+
 	@RequestMapping(value = "/post/recommendation/{postNumber}" , method = RequestMethod.PATCH)
 	public MessageDTO increaseRecommendation(@PathVariable(name = "postNumber") String postNumber , HttpServletRequest request) {
 		String header = request.getHeader("Authorization");
-		
+
 		if(postService.increaseRecommendation(postNumber , header)) {
 			return MessageDTO.builder()
 					.code("1")
-					.message("ÇØ´ç °Ô½Ã¹°À» ÃßÃµÇß½À´Ï´Ù.")
+					.message("í•´ë‹¹ ê²Œì‹œë¬¼ì„ ì¶”ì²œí–ˆìŠµë‹ˆë‹¤.")
 					.build();
 		} else {
 			return MessageDTO.builder()
 					.code("1")
-					.message("ÀÌ¹Ì ÃßÃµÇÑ °Ô½Ã¹°ÀÔ´Ï´Ù.")
-					.build();			
+					.message("ì´ë¯¸ ì¶”ì²œí•œ ê²Œì‹œë¬¼ì…ë‹ˆë‹¤.")
+					.build();
 		}
 	}
-	
+
 	@RequestMapping(value = "/comment/{postNumber}" , method = RequestMethod.POST)
-	public MessageDTO addCommentData(@PathVariable(name = "postNumber") String postNumber , 
-			HttpServletRequest request , @RequestBody CommentDTO CommentDTO) {
+	public MessageDTO addCommentData(@PathVariable(name = "postNumber") String postNumber ,
+									 HttpServletRequest request , @RequestBody CommentDTO CommentDTO) {
 		String header = request.getHeader("Authorization");
-		
+
 		postService.addComment(postNumber , CommentDTO , header);
 		return MessageDTO.builder()
 				.code("1")
-				.message("´ñ±ÛÀ» µî·ÏÇß½À´Ï´Ù.")
+				.message("ëŒ“ê¸€ì„ ë“±ë¡í–ˆìŠµë‹ˆë‹¤.")
 				.build();
 	}
-	
+
 	@RequestMapping(value = "/comment/{commentId}" , method = RequestMethod.DELETE)
 	public MessageDTO removeCommentData(@PathVariable(name = "commentId") String commentId , HttpServletRequest request) {
 		String header = request.getHeader("Authorization");
 		postService.deleteComment(commentId , header);
 		return MessageDTO.builder()
 				.code("1")
-				.message("´ñ±ÛÀ» »èÁ¦Çß½À´Ï´Ù.")
+				.message("ëŒ“ê¸€ì„ ì‚­ì œí–ˆìŠµë‹ˆë‹¤.")
 				.build();
 	}
 }

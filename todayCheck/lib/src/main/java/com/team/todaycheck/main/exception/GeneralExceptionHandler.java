@@ -15,55 +15,55 @@ import com.team.todaycheck.main.DTO.MessageDTO;
 @RestControllerAdvice
 public class GeneralExceptionHandler {
 	/*
-	 * °èÁ¤À» Ã£À» ¼ö ¾øÀ» ¶§ , 
+	 * ê³„ì •ì„ ì°¾ì„ ìˆ˜ ì—†ì„ ë•Œ ,
 	 */
 	@ExceptionHandler({
-		AccountException.class , AccountNotFoundException.class , NotAuthorizationException.class , NoSuchElementException.class
-		, UnknownPostException.class , FileNotFoundException.class , NullPointerException.class
+			AccountException.class , AccountNotFoundException.class , NotAuthorizationException.class , NoSuchElementException.class
+			, UnknownPostException.class , FileNotFoundException.class , NullPointerException.class
 	})
 	public MessageDTO handleBadRequestException(Exception e) {
-	    return MessageDTO.builder()
-	    		.code("-1")
-	    		.message(e.getMessage())
-	    		.build();
+		return MessageDTO.builder()
+				.code("-1")
+				.message(e.getMessage())
+				.build();
 	}
-	
-	// RefreshToken ¸¸·áµÇ¾úÀ»¶§
-	@ExceptionHandler({ 
-		InvalidateTokenException.class
+
+	// RefreshToken ë§Œë£Œë˜ì—ˆì„ë•Œ
+	@ExceptionHandler({
+			InvalidateTokenException.class
 	})
 	public MessageDTO handleInvalidateTokenException(Exception e) {
-	    return MessageDTO.builder()
-	    		.code("-2")
-	    		.message(e.getMessage())
-	    		.build();
+		return MessageDTO.builder()
+				.code("-2")
+				.message(e.getMessage())
+				.build();
 	}
-	
-	// refreshToken ÄíÅ°°¡ ¾øÀ» ¶§
+
+	// refreshToken ì¿ í‚¤ê°€ ì—†ì„ ë•Œ
 	@ExceptionHandler({
-		MissingRequestCookieException.class
+			MissingRequestCookieException.class
 	})
 	public MessageDTO handleNotAuthorizationRequestException(Exception e) {
-	    return MessageDTO.builder()
-	    		.code("-3")
-	    		.message(e.getMessage())
-	    		.build();
+		return MessageDTO.builder()
+				.code("-3")
+				.message(e.getMessage())
+				.build();
 	}
-	
-	// refreshTokenÀÌ º¯Á¶µÇ¾úÀ» ¶§
+
+	// refreshTokenì´ ë³€ì¡°ë˜ì—ˆì„ ë•Œ
 	@ExceptionHandler({
-		FalsifyTokenException.class
+			FalsifyTokenException.class
 	})
 	public MessageDTO handleFlasifyTokenException(Exception e) {
-	    return MessageDTO.builder()
-	    		.code("-4")
-	    		.message(e.getMessage())
-	    		.build();
+		return MessageDTO.builder()
+				.code("-4")
+				.message(e.getMessage())
+				.build();
 	}
-	
-	// AccessToken ¸¸·áµÇ¾î »õ·Î¿î refreshToken ¹ß±ŞÇØ¾ßÇÔ
+
+	// AccessToken ë§Œë£Œë˜ì–´ ìƒˆë¡œìš´ refreshToken ë°œê¸‰í•´ì•¼í•¨
 	@ExceptionHandler({
-		ExpireAccessTokenException.class
+			ExpireAccessTokenException.class
 	})
 	public MessageDTO handleExpireAccessTokenException(Exception e) {
 		return MessageDTO.builder()

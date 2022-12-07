@@ -1,6 +1,6 @@
 package com.team.todaycheck.main.repository.Impl;
 
-// ±âº» ÀÎ½ºÅÏÆ®
+// ï¿½âº» ï¿½Î½ï¿½ï¿½ï¿½Æ®
 import static com.team.todaycheck.main.entity.QPost.post;
 import static com.team.todaycheck.main.entity.QRecommander.recommander;
 
@@ -22,26 +22,26 @@ import com.team.todaycheck.main.entity.Recommander;
 import com.team.todaycheck.main.repository.CustomPostRepository;
 
 public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implements CustomPostRepository {
-	
+
 	private JPAQueryFactory queryFactory;
-	
+
 	public CustomPostRepositoryImpl(JPAQueryFactory queryFactory) {
 		super(Post.class);
 		this.queryFactory = queryFactory;
 	}
-	
+
 	/*
-	 * Á¶È¸¼ö 1 Áõ°¡½ÃÅ°´Â Äõ¸®
+	 * ï¿½ï¿½È¸ï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	 */
 	@Override
 	public void updateView(int postnumber) {
 		JPAUpdateClause update = new JPAUpdateClause(getEntityManager(), post);
-		
+
 		update.where(post.postKey.eq(postnumber)).set(post.views , post.views.add(1)).execute();
 	}
 
 	/*
-	 * ÃßÃµÀÎ È®ÀÎ ÈÄ update 1 ¸®ÅÏ
+	 * ï¿½ï¿½Ãµï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ update 1 ï¿½ï¿½ï¿½ï¿½
 	 */
 	@Override
 	public boolean increaseRecommander(int postNumber , String userId) {
@@ -60,37 +60,37 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 
 	@Override
 	public List<PostDTO> getAllPost(Pageable pageable) {
-		return queryFactory.select(Projections.bean(PostDTO.class , 
-				post.title , post.userId , post.description , post.thumbnail , post.date , post.postKey 
-				, post.views , post.recommendation)).from(post).orderBy(postSort(pageable))
+		return queryFactory.select(Projections.bean(PostDTO.class ,
+						post.title , post.userId , post.description , post.thumbnail , post.date , post.postKey
+						, post.views , post.recommendation)).from(post).orderBy(postSort(pageable))
 				.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
 	}
-	
+
 	/**
-     * OrderSpecifier ¸¦ Äõ¸®·Î ¹ÝÈ¯ÇÏ¿© Á¤·ÄÁ¶°ÇÀ» ¸ÂÃçÁØ´Ù.
-     * ¸®½ºÆ® Á¤·Ä
-     * @param page
-     * @return
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+	 * OrderSpecifier ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
+	 * ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+	 * @param page
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private OrderSpecifier<?> postSort(Pageable page) {
-        if (!page.getSort().isEmpty()) {
-            for (Sort.Order order : page.getSort()) {
-                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-                switch (order.getProperty()){
-                    case "recommendation":
-                        return new OrderSpecifier(direction, post.recommendation);
-                    case "postKey":
-                        return new OrderSpecifier(direction, post.postKey);
-                    case "date":
-                        return new OrderSpecifier(direction, post.date);
-                    case "views":
-                        return new OrderSpecifier(direction, post.views);
-                }
-            }
-        }
-        return null;
-    }
+		if (!page.getSort().isEmpty()) {
+			for (Sort.Order order : page.getSort()) {
+				Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+				switch (order.getProperty()){
+					case "recommendation":
+						return new OrderSpecifier(direction, post.recommendation);
+					case "postKey":
+						return new OrderSpecifier(direction, post.postKey);
+					case "date":
+						return new OrderSpecifier(direction, post.date);
+					case "views":
+						return new OrderSpecifier(direction, post.views);
+				}
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public Long deleteOnePost(int post_key, String userId) {
@@ -103,9 +103,9 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 		return queryFactory.select(post).from(post)
 				.where(post.postKey.eq(post_key).and(post.userId.eq(userId))).fetchOne();
 	}
-	
+
 	/*
-	 * Post ¿£Æ¼Æ¼¿¡¼­ °¡Àå Å« Å°°ª ¹ÝÈ¯ (Test Àü¿ë)
+	 * Post ï¿½ï¿½Æ¼Æ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å« Å°ï¿½ï¿½ ï¿½ï¿½È¯ (Test ï¿½ï¿½ï¿½ï¿½)
 	 */
 	@Override
 	public int getPostKeyMaxValue() {

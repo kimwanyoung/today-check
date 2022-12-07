@@ -27,7 +27,7 @@ public class CustomCommentRepositoryImpl extends QuerydslRepositorySupport imple
 	}
 	
 	/*
-	 *  CommentId ¿¡¼­ °¡Àå Å« commentId Å°°ªÀ» ¹ÝÈ¯ÇÕ´Ï´Ù.
+	 *  CommentId ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å« commentId Å°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½.
 	 */
 	@Override
 	public Long getCommentIdKeyMaxValue() {
