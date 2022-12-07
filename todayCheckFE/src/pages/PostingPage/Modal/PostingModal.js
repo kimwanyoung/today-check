@@ -1,18 +1,16 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
 import { Button, FilledInput } from '@mui/material';
 import { getAccessToken, setAccessToken } from '../../../cookie/Cookie';
-import { useState } from 'react';
 import axios from 'axios';
 axios.defaults.headers.common.Authorization = getAccessToken();
 
 const PostingModal = () => {
   const [image, setImage] = useState();
   const [imageSrc, setImageSrc] = useState();
-  const [postInfo, setPostInfo] = useState({
-    title: '',
-    description: '',
-  });
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   const encodeFileToBase64 = fileBlob => {
     const reader = new FileReader();
@@ -24,50 +22,49 @@ const PostingModal = () => {
       };
     });
   };
-  console.log(getAccessToken());
-  const handleSubmit = e => {
-    let userForm = new FormData();
-    userForm.append('request', {
-      title: postInfo.title,
-      description: postInfo.description,
-    });
-    userForm.append('imgage', image);
+
+  const handlDescription = e => {
+    setDescription(e.target.value);
+  };
+
+  const handleTitle = e => {
+    setTitle(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    const postInfo = new FormData();
+    const json = [
+      {
+        title: title,
+        description: description,
+      },
+    ];
+    const blob = new Blob([json], { type: 'application/json' });
+    postInfo.append('request', blob);
+    postInfo.append('image', image);
+    console.log('image', image);
+    console.log('request', blob);
 
     axios
-      .post(`/post/post`, {
-        userForm,
+      .post('/post/post', {
+        headers: {
+          // 'Content-Type': 'application/json',
+          // cnctype: 'multipart/form-data',
+          Authorization: getAccessToken(),
+        },
+        postInfo,
       })
       .then(res => {
-        console.log(res);
         if (res.data.code === '-5') {
           axios
-            .get('/refreshToken')
-            .then(res => {
-              setAccessToken(res.data.message);
-              console.log(res);
-              axios
-                .post('/post/post', {
-                  userForm,
-                })
-                .then(res => {
-                  console.log(res);
-                })
-                .catch(err => console.log(err));
-            })
+            .post('/refreshToken')
+            .then(res => setAccessToken(res.data.message))
             .catch(err => console.log(err));
         }
       })
       .catch(err => console.log(err));
   };
 
-  const handlePostInfo = e => {
-    const { name, value } = e.target;
-    setPostInfo(prev => {
-      let newInfo = { ...prev };
-      newInfo[name] = value;
-      return newInfo;
-    });
-  };
   return (
     <ModalWrapper>
       <ModalBoxWrapper>
@@ -78,8 +75,7 @@ const PostingModal = () => {
             id="outlined-input"
             label="Title"
             type="text"
-            name="title"
-            onChange={handlePostInfo}
+            onChange={handleTitle}
           />
         </TitleBox>
         <ContentBoxWrapper>
@@ -89,8 +85,7 @@ const PostingModal = () => {
             multiline
             rows={7}
             variant="filled"
-            name="description"
-            onChange={handlePostInfo}
+            onChange={handlDescription}
           />
         </ContentBoxWrapper>
         <PostImageWrapper>
@@ -129,7 +124,7 @@ const ModalWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
 `;
 
-const ModalBoxWrapper = styled.div`
+const ModalBoxWrapper = styled.form`
   position: absolute;
   top: 2rem;
   left: 0;
@@ -151,7 +146,7 @@ const ModalBoxWrapper = styled.div`
   }
 `;
 
-const TitleBox = styled.form`
+const TitleBox = styled.div`
   width: 100%;
   height: 3rem;
   margin-top: 1rem;
