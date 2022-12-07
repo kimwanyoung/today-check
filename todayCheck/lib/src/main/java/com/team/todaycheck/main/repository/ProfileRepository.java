@@ -6,5 +6,5 @@ import com.team.todaycheck.main.entity.UserEntity;
 
 public interface ProfileRepository extends JpaRepository<UserEntity, Long> , CustomProfileRepository {
 
-
+	public UserEntity findById(String id);
 }
