@@ -70,7 +70,7 @@ public class PostTest {
 	public void addPostAndReturnNumber() {
 		PostDTO post = PostDTO.builder()
 				.title("titleName")
-				.userId(testUserId)
+				.writer(testUserId)
 				.description("descData")
 				.thumbnail("thumbnail")
 				.build();
@@ -96,7 +96,7 @@ public class PostTest {
 		
 		PostDTO post = PostDTO.builder()
 				.title("titleName")
-				.userId(testUserId)
+				.writer(testUserId)
 				.description("descData")
 				.thumbnail("thumbnail")
 				.build();

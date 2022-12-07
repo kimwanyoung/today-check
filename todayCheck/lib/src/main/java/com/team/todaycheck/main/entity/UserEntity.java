@@ -53,6 +53,12 @@ public class UserEntity implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private Admin admin;
 	
+	@Column(length = 50 , nullable = true)
+	private String address;
+	
+	@Column(length = 25 , nullable = true)
+	private String phoneNumber;
+	
 	@JsonIgnore
 	@Builder.Default
 	@OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL , mappedBy = "userEntity" , orphanRemoval = true)
