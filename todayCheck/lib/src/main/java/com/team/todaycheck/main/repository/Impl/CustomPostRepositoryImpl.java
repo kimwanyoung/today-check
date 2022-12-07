@@ -60,9 +60,9 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 
 	@Override
 	public List<PostDTO> getAllPost(Pageable pageable) {
-		return queryFactory.select(Projections.bean(PostDTO.class ,
-						post.title , post.userId , post.description , post.thumbnail , post.date , post.postKey
-						, post.views , post.recommendation)).from(post).orderBy(postSort(pageable))
+		return queryFactory.select(Projections.bean(PostDTO.class , 
+				post.title , post.writer , post.description , post.thumbnail , post.date , post.postKey 
+				, post.views , post.recommendation)).from(post).orderBy(postSort(pageable))
 				.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
 	}
 
@@ -95,13 +95,13 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	@Override
 	public Long deleteOnePost(int post_key, String userId) {
 		JPADeleteClause delete = new JPADeleteClause(getEntityManager(), post);
-		return delete.where(post.userId.eq(userId).and(post.postKey.eq(post_key))).execute();
+		return delete.where(post.writer.eq(userId).and(post.postKey.eq(post_key))).execute();
 	}
 
 	@Override
 	public Post findByPostKey(int post_key , String userId) {
 		return queryFactory.select(post).from(post)
-				.where(post.postKey.eq(post_key).and(post.userId.eq(userId))).fetchOne();
+				.where(post.postKey.eq(post_key).and(post.writer.eq(userId))).fetchOne();
 	}
 
 	/*

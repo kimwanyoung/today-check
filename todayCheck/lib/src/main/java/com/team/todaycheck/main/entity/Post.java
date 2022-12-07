@@ -44,8 +44,8 @@ public class Post {
 	private Date date;
 
 	@Column(nullable = false , length=50)
-	private String userId;
-
+	private String writer;
+	
 	@Column(nullable = false , length=200)
 	private String title;
 
@@ -65,7 +65,7 @@ public class Post {
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "userId_id", nullable = false)
+	@JoinColumn(name = "userId", nullable = false)
 	private UserEntity userEntity;
 
 	@JsonIgnore

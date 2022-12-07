@@ -49,7 +49,7 @@ public class PostService {
 
 		if(user == null) throw new FalsifyTokenException("토큰이 변조되었거나 손상되었습니다.");
 
-		post.setUserId(userId);
+		post.setWriter(userId);
 		Post postData = toEntity(post);
 		// 이미지 추출
 		if(!imgFile.isEmpty()) {
@@ -103,7 +103,7 @@ public class PostService {
 		return Post.builder()
 				.postKey(post.getPostKey())
 				.title(post.getTitle())
-				.userId(post.getUserId())
+				.writer(post.getWriter())
 				.description(post.getDescription())
 				.thumbnail(post.getThumbnail())
 				.build();
@@ -113,7 +113,7 @@ public class PostService {
 		return PostDTO.builder()
 				.postKey(post.getPostKey())
 				.title(post.getTitle())
-				.userId(post.getUserId())
+				.writer(post.getWriter())
 				.description(post.getDescription())
 				.thumbnail(post.getThumbnail())
 				.date(post.getDate())
