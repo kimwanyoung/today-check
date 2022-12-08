@@ -15,13 +15,16 @@ import com.team.todaycheck.main.DTO.ModifyProfileDTO;
 import com.team.todaycheck.main.DTO.ProfileDTO;
 import com.team.todaycheck.main.DTO.ProfileMissionDTO;
 import com.team.todaycheck.main.entity.UserEntity;
+import com.team.todaycheck.main.exception.DuplicateAccountException;
 import com.team.todaycheck.main.repository.ProfileRepository;
+import com.team.todaycheck.main.repository.UserRepository;
 
 @Service
 @Transactional
 public class ProfileService {
 	
 	@Autowired ProfileRepository profileRepos;
+	@Autowired UserRepository userRepos;
 	
 	public ProfileDTO getProfile(String accoundId) throws AccountNotFoundException {
 		UserEntity user = profileRepos.findById(accoundId);
@@ -56,6 +59,9 @@ public class ProfileService {
 			throw new AccountNotFoundException("계정 소유자만 계정을 변경할 수 있습니다.");
 		
 		if(!profileDTO.getUserId().equals(profileDTO.getId())) { // 음 계정 아이디가 변경되었을 경우
+			UserEntity result = userRepos.findById(profileDTO.getId());
+			if(result != null) throw new DuplicateAccountException("이미 존재하는 회원입니다.");
+			
 			Cookie myCookie = new Cookie("refreshToken", null);
 			myCookie.setMaxAge(0);
 			myCookie.setPath("/"); // refreshToken 폐기
