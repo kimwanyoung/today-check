@@ -1,19 +1,15 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
 import { Button, FilledInput } from '@mui/material';
 import { getAccessToken, setAccessToken } from '../../../cookie/Cookie';
-import { useState } from 'react';
 import axios from 'axios';
-axios.defaults.headers.common.Authorization = getAccessToken();
 
-const PostingModal = () => {
+const PostingModal = ({ setOpenModal }) => {
   const [image, setImage] = useState();
   const [imageSrc, setImageSrc] = useState();
-  const [postInfo, setPostInfo] = useState({
-    title: '',
-    description: '',
-  });
-
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const encodeFileToBase64 = fileBlob => {
     const reader = new FileReader();
     reader.readAsDataURL(fileBlob);
@@ -24,35 +20,48 @@ const PostingModal = () => {
       };
     });
   };
-  console.log(getAccessToken());
-  const handleSubmit = e => {
-    let userForm = new FormData();
-    userForm.append('request', {
-      title: postInfo.title,
-      description: postInfo.description,
-    });
-    userForm.append('imgage', image);
 
-    axios
-      .post(`/post/post`, {
-        userForm,
-      })
+  const handlDescription = e => {
+    setDescription(e.target.value);
+  };
+
+  const handleTitle = e => {
+    setTitle(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    const postInfo = new FormData();
+    const json = {
+      title: title,
+      description: description,
+    };
+    const blob = new Blob([JSON.stringify(json)], { type: 'application/json' });
+    postInfo.append('request', blob);
+    postInfo.append('image', image);
+
+    const postConfig = {
+      method: 'post',
+      url: '/post/post',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: getAccessToken(),
+      },
+      data: postInfo,
+    };
+
+    axios(postConfig)
       .then(res => {
-        console.log(res);
+        alert('글 쓰기 완료!');
+        setOpenModal(prev => !prev);
         if (res.data.code === '-5') {
           axios
             .get('/refreshToken')
             .then(res => {
               setAccessToken(res.data.message);
-              console.log(res);
-              axios
-                .post('/post/post', {
-                  userForm,
-                })
-                .then(res => {
-                  console.log(res);
-                })
-                .catch(err => console.log(err));
+              axios(postConfig).then(res => {
+                alert('글 쓰기 완료!');
+                setOpenModal(prev => !prev);
+              });
             })
             .catch(err => console.log(err));
         }
@@ -60,14 +69,6 @@ const PostingModal = () => {
       .catch(err => console.log(err));
   };
 
-  const handlePostInfo = e => {
-    const { name, value } = e.target;
-    setPostInfo(prev => {
-      let newInfo = { ...prev };
-      newInfo[name] = value;
-      return newInfo;
-    });
-  };
   return (
     <ModalWrapper>
       <ModalBoxWrapper>
@@ -78,8 +79,7 @@ const PostingModal = () => {
             id="outlined-input"
             label="Title"
             type="text"
-            name="title"
-            onChange={handlePostInfo}
+            onChange={handleTitle}
           />
         </TitleBox>
         <ContentBoxWrapper>
@@ -89,8 +89,7 @@ const PostingModal = () => {
             multiline
             rows={7}
             variant="filled"
-            name="description"
-            onChange={handlePostInfo}
+            onChange={handlDescription}
           />
         </ContentBoxWrapper>
         <PostImageWrapper>
@@ -129,7 +128,7 @@ const ModalWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
 `;
 
-const ModalBoxWrapper = styled.div`
+const ModalBoxWrapper = styled.form`
   position: absolute;
   top: 2rem;
   left: 0;
@@ -151,7 +150,7 @@ const ModalBoxWrapper = styled.div`
   }
 `;
 
-const TitleBox = styled.form`
+const TitleBox = styled.div`
   width: 100%;
   height: 3rem;
   margin-top: 1rem;

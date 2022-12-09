@@ -38,84 +38,84 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/participant")
 public class ParticipantController {
-	
+
 	private final IMissionService missionService;
 	private final JwtService jwtService;
 	private final UserRepository userRepos;
-	
+
 	@GetMapping(value = "")
 	public ResponseEntity<String> list() {
 		return ResponseEntity.ok("a");
 	}
-	
+
 	@PostMapping(value = "/{id}")
-    @ApiOperation(value = "¹Ì¼Ç Âü¿©", notes = "ÁÖ¾îÁø ¹Ì¼Ç ¾ÆÀÌµğ¸¦ °¡Áø ¹Ì¼Ç¿¡ Âü¿©ÇÑ´Ù")
-    @ApiResponses(value = { 
-    		@ApiResponse(code = 200, message = "¼º°øÀûÀ¸·Î Âü¿©ÇÔ"),
-    		@ApiResponse(code = 401, message = "±ÇÇÑ ¾øÀ½"),
-    		@ApiResponse(code = 409, message = "ÀÌ¹Ì Âü¿©ÇÔ"),
-    		@ApiResponse(code = 500, message = "¼­¹ö ¿À·ù"),
+	@ApiOperation(value = "ë¯¸ì…˜ ì°¸ì—¬", notes = "ì£¼ì–´ì§„ ë¯¸ì…˜ ì•„ì´ë””ë¥¼ ê°€ì§„ ë¯¸ì…˜ì— ì°¸ì—¬í•œë‹¤")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "ì„±ê³µì ìœ¼ë¡œ ì°¸ì—¬í•¨"),
+			@ApiResponse(code = 401, message = "ê¶Œí•œ ì—†ìŒ"),
+			@ApiResponse(code = 409, message = "ì´ë¯¸ ì°¸ì—¬í•¨"),
+			@ApiResponse(code = 500, message = "ì„œë²„ ì˜¤ë¥˜"),
 	})
-    public ResponseEntity join(@PathVariable long id, @CookieValue(name = "refreshToken") String cookie) throws Exception {
-    	MissionDTO mission = missionService.findById(id);
-    	if (mission == null) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    	}
-    	
-    	Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
-    	
-    	RefreshToken token = o.orElse(null);
-    	if (token == null) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    	}
-    	
-    	UserEntity user = userRepos.findById(token.getKeyEmail());
-    	for (ParticipantDTO participant : mission.getParticipants()) {
-    		if (participant.getEmail() == user.getId()) {
-    			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-    		}
-    	}
-    	
-    	ParticipantDTO participant = ParticipantDTO.builder()
-    			.id(user.getUserId())
-    			.build();
-    	mission.getParticipants().add(participant);
-    	
-    	missionService.save(mission);
-    	
-        return ResponseEntity.ok().build();
-    }
-	
+	public ResponseEntity join(@PathVariable long id, @CookieValue(name = "refreshToken") String cookie) throws Exception {
+		MissionDTO mission = missionService.findById(id);
+		if (mission == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
+		Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
+
+		RefreshToken token = o.orElse(null);
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+
+		UserEntity user = userRepos.findById(token.getKeyEmail());
+		for (ParticipantDTO participant : mission.getParticipants()) {
+			if (participant.getEmail() == user.getId()) {
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			}
+		}
+
+		ParticipantDTO participant = ParticipantDTO.builder()
+				.id(user.getUserId())
+				.build();
+		mission.getParticipants().add(participant);
+
+		missionService.save(mission);
+
+		return ResponseEntity.ok().build();
+	}
+
 	@DeleteMapping(value = "/{id}")
-	@ApiOperation(value = "¹Ì¼Ç Å»Åğ", notes = "ÁÖ¾îÁø ¹Ì¼Ç ¾ÆÀÌµğ¸¦ °¡Áø ¹Ì¼Ç¿¡¼­ Å»ÅğÇÑ´Ù")
-    @ApiResponses(value = { 
-    		@ApiResponse(code = 200, message = "¼º°øÀûÀ¸·Î Å»ÅğÇÔ"),
-    		@ApiResponse(code = 401, message = "±ÇÇÑ ¾øÀ½"),
-    		@ApiResponse(code = 500, message = "¼­¹ö ¿À·ù"),
+	@ApiOperation(value = "ë¯¸ì…˜ íƒˆí‡´", notes = "ì£¼ì–´ì§„ ë¯¸ì…˜ ì•„ì´ë””ë¥¼ ê°€ì§„ ë¯¸ì…˜ì—ì„œ íƒˆí‡´í•œë‹¤")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "ì„±ê³µì ìœ¼ë¡œ íƒˆí‡´í•¨"),
+			@ApiResponse(code = 401, message = "ê¶Œí•œ ì—†ìŒ"),
+			@ApiResponse(code = 500, message = "ì„œë²„ ì˜¤ë¥˜"),
 	})
 	public ResponseEntity leave(@PathVariable long id, @CookieValue(name = "refreshToken") String cookie) throws Exception {
-    	MissionDTO mission = missionService.findById(id);
-    	if (mission == null) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    	}
-    	
-    	Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
-    	
-    	RefreshToken token = o.orElse(null);
-    	if (token == null) {
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    	}
-    	
-    	UserEntity user = userRepos.findById(token.getKeyEmail());
-    	for (ParticipantDTO participant : mission.getParticipants()) {
-    		if (participant.getEmail() == user.getId()) {
-    			mission.getParticipants().remove(participant);
-    			break;
-    		}
-    	}
-    	
-    	missionService.save(mission);
-    	
-        return ResponseEntity.ok().build();
-    }
+		MissionDTO mission = missionService.findById(id);
+		if (mission == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
+		Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
+
+		RefreshToken token = o.orElse(null);
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+
+		UserEntity user = userRepos.findById(token.getKeyEmail());
+		for (ParticipantDTO participant : mission.getParticipants()) {
+			if (participant.getEmail() == user.getId()) {
+				mission.getParticipants().remove(participant);
+				break;
+			}
+		}
+
+		missionService.save(mission);
+
+		return ResponseEntity.ok().build();
+	}
 }

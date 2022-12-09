@@ -26,18 +26,18 @@ public class LoginService {
 	private JwtTokenProvider jwtTokenProvider;
 	@Autowired
 	private JwtService jwtService;
-	
+
 	public LoginResponseDTO findId(LoginRequestDTO data) throws AccountNotFoundException {
 		UserEntity result = userRepos.findById(data.getId());
 		if (result == null)
-			throw new AccountNotFoundException("Á¸ÀçÇÏÁö ¾Ê´Â ¾ÆÀÌµğÀÔ´Ï´Ù.");
+			throw new AccountNotFoundException("ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ì•„ì´ë””ì…ë‹ˆë‹¤.");
 		if (!result.getPassword().equals(data.getPassword())) {
-			throw new AccountNotFoundException("ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.");
+			throw new AccountNotFoundException("ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 		}
-		
+
 		Token tokenDTO = jwtTokenProvider.createAccessToken(result.getUsername(), result.getRoles());
 		jwtService.login(tokenDTO);
-		
+
 		return LoginResponseDTO.builder()
 				.id(result.getId())
 				.password(result.getPassword())
@@ -47,12 +47,12 @@ public class LoginService {
 				.grantType(tokenDTO.getGrantType())
 				.build();
 	}
-	
+
 	public MessageDTO createId(RegistryDTO data) throws AccountException {
 		try {
 			UserEntity findId = userRepos.findById(data.getId());
 			if (findId != null)
-				throw new AccountException("ÀÌ¹Ì Á¸ÀçÇÏ´Â ¾ÆÀÌµğÀÔ´Ï´Ù.");
+				throw new AccountException("ì´ë¯¸ ì¡´ì¬í•˜ëŠ” ì•„ì´ë””ì…ë‹ˆë‹¤.");
 			UserEntity result = UserEntity.builder()
 					.id(data.getId())
 					.password(data.getPassword())
@@ -66,12 +66,12 @@ public class LoginService {
 		} catch (Exception e) {
 			return MessageDTO.builder()
 					.code("-1")
-					.message("¼­¹ö¿¡ ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù. Àá½ÃÈÄ ´Ù½Ã ÀÌ¿ëÇØÁÖ¼¼¿ä.")
+					.message("ì„œë²„ì— ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤. ì ì‹œí›„ ë‹¤ì‹œ ì´ìš©í•´ì£¼ì„¸ìš”.")
 					.build();
 		}
 		return MessageDTO.builder()
 				.code("1")
-				.message("¼º°øÀûÀ¸·Î È¸¿ø°¡ÀÔÀÌ µÇ¾ú½À´Ï´Ù.")
+				.message("ì„±ê³µì ìœ¼ë¡œ íšŒì›ê°€ì…ì´ ë˜ì—ˆìŠµë‹ˆë‹¤.")
 				.build();
 	}
 }

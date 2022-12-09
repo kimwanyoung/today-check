@@ -51,8 +51,8 @@ public class LoginController {
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 		return result;
-	} 
-	
+	}
+
 	@RequestMapping(value="/googlelogin" , method = RequestMethod.POST)
 	public LoginResponseDTO getGoogleOAuthUserInfo(@RequestParam("code") String code , HttpServletResponse response) throws JsonMappingException, JsonProcessingException {
 		Token result = null;
@@ -63,7 +63,7 @@ public class LoginController {
 		cookie.setSecure(true);
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
-		
+
 		return LoginResponseDTO.builder()
 				.accessToken(result.getAccessToken())
 				.refreshToken(result.getRefreshToken())
@@ -71,7 +71,7 @@ public class LoginController {
 				.key(result.getKey())
 				.build();
 	}
-	
+
 	@RequestMapping(value="/naverlogin" , method = RequestMethod.POST)
 	public LoginResponseDTO getNaverOAuthUserInfo(@RequestParam("code") String code , HttpServletResponse response) throws JsonMappingException, JsonProcessingException {
 		Token result = null;
@@ -82,9 +82,9 @@ public class LoginController {
 		cookie.setSecure(true);
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
-		
+
 		System.out.println(result.toString());
-		
+
 		return LoginResponseDTO.builder()
 				.accessToken(result.getAccessToken())
 				.refreshToken(result.getRefreshToken())
@@ -92,18 +92,18 @@ public class LoginController {
 				.key(result.getKey())
 				.build();
 	}
-	
+
 	/* */
 	@RequestMapping(value = "/admin/test" , method = RequestMethod.GET)
 	public String testAdminAuthorizaztion() {
-		return "¾îµå¹Î µ¥ÀÌÅÍ";
+		return "ì–´ë“œë¯¼ ë°ì´í„°";
 	}
-	
+
 	@RequestMapping(value = "/user/test" , method = RequestMethod.GET)
 	public String testUserAuthorizaztion() {
-		return "À¯Àú µ¥ÀÌÅÍ POST";
+		return "ìœ ì € ë°ì´í„° POST";
 	}
-	
+
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public MessageDTO registId(@RequestBody RegistryDTO data) throws AccountException {
 		return loginService.createId(data);
@@ -113,27 +113,27 @@ public class LoginController {
 	public MessageDTO denialAccess() {
 		return MessageDTO.builder()
 				.code("-1")
-				.message("ÀÎ°¡µÇÁö ¾ÊÀº ¿äÃ»")
+				.message("ì¸ê°€ë˜ì§€ ì•Šì€ ìš”ì²­")
 				.build();
 	}
-	
-	
-	@RequestMapping(value = "/refreshToken" , method = RequestMethod.GET) // 
+
+
+	@RequestMapping(value = "/refreshToken" , method = RequestMethod.GET) //
 	public MessageDTO validateRefreshToken(@CookieValue(name = "refreshToken" , required = false) String cookie) {
-		if(cookie == null) throw new NotAuthorizationException("RefreshToken ÅäÅ«ÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+		if(cookie == null) throw new NotAuthorizationException("RefreshToken í† í°ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 		Map<String, String> map = jwtService.validateRefreshToken(cookie);
 		if(map.get("code").equals("-1")) {
-			throw new InvalidateTokenException("ÅäÅ«ÀÌ ¸¸·áµÇ¾ú½À´Ï´Ù. ´Ù½Ã ·Î±×ÀÎÇØÁÖ¼¼¿ä.");
+			throw new InvalidateTokenException("í† í°ì´ ë§Œë£Œë˜ì—ˆìŠµë‹ˆë‹¤. ë‹¤ì‹œ ë¡œê·¸ì¸í•´ì£¼ì„¸ìš”.");
 		}
-		
+
 		return MessageDTO.builder()
 				.code("2")
 				.message(map.get("accessToken"))
 				.build();
 	}
-	
+
 	@RequestMapping(value = "/requestRefreshToken" , method = RequestMethod.GET)
 	public MessageDTO requestRefreshToken() {
-		throw new ExpireAccessTokenException("AccessTokenÀÌ ¸¸·áµÇ¾ú½À´Ï´Ù.");
+		throw new ExpireAccessTokenException("AccessTokenì´ ë§Œë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
 	}
 }

@@ -13,13 +13,13 @@ import com.team.todaycheck.main.repository.UserRepository;
 public class CustomUserDetailService implements UserDetailsService {
 
 	@Autowired UserRepository loginRepository;
-	
+
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserEntity result = loginRepository.findById(username);
-		if(result == null) new UsernameNotFoundException("»ç¿ëÀÚ¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
-		
-		return result;
-    }
+		if(result == null) new UsernameNotFoundException("ì‚¬ìš©ìë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 
-	
+		return result;
+	}
+
+
 }

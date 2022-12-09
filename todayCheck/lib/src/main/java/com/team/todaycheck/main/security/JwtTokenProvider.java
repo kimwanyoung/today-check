@@ -27,104 +27,104 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-	private String secretKey = "myprojectsecret";
-	private String refreshKey = "myRefreshKey";
-	
-	@Autowired UserDetailsService loginService;
-	
-	// Access ÅäÅ« À¯È¿½Ã°£ 30ºĞ;
+    private String secretKey = "myprojectsecret";
+    private String refreshKey = "myRefreshKey";
+
+    @Autowired UserDetailsService loginService;
+
+    // Access í† í° ìœ íš¨ì‹œê°„ 30ë¶„;
     private long tokenValidTime = 30 * 60 * 1000L;
-    // Refresh ÅäÅ« À¯È¿½Ã°£ 14ÁÖ 14 * 24 * 60 * 60 *
+    // Refresh í† í° ìœ íš¨ì‹œê°„ 14ì£¼ 14 * 24 * 60 * 60 *
     private long refreshTokenValidTime =  14 * 24 * 60 * 60 * 1000L;
-    
-    // °´Ã¼ ÃÊ±âÈ­, secretKey¸¦ Base64·Î ÀÎÄÚµùÇÑ´Ù.
+
+    // ê°ì²´ ì´ˆê¸°í™”, secretKeyë¥¼ Base64ë¡œ ì¸ì½”ë”©í•œë‹¤.
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
         refreshKey = Base64.getEncoder().encodeToString(refreshKey.getBytes());
     }
 
-    // JWT ÅäÅ« »ı¼º 
+    // JWT í† í° ìƒì„±
     public Token createAccessToken(String userPk, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userPk); // JWT payload ¿¡ ÀúÀåµÇ´Â Á¤º¸´ÜÀ§, º¸Åë ¿©±â¼­ user¸¦ ½Äº°ÇÏ´Â °ªÀ» ³Ö´Â´Ù.
-        claims.put("roles", roles); // Á¤º¸´Â key / value ½ÖÀ¸·Î ÀúÀåµÈ´Ù.
+        Claims claims = Jwts.claims().setSubject(userPk); // JWT payload ì— ì €ì¥ë˜ëŠ” ì •ë³´ë‹¨ìœ„, ë³´í†µ ì—¬ê¸°ì„œ userë¥¼ ì‹ë³„í•˜ëŠ” ê°’ì„ ë„£ëŠ”ë‹¤.
+        claims.put("roles", roles); // ì •ë³´ëŠ” key / value ìŒìœ¼ë¡œ ì €ì¥ëœë‹¤.
         Date now = new Date();
-        
+
         String accessToken = Jwts.builder()
-                .setClaims(claims) // Á¤º¸ ÀúÀå
-                .setIssuedAt(now) // ÅäÅ« ¹ßÇà ½Ã°£ Á¤º¸
+                .setClaims(claims) // ì •ë³´ ì €ì¥
+                .setIssuedAt(now) // í† í° ë°œí–‰ ì‹œê°„ ì •ë³´
                 .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
-                .signWith(SignatureAlgorithm.HS256, secretKey)  // »ç¿ëÇÒ ¾ÏÈ£È­ ¾Ë°í¸®Áò°ú
-                // signature ¿¡ µé¾î°¥ secret°ª ¼¼ÆÃ
+                .signWith(SignatureAlgorithm.HS256, secretKey)  // ì‚¬ìš©í•  ì•”í˜¸í™” ì•Œê³ ë¦¬ì¦˜ê³¼
+                // signature ì— ë“¤ì–´ê°ˆ secretê°’ ì„¸íŒ…
                 .compact();
-        
-        // RefreshToken ¹ß±Ş
+
+        // RefreshToken ë°œê¸‰
         String refreshToken =  Jwts.builder()
-                .setClaims(claims) // Á¤º¸ ÀúÀå
-                .setIssuedAt(now) // ÅäÅ« ¹ßÇà ½Ã°£ Á¤º¸
+                .setClaims(claims) // ì •ë³´ ì €ì¥
+                .setIssuedAt(now) // í† í° ë°œí–‰ ì‹œê°„ ì •ë³´
                 .setExpiration(new Date(now.getTime() + refreshTokenValidTime)) // set Expire Time
-                .signWith(SignatureAlgorithm.HS256, refreshKey)  // »ç¿ëÇÒ ¾ÏÈ£È­ ¾Ë°í¸®Áò°ú
-                // signature ¿¡ µé¾î°¥ secret°ª ¼¼ÆÃ
+                .signWith(SignatureAlgorithm.HS256, refreshKey)  // ì‚¬ìš©í•  ì•”í˜¸í™” ì•Œê³ ë¦¬ì¦˜ê³¼
+                // signature ì— ë“¤ì–´ê°ˆ secretê°’ ì„¸íŒ…
                 .compact();
 
         return Token.builder().accessToken(accessToken).refreshToken(refreshToken).key(userPk).build();
     }
-    
-    // refreshToken À¯È¿¼º °Ë»ç
+
+    // refreshToken ìœ íš¨ì„± ê²€ì‚¬
     public String validateRefreshToken(RefreshToken refreshTokenObj){
-        // refresh °´Ã¼¿¡¼­ refreshToken ÃßÃâ
+        // refresh ê°ì²´ì—ì„œ refreshToken ì¶”ì¶œ
         String refreshToken = refreshTokenObj.getRefreshToken();
         try {
-            // °ËÁõ
+            // ê²€ì¦
             Jws<Claims> claims = Jwts.parser().setSigningKey(refreshKey).parseClaimsJws(refreshToken);
 
-            //refresh ÅäÅ«ÀÇ ¸¸·á½Ã°£ÀÌ Áö³ªÁö ¾Ê¾ÒÀ» °æ¿ì, »õ·Î¿î access ÅäÅ«À» »ı¼ºÇÕ´Ï´Ù.
+            //refresh í† í°ì˜ ë§Œë£Œì‹œê°„ì´ ì§€ë‚˜ì§€ ì•Šì•˜ì„ ê²½ìš°, ìƒˆë¡œìš´ access í† í°ì„ ìƒì„±í•©ë‹ˆë‹¤.
             if (!claims.getBody().getExpiration().before(new Date())) {
                 return recreationAccessToken(claims.getBody().get("sub").toString(), claims.getBody().get("roles"));
             }
         }catch (Exception e) {
-            return null; //refresh ÅäÅ«ÀÌ ¸¸·áµÇ¾úÀ» °æ¿ì, ·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.
+            return null; //refresh í† í°ì´ ë§Œë£Œë˜ì—ˆì„ ê²½ìš°, ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.
         }
         return null;
     }
-    
-    // AccessÅäÅ« Àç »ı¼º
+
+    // Accessí† í° ì¬ ìƒì„±
     public String recreationAccessToken(String userEmail, Object roles){
-        Claims claims = Jwts.claims().setSubject(userEmail); // JWT payload ¿¡ ÀúÀåµÇ´Â Á¤º¸´ÜÀ§
-        claims.put("roles", roles); // Á¤º¸´Â key / value ½ÖÀ¸·Î ÀúÀåµÈ´Ù.
+        Claims claims = Jwts.claims().setSubject(userEmail); // JWT payload ì— ì €ì¥ë˜ëŠ” ì •ë³´ë‹¨ìœ„
+        claims.put("roles", roles); // ì •ë³´ëŠ” key / value ìŒìœ¼ë¡œ ì €ì¥ëœë‹¤.
         Date now = new Date();
         //Access Token
         String accessToken = Jwts.builder()
-                .setClaims(claims) // Á¤º¸ ÀúÀå
-                .setIssuedAt(now) // ÅäÅ« ¹ßÇà ½Ã°£ Á¤º¸
+                .setClaims(claims) // ì •ë³´ ì €ì¥
+                .setIssuedAt(now) // í† í° ë°œí–‰ ì‹œê°„ ì •ë³´
                 .setExpiration(new Date(now.getTime() + tokenValidTime)) // set Expire Time
-                .signWith(SignatureAlgorithm.HS256, secretKey)  // »ç¿ëÇÒ ¾ÏÈ£È­ ¾Ë°í¸®Áò°ú
-                // signature ¿¡ µé¾î°¥ secret°ª ¼¼ÆÃ
+                .signWith(SignatureAlgorithm.HS256, secretKey)  // ì‚¬ìš©í•  ì•”í˜¸í™” ì•Œê³ ë¦¬ì¦˜ê³¼
+                // signature ì— ë“¤ì–´ê°ˆ secretê°’ ì„¸íŒ…
                 .compact();
 
         return accessToken;
     }
-    
-    // JWT ÅäÅ«¿¡¼­ ÀÎÁõ Á¤º¸ Á¶È¸
+
+    // JWT í† í°ì—ì„œ ì¸ì¦ ì •ë³´ ì¡°íšŒ
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = loginService.loadUserByUsername(this.getUserPk(token));
         if(userDetails == null) {
-        	throw new FalsifyTokenException("¾Ë ¼ö ¾ø´Â ÅäÅ«ÀÌ°Å³ª , º¯Á¶µÇ¾ú½À´Ï´Ù.");
+            throw new FalsifyTokenException("ì•Œ ìˆ˜ ì—†ëŠ” í† í°ì´ê±°ë‚˜ , ë³€ì¡°ë˜ì—ˆìŠµë‹ˆë‹¤.");
         }
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // ÅäÅ«¿¡¼­ È¸¿ø Á¤º¸ ÃßÃâ
+    // í† í°ì—ì„œ íšŒì› ì •ë³´ ì¶”ì¶œ
     public String getUserPk(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // RequestÀÇ Header¿¡¼­ token °ªÀ» °¡Á®¿É´Ï´Ù. "Authorization" : "TOKEN°ª'
+    // Requestì˜ Headerì—ì„œ token ê°’ì„ ê°€ì ¸ì˜µë‹ˆë‹¤. "Authorization" : "TOKENê°’'
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
 
-    // ÅäÅ«ÀÇ À¯È¿¼º + ¸¸·áÀÏÀÚ È®ÀÎ
+    // í† í°ì˜ ìœ íš¨ì„± + ë§Œë£Œì¼ì í™•ì¸
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
