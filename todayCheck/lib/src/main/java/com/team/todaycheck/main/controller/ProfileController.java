@@ -1,6 +1,5 @@
 package com.team.todaycheck.main.controller;
 
-import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
