@@ -6,8 +6,8 @@ import com.team.todaycheck.main.DTO.ProfileMissionDTO;
 
 public interface CustomProfileRepository {
 
-	List<ProfileMissionDTO> getJoinMissionList(Long userId);
-	List<ProfileMissionDTO> getCreateEntity(Long userId);
+	List<ProfileMissionDTO> getJoinMissionList(String accoundId);
+	List<ProfileMissionDTO> getCreateEntity(String accoundId);
 	void setUserFromContent(String prevId, String newId);
 	
 }

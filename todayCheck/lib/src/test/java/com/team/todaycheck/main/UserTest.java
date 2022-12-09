@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountNotFoundException;
@@ -28,6 +27,7 @@ import com.team.todaycheck.main.DTO.LoginResponseDTO;
 import com.team.todaycheck.main.DTO.RegistryDTO;
 import com.team.todaycheck.main.entity.UserEntity;
 import com.team.todaycheck.main.entity.UserEntity.Admin;
+import com.team.todaycheck.main.exception.FalsifyTokenException;
 import com.team.todaycheck.main.repository.UserRepository;
 import com.team.todaycheck.main.service.JwtService;
 import com.team.todaycheck.main.service.LoginService;
@@ -52,13 +52,13 @@ class UserTest {
 	private String adminPermissionsPassword = "Zr3268ZWH48yy4";
 	
     @Test
-    @DisplayName("인가되지 않는 접근 차단")
+    @DisplayName("인가되지 않는 접근 차단 및 리다이렉트")
     public void springSecurityTest() throws Exception {
     	mvc.perform(MockMvcRequestBuilders.get("/user/test").accept(MediaType.APPLICATION_JSON))
-    	.andExpect(status().isForbidden());
+    	.andExpect(status().is3xxRedirection());
     	
     	mvc.perform(MockMvcRequestBuilders.get("/admin/test").accept(MediaType.APPLICATION_JSON))
-    	.andExpect(status().isForbidden());
+    	.andExpect(status().is3xxRedirection());
     }
     
     @Test
@@ -105,7 +105,7 @@ class UserTest {
     @Test
     @DisplayName("변조된 RefreshToken 차단")
     public void tokenAuthorizationTest() throws Exception {
-    	Assertions.assertThrows(NoSuchElementException.class , () -> jwtService.validateRefreshToken("thisIsNotValuableToken"));
+    	Assertions.assertThrows(FalsifyTokenException.class , () -> jwtService.validateRefreshToken("thisIsNotValuableToken"));
     }
     
     @Test

@@ -1,5 +1,6 @@
 package com.team.todaycheck.main.controller;
 
+import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,17 +26,17 @@ public class ProfileController {
 
 	@Autowired ProfileService profileService;
 	
-	@RequestMapping(value = "/profile/{userId}" , method = RequestMethod.GET)
-	public ProfileDTO getUserProfile(@PathVariable("userId") String userId) {
-		return profileService.getProfile(Long.parseLong(userId));
+	@RequestMapping(value = "/profile/{accoundId}" , method = RequestMethod.GET)
+	public ProfileDTO getUserProfile(@PathVariable("accoundId") String accoundId) throws AccountNotFoundException {
+		return profileService.getProfile(accoundId);
 	}
 	
-	@RequestMapping(value = "/profile/{userId}" , method = RequestMethod.PATCH)
-	public MessageDTO updateUserProfile(@PathVariable("userId") String userId , @RequestBody ModifyProfileDTO profileDTO 
-			, HttpServletRequest request , HttpServletResponse response) throws AccountNotFoundException, NumberFormatException {
+	@RequestMapping(value = "/profile/{accoundId}" , method = RequestMethod.PATCH)
+	public MessageDTO updateUserProfile(@PathVariable("accoundId") String accoundId , @RequestBody ModifyProfileDTO profileDTO 
+			, HttpServletRequest request , HttpServletResponse response) throws NumberFormatException, AccountNotFoundException {
 		
 		String header = request.getHeader("Authorization");
 		if(header == null) throw new NotAuthorizationException("Authorization 토큰이 없습니다.");
-		return profileService.updateProfile(Long.parseLong(userId) , profileDTO , header , response);
+		return profileService.updateProfile(accoundId , profileDTO , header , response);
 	}
 }
