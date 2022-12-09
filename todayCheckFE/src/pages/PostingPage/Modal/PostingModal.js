@@ -4,14 +4,12 @@ import TextField from '@mui/material/TextField';
 import { Button, FilledInput } from '@mui/material';
 import { getAccessToken, setAccessToken } from '../../../cookie/Cookie';
 import axios from 'axios';
-axios.defaults.headers.common.Authorization = getAccessToken();
 
-const PostingModal = () => {
+const PostingModal = ({ setOpenModal }) => {
   const [image, setImage] = useState();
   const [imageSrc, setImageSrc] = useState();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-
   const encodeFileToBase64 = fileBlob => {
     const reader = new FileReader();
     reader.readAsDataURL(fileBlob);
@@ -33,32 +31,38 @@ const PostingModal = () => {
 
   const handleSubmit = () => {
     const postInfo = new FormData();
-    const json = [
-      {
-        title: title,
-        description: description,
-      },
-    ];
-    const blob = new Blob([json], { type: 'application/json' });
+    const json = {
+      title: title,
+      description: description,
+    };
+    const blob = new Blob([JSON.stringify(json)], { type: 'application/json' });
     postInfo.append('request', blob);
     postInfo.append('image', image);
-    console.log('image', image);
-    console.log('request', blob);
 
-    axios
-      .post('/post/post', {
-        headers: {
-          // 'Content-Type': 'application/json',
-          // cnctype: 'multipart/form-data',
-          Authorization: getAccessToken(),
-        },
-        postInfo,
-      })
+    const postConfig = {
+      method: 'post',
+      url: '/post/post',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: getAccessToken(),
+      },
+      data: postInfo,
+    };
+
+    axios(postConfig)
       .then(res => {
+        alert('글 쓰기 완료!');
+        setOpenModal(prev => !prev);
         if (res.data.code === '-5') {
           axios
-            .post('/refreshToken')
-            .then(res => setAccessToken(res.data.message))
+            .get('/refreshToken')
+            .then(res => {
+              setAccessToken(res.data.message);
+              axios(postConfig).then(res => {
+                alert('글 쓰기 완료!');
+                setOpenModal(prev => !prev);
+              });
+            })
             .catch(err => console.log(err));
         }
       })

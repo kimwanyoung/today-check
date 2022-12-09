@@ -53,7 +53,7 @@ public class PostController {
 	@RequestMapping(value = "/post" , method = RequestMethod.POST , consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
 	public MessageDTO addPost(@RequestPart(value="request") PostDTO postData , @RequestPart(value="image") MultipartFile imgFile
 			, HttpServletRequest request) throws IllegalStateException, IOException {
-
+			
 		String header = request.getHeader("Authorization");
 		int number = postService.addPost(postData , imgFile , header);
 		return MessageDTO.builder()

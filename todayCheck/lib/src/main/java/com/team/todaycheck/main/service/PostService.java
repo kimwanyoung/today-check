@@ -41,10 +41,11 @@ public class PostService {
 	@Autowired UserRepository userRepos;
 	@Autowired CommentRepository commentRepos;
 
-	private String fileDir = "C:\\devtool\\upload\\";
+	private String fileDir = "/Users/kwy/Documents/imageFile";
 
 	public int addPost(PostDTO post , MultipartFile imgFile , String header) throws IllegalStateException, IOException {
 		String userId = getUserIdFromToken(header);
+		System.out.print("id : " + userId);
 		UserEntity user = userRepos.findById(userId);
 
 		if(user == null) throw new FalsifyTokenException("토큰이 변조되었거나 손상되었습니다.");
