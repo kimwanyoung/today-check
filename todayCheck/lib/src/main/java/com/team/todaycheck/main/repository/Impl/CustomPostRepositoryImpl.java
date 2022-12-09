@@ -3,6 +3,7 @@ package com.team.todaycheck.main.repository.Impl;
 // 기본 인스턴트
 import static com.team.todaycheck.main.entity.QPost.post;
 import static com.team.todaycheck.main.entity.QRecommander.recommander;
+import static com.team.todaycheck.main.entity.QComment.comment;
 
 import java.util.List;
 
@@ -115,5 +116,11 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	@Override
 	public String getImagefileName(int post_key) {
 		return queryFactory.select(post.thumbnail).from(post).where(post.postKey.eq(post_key)).fetchOne();
+	}
+
+	@Override
+	public Post findByPostKey(int postKey) {
+		return queryFactory.select(post).from(post).leftJoin(post.comment , comment).fetchJoin()
+				.where(post.postKey.eq(postKey)).fetchOne();
 	}
 }

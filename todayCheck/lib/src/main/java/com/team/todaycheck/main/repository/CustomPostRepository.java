@@ -15,4 +15,5 @@ public interface CustomPostRepository {
 	public Post findByPostKey(int post_key , String userId);
 	int getPostKeyMaxValue();
 	public String getImagefileName(int post_key);
+	public Post findByPostKey(int postKey);
 }

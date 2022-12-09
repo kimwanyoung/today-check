@@ -118,6 +118,7 @@ public class PostService {
 				.thumbnail(post.getThumbnail())
 				.date(post.getDate())
 				.views(post.getViews())
+				.comment(post.getComment())
 				.recommendation(post.getRecommendation())
 				.build();
 	}

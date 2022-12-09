@@ -1,10 +1,12 @@
 package com.team.todaycheck.main.DTO;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.team.todaycheck.main.entity.Comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +30,7 @@ public class PostDTO {
 	private int views;
 	private int recommendation;
 	private ResponseEntity<byte[]> image;
+	private List<Comment> comment;
 	@Override
 	public String toString() {
 		return "PostDTO [title=" + title + ", writer=" + writer + ", description=" + description + ", thumbnail="
