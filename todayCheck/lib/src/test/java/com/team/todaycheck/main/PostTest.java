@@ -7,6 +7,7 @@ import java.util.Collections;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -59,7 +60,6 @@ public class PostTest {
 	
 	private String testUserId = "wfa3fg51qqeRTf351wD";
 	private String testUserPw = "FgG34lcp091xZCbnfaw";
-	private int postNumber = 0;
 	/*
 	 *  testerHeader1 은 testUserId 의 토큰입니다.
 	 *  testerHeader2 는 testUserId 가 아닌 임의의 Access 토큰입니다.
@@ -67,7 +67,7 @@ public class PostTest {
 	private String testerHeader1 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3ZmEzZmc1MXFxZVJUZjM1MXdEIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY2OTczMzc1OSwiZXhwIjoxNjY5NzM1NTU5fQ.ZcO1cZIy1S-Rx3_N6s7Zh1U4MxcjEcTEy83fQsFIG2A";
 	private String testerHeader2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmd2dkIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY2OTczMzc1OSwiZXhwIjoxNjY5NzM1NTU5fQ.LS1Eb5SZpPcE4fpahedKXm4hjb6SHZZlWqVHO-VGUf8";
 	
-	public void addPostAndReturnNumber() {
+	public int addPostAndReturnNumber() {
 		PostDTO post = PostDTO.builder()
 				.title("titleName")
 				.writer(testUserId)
@@ -75,14 +75,18 @@ public class PostTest {
 				.thumbnail("thumbnail")
 				.build();
 		
-		// postService.addPost(post , testerHeader1);
-		postNumber = postRepos.getPostKeyMaxValue();
+		try {
+			postService.addPost(post , null , testerHeader1);
+		} catch (Exception e) {
+			System.out.println("예외 발생 : " + e);
+			return -1;
+		}
+		return postRepos.getPostKeyMaxValue();
 	}
 	
-	@Test
-	@Order(1)
-	@DisplayName("새 Post 등록")
-	public void addNewPost() {
+	/* 테스트 계정 생성 */
+	@BeforeAll
+	public void createTestUser() {
 		if(userRepos.findById(testUserId) == null) {
 			UserEntity user = UserEntity.builder()
 					.admin(Admin.GENERAL)
@@ -93,7 +97,12 @@ public class PostTest {
 			
 			userRepos.save(user);
 		}
-		
+	}
+	
+	@Test
+	@Order(1)
+	@DisplayName("새 Post 등록")
+	public void addNewPost() {
 		PostDTO post = PostDTO.builder()
 				.title("titleName")
 				.writer(testUserId)
@@ -101,10 +110,9 @@ public class PostTest {
 				.thumbnail("thumbnail")
 				.build();
 		
-		//Assertions.assertThatCode(() -> postService.addPost(post , testerHeader1)).doesNotThrowAnyException();
-		// Assertions.assertDoesNotThrow(() -> postService.addPost(post , testerHeader1));
+		// Assertions.assertThatCode(() -> postService.addPost(post , testerHeader1)).doesNotThrowAnyException();
+		Assertions.assertDoesNotThrow(() -> postService.addPost(post , null , testerHeader1));
 		// 예외가 발생하지 않았을 떄 저장된 post키를 반환
-		postNumber = postRepos.getPostKeyMaxValue();
 	}
 	
 	@Test
@@ -120,7 +128,7 @@ public class PostTest {
 	@Order(3)
 	@DisplayName("특정 포스트 가져오기")
 	public void getPostOne() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		PostDTO result = postService.getOnePost(postNumber);
 		Assertions.assertNotNull(result);
 	}
@@ -129,7 +137,7 @@ public class PostTest {
 	@Order(4)
 	@DisplayName("동일 작성자가 Post 수정")
 	public void sameAuthorModifyPost() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		PostDTO modifiedPost = PostDTO.builder()
 				.title("modifyTitleName")
 				.description("modifyDescriptionData")
@@ -143,7 +151,7 @@ public class PostTest {
 	@Order(5)
 	@DisplayName("다른 작성자가 Post 수정 거부")
 	public void otherAuthorModifyPost() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		PostDTO modifiedPost = PostDTO.builder()
 				.title("modifyTitleName")
 				.description("modifyDescriptionData")
@@ -157,7 +165,7 @@ public class PostTest {
 	@Order(6)
 	@DisplayName("Post 삭제")
 	public void deletePost() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		Assertions.assertDoesNotThrow(() -> postService.deletePost(Integer.toString(postNumber) , testerHeader1));
 	}
 	
@@ -165,7 +173,7 @@ public class PostTest {
 	@Order(7)
 	@DisplayName("Comment 등록")
 	public void addComment() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		CommentDTO comment = CommentDTO.builder()
 				.content(testUserId)
 				.build();
@@ -176,7 +184,7 @@ public class PostTest {
 	@Order(8)
 	@DisplayName("등록자가 아닌 다른 사용자가 Comment 삭제")
 	public void removeCommitFromAnotherUser() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		CommentDTO comment = CommentDTO.builder()
 				.content(testUserId)
 				.build();
@@ -191,7 +199,7 @@ public class PostTest {
 	@Order(8)
 	@DisplayName("동일 사용자가 Comment 삭제")
 	public void removeCommitFromSameUser() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		CommentDTO comment = CommentDTO.builder()
 				.content(testUserId)
 				.build();

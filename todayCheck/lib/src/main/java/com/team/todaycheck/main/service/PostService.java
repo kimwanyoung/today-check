@@ -52,7 +52,7 @@ public class PostService {
 		post.setWriter(userId);
 		Post postData = toEntity(post);
 		// 이미지 추출
-		if(!imgFile.isEmpty()) {
+		if(imgFile != null) {
 			String origName = imgFile.getOriginalFilename();
 			String uuid = UUID.randomUUID().toString(); // 중복을 처리하기 위한 UUID
 			String extension = origName.substring(origName.lastIndexOf(".")); // 확장자 추출
