@@ -77,7 +77,7 @@ public class Post {
 	@OneToMany(mappedBy = "post" , cascade = CascadeType.PERSIST , fetch = FetchType.LAZY , orphanRemoval = true)
 	private List<Comment> comment = new LinkedList<Comment>();
 	
-	// ¿¬°ü°ü°è ÆíÀÇ ¸Ş¼Òµå
+	// ì—°ê´€ê´€ê³„ í¸ì˜ ë©”ì†Œë“œ
 	public void addRecommander(Recommander rc) {
 		recommander.add(rc);
 		rc.setPost(this);

@@ -47,18 +47,18 @@ public class PostService {
 		String userId = getUserIdFromToken(header);
 		UserEntity user = userRepos.findById(userId);
 		
-		if(user == null) throw new FalsifyTokenException("ÅäÅ«ÀÌ º¯Á¶µÇ¾ú°Å³ª ¼Õ»óµÇ¾ú½À´Ï´Ù.");
+		if(user == null) throw new FalsifyTokenException("í† í°ì´ ë³€ì¡°ë˜ì—ˆê±°ë‚˜ ì†ìƒë˜ì—ˆìŠµë‹ˆë‹¤.");
 
 		post.setWriter(userId);
 		Post postData = toEntity(post);
-		// ÀÌ¹ÌÁö ÃßÃâ
+		// ì´ë¯¸ì§€ ì¶”ì¶œ
 		if(imgFile != null) {
 			String origName = imgFile.getOriginalFilename();
-			String uuid = UUID.randomUUID().toString(); // Áßº¹À» Ã³¸®ÇÏ±â À§ÇÑ UUID
-			String extension = origName.substring(origName.lastIndexOf(".")); // È®ÀåÀÚ ÃßÃâ
+			String uuid = UUID.randomUUID().toString(); // ì¤‘ë³µì„ ì²˜ë¦¬í•˜ê¸° ìœ„í•œ UUID
+			String extension = origName.substring(origName.lastIndexOf(".")); // í™•ì¥ì ì¶”ì¶œ
 			String savedName = uuid + extension;
 			
-			imgFile.transferTo(new File(fileDir + savedName)); // ÆÄÀÏ ÀúÀå
+			imgFile.transferTo(new File(fileDir + savedName)); // íŒŒì¼ ì €ì¥
 			postData.setThumbnail(savedName);
 		}
 		
@@ -76,7 +76,7 @@ public class PostService {
 			try {
 				if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
 				data.setImage(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
-			} catch (IOException e) { // ½æ³×ÀÏÀÌ ¾øÀ» ¶§
+			} catch (IOException e) { // ì¸ë„¤ì¼ì´ ì—†ì„ ë•Œ
 				data.setImage(null);
 			}
 		}
@@ -92,7 +92,7 @@ public class PostService {
 		try {
 			if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
 			data.setImage(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
-		} catch (IOException e) { // ½æ³×ÀÏÆÄÀÏÀ» Ã£À» ¼ö ¾øÀ» ¶§
+		} catch (IOException e) { // ì¸ë„¤ì¼íŒŒì¼ì„ ì°¾ì„ ìˆ˜ ì—†ì„ ë•Œ
 			data.setImage(null);
 		}
 		
@@ -127,7 +127,7 @@ public class PostService {
 		String userId = getUserIdFromToken(header);
 		
 		if(postRepos.deleteOnePost(Integer.parseInt(postNumber) , userId) != 1L) {
-			throw new NotAuthorizationException("°Ô½Ã¹° ¹øÈ£°¡ Àß¸øµÇ¾ú°Å³ª , ÇØ´ç °Ô½Ã±ÛÀº ÀÛ¼ºÀÚ¸¸ Áö¿ï ¼ö ÀÖ½À´Ï´Ù.");
+			throw new NotAuthorizationException("ê²Œì‹œë¬¼ ë²ˆí˜¸ê°€ ì˜ëª»ë˜ì—ˆê±°ë‚˜ , í•´ë‹¹ ê²Œì‹œê¸€ì€ ì‘ì„±ìë§Œ ì§€ìš¸ ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
 		}
 	}
 
@@ -136,7 +136,7 @@ public class PostService {
 		Post post = postRepos.findByPostKey(postNumber , userId);
 		
 		if(post == null) {
-			throw new UnknownPostException("ÀÛ¼ºÀÚ°¡ ´Ù¸£°Å³ª , ¾Ë ¼ö ¾ø´Â ÆäÀÌÁöÀÔ´Ï´Ù.");
+			throw new UnknownPostException("ì‘ì„±ìê°€ ë‹¤ë¥´ê±°ë‚˜ , ì•Œ ìˆ˜ ì—†ëŠ” í˜ì´ì§€ì…ë‹ˆë‹¤.");
 		}
 		post.setDescription(postData.getDescription());
 		post.setThumbnail(postData.getThumbnail());
@@ -162,7 +162,7 @@ public class PostService {
 	public void deleteComment(String commentId , String header) {
 		String userId = getUserIdFromToken(header);
 		if (commentRepos.deleteComment(Long.parseLong(commentId) , userId) != 1L) {
-			throw new InvalidateTokenException("´ñ±Û ID°¡ Àß¸øµÇ¾ú°Å³ª , ÇØ´ç °Ô½Ã±ÛÀº ÀÛ¼ºÀÚ¸¸ Áö¿ï ¼ö ÀÖ½À´Ï´Ù.");
+			throw new InvalidateTokenException("ëŒ“ê¸€ IDê°€ ì˜ëª»ë˜ì—ˆê±°ë‚˜ , í•´ë‹¹ ê²Œì‹œê¸€ì€ ì‘ì„±ìë§Œ ì§€ìš¸ ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
 		};
 	}
 	

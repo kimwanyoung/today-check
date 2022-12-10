@@ -1,6 +1,6 @@
 package com.team.todaycheck.main.repository.Impl;
 
-// ±âº» ÀÎ½ºÅÏÆ®
+// ê¸°ë³¸ ì¸ìŠ¤í„´íŠ¸
 import static com.team.todaycheck.main.entity.QPost.post;
 import static com.team.todaycheck.main.entity.QRecommander.recommander;
 import static com.team.todaycheck.main.entity.QComment.comment;
@@ -32,7 +32,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 	
 	/*
-	 * Á¶È¸¼ö 1 Áõ°¡½ÃÅ°´Â Äõ¸®
+	 * ì¡°íšŒìˆ˜ 1 ì¦ê°€ì‹œí‚¤ëŠ” ì¿¼ë¦¬
 	 */
 	@Override
 	public void updateView(int postnumber) {
@@ -42,7 +42,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 
 	/*
-	 * ÃßÃµÀÎ È®ÀÎ ÈÄ update 1 ¸®ÅÏ
+	 * ì¶”ì²œì¸ í™•ì¸ í›„ update 1 ë¦¬í„´
 	 */
 	@Override
 	public boolean increaseRecommander(int postNumber , String userId) {
@@ -68,8 +68,8 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 	
 	/**
-     * OrderSpecifier ¸¦ Äõ¸®·Î ¹İÈ¯ÇÏ¿© Á¤·ÄÁ¶°ÇÀ» ¸ÂÃçÁØ´Ù.
-     * ¸®½ºÆ® Á¤·Ä
+     * OrderSpecifier ë¥¼ ì¿¼ë¦¬ë¡œ ë°˜í™˜í•˜ì—¬ ì •ë ¬ì¡°ê±´ì„ ë§ì¶°ì¤€ë‹¤.
+     * ë¦¬ìŠ¤íŠ¸ ì •ë ¬
      * @param page
      * @return
      */
@@ -106,7 +106,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 	
 	/*
-	 * Post ¿£Æ¼Æ¼¿¡¼­ °¡Àå Å« Å°°ª ¹İÈ¯ (Test Àü¿ë)
+	 * Post ì—”í‹°í‹°ì—ì„œ ê°€ì¥ í° í‚¤ê°’ ë°˜í™˜ (Test ì „ìš©)
 	 */
 	@Override
 	public int getPostKeyMaxValue() {

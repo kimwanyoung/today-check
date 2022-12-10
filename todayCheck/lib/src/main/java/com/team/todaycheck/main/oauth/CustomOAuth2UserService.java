@@ -41,7 +41,7 @@ public class CustomOAuth2UserService {
         try {
             post.setEntity(new UrlEncodedFormEntity(postParams));
             final HttpResponse response = client.execute(post);
-            // JSON ÇüÅÂ ¹İÈ¯°ª Ã³¸®
+            // JSON í˜•íƒœ ë°˜í™˜ê°’ ì²˜ë¦¬
             ObjectMapper mapper = new ObjectMapper();
             returnNode = mapper.readTree(response.getEntity().getContent());
  
@@ -65,8 +65,8 @@ public class CustomOAuth2UserService {
         postParams.add(new BasicNameValuePair("grant_type", "authorization_code"));
         postParams.add(new BasicNameValuePair("client_id", "Va8Dlfp7L1f0k4UXZXaw")); // REST API KEY
         postParams.add(new BasicNameValuePair("client_secret" , "2k9Sxq225n"));
-        postParams.add(new BasicNameValuePair("redirect_uri", "http://localhost:3000/login/callback")); // ¸®´ÙÀÌ·ºÆ® URI
-        postParams.add(new BasicNameValuePair("code", code)); // ·Î±×ÀÎ °úÁ¤Áß ¾òÀº code °ª
+        postParams.add(new BasicNameValuePair("redirect_uri", "http://localhost:3000/login/callback")); // ë¦¬ë‹¤ì´ë ‰íŠ¸ URI
+        postParams.add(new BasicNameValuePair("code", code)); // ë¡œê·¸ì¸ ê³¼ì •ì¤‘ ì–»ì€ code ê°’
         // postParams.add(new BasicNameValuePair("state", "1212"));
  
         final HttpClient client = HttpClientBuilder.create().build();
@@ -77,7 +77,7 @@ public class CustomOAuth2UserService {
             post.setEntity(new UrlEncodedFormEntity(postParams));
             final HttpResponse response = client.execute(post);
  
-            // JSON ÇüÅÂ ¹İÈ¯°ª Ã³¸®
+            // JSON í˜•íƒœ ë°˜í™˜ê°’ ì²˜ë¦¬
             ObjectMapper mapper = new ObjectMapper();
  
             returnNode = mapper.readTree(response.getEntity().getContent());

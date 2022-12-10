@@ -31,7 +31,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
         return new ApiInfoBuilder()
                 .title("Spring Boot REST API")
                 .version("1.0.0")
-                .description("�̼� Ŀ�´�Ƽ today check �� swagger api �Դϴ�.")
+                .description("미션 커뮤니티 today check의 swagger api 입니다.")
                 .build();
     }
 }

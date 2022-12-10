@@ -49,12 +49,12 @@ public class ParticipantController {
 	}
 	
 	@PostMapping(value = "/{id}")
-    @ApiOperation(value = "¹Ì¼Ç Âü¿©", notes = "ÁÖ¾îÁø ¹Ì¼Ç ¾ÆÀÌµğ¸¦ °¡Áø ¹Ì¼Ç¿¡ Âü¿©ÇÑ´Ù")
+    @ApiOperation(value = "ë¯¸ì…˜ ì°¸ì—¬", notes = "ì£¼ì–´ì§„ ë¯¸ì…˜ ì•„ì´ë””ë¥¼ ê°€ì§„ ë¯¸ì…˜ì— ì°¸ì—¬í•œë‹¤")
     @ApiResponses(value = { 
-    		@ApiResponse(code = 200, message = "¼º°øÀûÀ¸·Î Âü¿©ÇÔ"),
-    		@ApiResponse(code = 401, message = "±ÇÇÑ ¾øÀ½"),
-    		@ApiResponse(code = 409, message = "ÀÌ¹Ì Âü¿©ÇÔ"),
-    		@ApiResponse(code = 500, message = "¼­¹ö ¿À·ù"),
+    		@ApiResponse(code = 200, message = "ì„±ê³µì ìœ¼ë¡œ ì°¸ì—¬í•¨"),
+    		@ApiResponse(code = 401, message = "ê¶Œí•œ ì—†ìŒ"),
+    		@ApiResponse(code = 409, message = "ì´ë¯¸ ì°¸ì—¬í•¨"),
+    		@ApiResponse(code = 500, message = "ì„œë²„ ì˜¤ë¥˜"),
 	})
     public ResponseEntity join(@PathVariable long id, @CookieValue(name = "refreshToken") String cookie) throws Exception {
     	MissionDTO mission = missionService.findById(id);
@@ -87,11 +87,11 @@ public class ParticipantController {
     }
 	
 	@DeleteMapping(value = "/{id}")
-	@ApiOperation(value = "¹Ì¼Ç Å»Åğ", notes = "ÁÖ¾îÁø ¹Ì¼Ç ¾ÆÀÌµğ¸¦ °¡Áø ¹Ì¼Ç¿¡¼­ Å»ÅğÇÑ´Ù")
+	@ApiOperation(value = "ë¯¸ì…˜ íƒˆí‡´", notes = "ì£¼ì–´ì§„ ë¯¸ì…˜ ì•„ì´ë””ë¥¼ ê°€ì§„ ë¯¸ì…˜ì—ì„œ íƒˆí‡´í•œë‹¤")
     @ApiResponses(value = { 
-    		@ApiResponse(code = 200, message = "¼º°øÀûÀ¸·Î Å»ÅğÇÔ"),
-    		@ApiResponse(code = 401, message = "±ÇÇÑ ¾øÀ½"),
-    		@ApiResponse(code = 500, message = "¼­¹ö ¿À·ù"),
+    		@ApiResponse(code = 200, message = "ì„±ê³µì ìœ¼ë¡œ íƒˆí‡´í•¨"),
+    		@ApiResponse(code = 401, message = "ê¶Œí•œ ì—†ìŒ"),
+    		@ApiResponse(code = 500, message = "ì„œë²„ ì˜¤ë¥˜"),
 	})
 	public ResponseEntity leave(@PathVariable long id, @CookieValue(name = "refreshToken") String cookie) throws Exception {
     	MissionDTO mission = missionService.findById(id);

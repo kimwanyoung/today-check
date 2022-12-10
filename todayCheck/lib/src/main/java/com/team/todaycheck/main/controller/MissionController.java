@@ -32,14 +32,14 @@ public class MissionController {
 	private final IMissionService missionService;
 	
 	/**
-	 * ÇöÀç µî·ÏµÈ ¸ğµç ¹Ì¼ÇÀ» Á¶È¸ÇÑ´Ù
-	 * @return µî·ÏµÈ ¸ğµç ¹Ì¼Ç
+	 * í˜„ì¬ ë“±ë¡ëœ ëª¨ë“  ë¯¸ì…˜ì„ ì¡°íšŒí•œë‹¤
+	 * @return ë“±ë¡ëœ ëª¨ë“  ë¯¸ì…˜
 	 */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "¸ğµç ¹Ì¼Ç Á¶È¸", notes = "ÇöÀç µî·ÏµÈ ¸ğµç ¹Ì¼ÇÀ» Á¶È¸ÇÑ´Ù")
+    @ApiOperation(value = "ëª¨ë“  ë¯¸ì…˜ ì¡°íšŒ", notes = "í˜„ì¬ ë“±ë¡ëœ ëª¨ë“  ë¯¸ì…˜ì„ ì¡°íšŒí•œë‹¤")
     @ApiResponses(value = { 
-    		@ApiResponse(code = 200, message = "¼º°øÀûÀ¸·Î Á¶È¸µÊ"),
-    		@ApiResponse(code = 500, message = "¼­¹ö ¿À·ù"),
+    		@ApiResponse(code = 200, message = "ì„±ê³µì ìœ¼ë¡œ ì¡°íšŒë¨"),
+    		@ApiResponse(code = 500, message = "ì„œë²„ ì˜¤ë¥˜"),
 	})
     public ResponseEntity<List<MissionDTO>> getAll() {
     	List<MissionDTO> list = missionService.findAll();
@@ -47,20 +47,20 @@ public class MissionController {
     }
 
     /**
-     * ÁÖ¾îÁø ¾ÆÀÌµğ¸¦ °¡Áø ¹Ì¼ÇÀ» ¹İÈ¯ÇÑ´Ù
+     * ì£¼ì–´ì§„ ì•„ì´ë””ë¥¼ ê°€ì§„ ë¯¸ì…˜ì„ ë°˜í™˜í•œë‹¤
      * 
-     * @param id	°Ë»öÇÒ ¹Ì¼Ç
-     * @return °Ë»öµÈ ¹Ì¼Ç
+     * @param id	ê²€ìƒ‰í•  ë¯¸ì…˜
+     * @return ê²€ìƒ‰ëœ ë¯¸ì…˜
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "ÁÖ¾îÁø ¾ÆÀÌµğ¸¦ °¡Áø ¹Ì¼Ç Á¶È¸", notes = "ÁÖ¾îÁø ¾ÆÀÌµğ¸¦ °¡Áø ¹Ì¼ÇÀ» Á¶È¸ÇÑ´Ù")
+    @ApiOperation(value = "ì£¼ì–´ì§„ ì•„ì´ë””ë¥¼ ê°€ì§„ ë¯¸ì…˜ ì¡°íšŒ", notes = "ì£¼ì–´ì§„ ì•„ì´ë””ë¥¼ ê°€ì§„ ë¯¸ì…˜ì„ ì¡°íšŒí•œë‹¤")
     @ApiResponses(value = { 
-    		@ApiResponse(code = 200, message = "¼º°øÀûÀ¸·Î Á¶È¸µÊ"),
-    		@ApiResponse(code = 400, message = "¾ÆÀÌµğ Çü½ÄÀÌ ¿Ã¹Ù¸£Áö ¾ÊÀ½"),
-    		@ApiResponse(code = 404, message = "ÁÖ¾îÁø ¾ÆÀÌµğ¸¦ °¡Áø ¹Ì¼ÇÀÌ Á¸ÀçÇÏÁö ¾ÊÀ½"),
-    		@ApiResponse(code = 500, message = "¼­¹ö ¿À·ù"),
+    		@ApiResponse(code = 200, message = "ì„±ê³µì ìœ¼ë¡œ ì¡°íšŒë¨"),
+    		@ApiResponse(code = 400, message = "ì•„ì´ë”” í˜•ì‹ì´ ì˜¬ë°”ë¥´ì§€ ì•ŠìŒ"),
+    		@ApiResponse(code = 404, message = "ì£¼ì–´ì§„ ì•„ì´ë””ë¥¼ ê°€ì§„ ë¯¸ì…˜ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŒ"),
+    		@ApiResponse(code = 500, message = "ì„œë²„ ì˜¤ë¥˜"),
 	})
-    public ResponseEntity<MissionDTO> getMissionById(@ApiParam(value = "»ç¿ëÀÚ ¾ÆÀÌµğ", required = true, example = "1") @PathVariable long id) {
+    public ResponseEntity<MissionDTO> getMissionById(@ApiParam(value = "ì‚¬ìš©ì ì•„ì´ë””", required = true, example = "1") @PathVariable long id) {
     	MissionDTO mission = missionService.findById(id);
     	if (mission == null) {
     		return ResponseEntity.notFound().build();

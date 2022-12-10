@@ -35,7 +35,7 @@ public class ProfileController {
 			, HttpServletRequest request , HttpServletResponse response) throws NumberFormatException, AccountNotFoundException {
 		
 		String header = request.getHeader("Authorization");
-		if(header == null) throw new NotAuthorizationException("Authorization ÅäÅ«ÀÌ ¾ø½À´Ï´Ù.");
+		if(header == null) throw new NotAuthorizationException("Authorization í† í°ì´ ì—†ìŠµë‹ˆë‹¤.");
 		return profileService.updateProfile(accoundId , profileDTO , header , response);
 	}
 }

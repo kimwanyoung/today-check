@@ -26,9 +26,9 @@ import com.team.todaycheck.main.repository.UserRepository;
 import com.team.todaycheck.main.service.LoginService;
 import com.team.todaycheck.main.service.ProfileService;
 
-@Transactional // ÇØ´ç ¾î³ëÅ×ÀÌ¼ÇÀÌ ÀÖ¾î¾ß Å×½ºÆ® Á¾·á ÈÄ RollBack
+@Transactional // í•´ë‹¹ ì–´ë…¸í…Œì´ì…˜ì´ ìˆì–´ì•¼ í…ŒìŠ¤íŠ¸ ì¢…ë£Œ í›„ RollBack
 @SpringBootTest
-@TestInstance(Lifecycle.PER_CLASS) // @BerforeAll À» À§ÇÑ..
+@TestInstance(Lifecycle.PER_CLASS) // @BerforeAll ì„ ìœ„í•œ..
 @Rollback(value = true)
 public class ProfileTest {
 	
@@ -47,7 +47,7 @@ public class ProfileTest {
 	
 	@Test
 	@Order(1)
-	@DisplayName("»ç¿ëÀÚ Á¤º¸ º¯°æ")
+	@DisplayName("ì‚¬ìš©ì ì •ë³´ ë³€ê²½")
 	public void testUserInfoChange() throws AccountException {
 		loginService.createId(RegistryDTO.builder()
 				.id(testUserId)
@@ -68,7 +68,7 @@ public class ProfileTest {
 	
 	@Test
 	@Order(2)
-	@DisplayName("Áßº¹µÈ ¾ÆÀÌµğ º¯°æ ¿À·ù")
+	@DisplayName("ì¤‘ë³µëœ ì•„ì´ë”” ë³€ê²½ ì˜¤ë¥˜")
 	public void changeExistUserNameChange() throws AccountException {
 		loginService.createId(RegistryDTO.builder()
 				.id(testUserId)
@@ -93,7 +93,7 @@ public class ProfileTest {
 	
 	@Test
 	@Order(3)
-	@DisplayName("»ç¿ëÀÚ Á¤º¸ °¡Á®¿À±â")
+	@DisplayName("ì‚¬ìš©ì ì •ë³´ ê°€ì ¸ì˜¤ê¸°")
 	public void getUserData() throws AccountException {
 		loginService.createId(RegistryDTO.builder()
 				.id(testUserId)
