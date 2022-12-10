@@ -8,7 +8,10 @@ import javax.security.auth.login.AccountException;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -19,17 +22,20 @@ import com.team.todaycheck.main.DTO.ProfileDTO;
 import com.team.todaycheck.main.DTO.RegistryDTO;
 import com.team.todaycheck.main.controller.ProfileController;
 import com.team.todaycheck.main.exception.DuplicateAccountException;
+import com.team.todaycheck.main.repository.UserRepository;
 import com.team.todaycheck.main.service.LoginService;
 import com.team.todaycheck.main.service.ProfileService;
 
-@Transactional
+@Transactional // 해당 어노테이션이 있어야 테스트 종료 후 RollBack
 @SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS) // @BerforeAll 을 위한..
 @Rollback(value = true)
 public class ProfileTest {
 	
 	@Autowired ProfileController profileController;
 	@Autowired ProfileService profileService;
 	@Autowired LoginService loginService;
+	@Autowired UserRepository userRepos;
 	
 	private String testUserId = "wfa3fg51qqeRTf351wD";
 	private String testUserPw = "FgG34lcp091xZCbnfaw";
@@ -40,6 +46,7 @@ public class ProfileTest {
 	private String testerHeader2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJGZ2U0dDMxM0VSVzExZTI1TzkyIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY2OTczMzc1OSwiZXhwIjoxNjY5NzM1NTU5fQ.2XTl0wIbAExqxtJEy6cBzKo-s2CY5PhAEZ3l1q6krPg";
 	
 	@Test
+	@Order(1)
 	@DisplayName("사용자 정보 변경")
 	public void testUserInfoChange() throws AccountException {
 		loginService.createId(RegistryDTO.builder()
@@ -60,6 +67,7 @@ public class ProfileTest {
 	}
 	
 	@Test
+	@Order(2)
 	@DisplayName("중복된 아이디 변경 오류")
 	public void changeExistUserNameChange() throws AccountException {
 		loginService.createId(RegistryDTO.builder()
@@ -84,6 +92,7 @@ public class ProfileTest {
 	}
 	
 	@Test
+	@Order(3)
 	@DisplayName("사용자 정보 가져오기")
 	public void getUserData() throws AccountException {
 		loginService.createId(RegistryDTO.builder()
