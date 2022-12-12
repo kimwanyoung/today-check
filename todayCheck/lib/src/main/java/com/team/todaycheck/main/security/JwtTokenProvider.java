@@ -27,16 +27,16 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-    private String secretKey = "myprojectsecret";
-    private String refreshKey = "myRefreshKey";
-
-    @Autowired UserDetailsService loginService;
-
-    // Access 토큰 유효시간 30분;
+	private String secretKey = "myprojectsecret";
+	private String refreshKey = "myRefreshKey";
+	
+	@Autowired UserDetailsService loginService;
+	
+	// Access 토큰 유효시간 30분;
     private long tokenValidTime = 30 * 60 * 1000L;
     // Refresh 토큰 유효시간 14주 14 * 24 * 60 * 60 *
     private long refreshTokenValidTime =  14 * 24 * 60 * 60 * 1000L;
-
+    
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
     protected void init() {
@@ -44,12 +44,12 @@ public class JwtTokenProvider {
         refreshKey = Base64.getEncoder().encodeToString(refreshKey.getBytes());
     }
 
-    // JWT 토큰 생성
+    // JWT 토큰 생성 
     public Token createAccessToken(String userPk, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
         claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
-
+        
         String accessToken = Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
@@ -57,7 +57,7 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
-
+        
         // RefreshToken 발급
         String refreshToken =  Jwts.builder()
                 .setClaims(claims) // 정보 저장
@@ -69,7 +69,7 @@ public class JwtTokenProvider {
 
         return Token.builder().accessToken(accessToken).refreshToken(refreshToken).key(userPk).build();
     }
-
+    
     // refreshToken 유효성 검사
     public String validateRefreshToken(RefreshToken refreshTokenObj){
         // refresh 객체에서 refreshToken 추출
@@ -87,7 +87,7 @@ public class JwtTokenProvider {
         }
         return null;
     }
-
+    
     // Access토큰 재 생성
     public String recreationAccessToken(String userEmail, Object roles){
         Claims claims = Jwts.claims().setSubject(userEmail); // JWT payload 에 저장되는 정보단위
@@ -104,12 +104,12 @@ public class JwtTokenProvider {
 
         return accessToken;
     }
-
+    
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = loginService.loadUserByUsername(this.getUserPk(token));
         if(userDetails == null) {
-            throw new FalsifyTokenException("알 수 없는 토큰이거나 , 변조되었습니다.");
+        	throw new FalsifyTokenException("알 수 없는 토큰이거나 , 변조되었습니다.");
         }
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }

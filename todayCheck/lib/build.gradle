@@ -18,6 +18,20 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.7.4'
+    id 'java'
+    id 'war'
+}
+
+group = 'com.team.todaycheck'
+version = '0.1.1-SNAPSHOT'
+sourceCompatibility = '8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
@@ -47,7 +61,6 @@ implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'com.google.guava:guava:31.0.1-jre'
 	implementation 'com.h2database:h2:2.1.212'
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
-	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.7.4'
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.7.4'
 	testImplementation group: 'org.springframework.batch', name: 'spring-batch-test', version: '4.3.7'
@@ -58,6 +71,9 @@ implementation 'io.jsonwebtoken:jjwt:0.9.1'
     compile("com.querydsl:querydsl-apt:4.2.1")
     compile("com.querydsl:querydsl-jpa:4.2.1")
     compile("com.querydsl:querydsl-collections:4.2.1")
+	//compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 tasks.named('test') {

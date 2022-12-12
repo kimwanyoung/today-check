@@ -1,6 +1,7 @@
 package com.team.todaycheck.main.repository.Impl;
 
-// �⺻ �ν���Ʈ
+import static com.team.todaycheck.main.entity.QComment.comment;
+// 기본 인스턴트
 import static com.team.todaycheck.main.entity.QPost.post;
 import static com.team.todaycheck.main.entity.QRecommander.recommander;
 
@@ -12,36 +13,34 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
-import com.team.todaycheck.main.DTO.PostDTO;
 import com.team.todaycheck.main.entity.Post;
 import com.team.todaycheck.main.entity.Recommander;
 import com.team.todaycheck.main.repository.CustomPostRepository;
 
 public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implements CustomPostRepository {
-
+	
 	private JPAQueryFactory queryFactory;
-
+	
 	public CustomPostRepositoryImpl(JPAQueryFactory queryFactory) {
 		super(Post.class);
 		this.queryFactory = queryFactory;
 	}
-
+	
 	/*
-	 * ��ȸ�� 1 ������Ű�� ����
+	 * 조회수 1 증가시키는 쿼리
 	 */
 	@Override
 	public void updateView(int postnumber) {
 		JPAUpdateClause update = new JPAUpdateClause(getEntityManager(), post);
-
+		
 		update.where(post.postKey.eq(postnumber)).set(post.views , post.views.add(1)).execute();
 	}
 
 	/*
-	 * ��õ�� Ȯ�� �� update 1 ����
+	 * 추천인 확인 후 update 1 리턴
 	 */
 	@Override
 	public boolean increaseRecommander(int postNumber , String userId) {
@@ -59,38 +58,42 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public List<PostDTO> getAllPost(Pageable pageable) {
+	public List<Post> getAllPost(Pageable pageable) {
+		/*
 		return queryFactory.select(Projections.bean(PostDTO.class , 
 				post.title , post.writer , post.description , post.thumbnail , post.date , post.postKey 
-				, post.views , post.recommendation)).from(post).orderBy(postSort(pageable))
-				.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
+				, post.views , post.recommendation , comment)).from(post).leftJoin(post.comment , comment).fetchJoin()
+				.orderBy(postSort(pageable)).offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
+				*/
+		return queryFactory.select(post).from(post).leftJoin(post.comment , comment).fetchJoin()
+				.orderBy(postSort(pageable)).offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
 	}
-
+	
 	/**
-	 * OrderSpecifier �� ������ ��ȯ�Ͽ� ���������� �����ش�.
-	 * ����Ʈ ����
-	 * @param page
-	 * @return
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+     * OrderSpecifier 를 쿼리로 반환하여 정렬조건을 맞춰준다.
+     * 리스트 정렬
+     * @param page
+     * @return
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
 	private OrderSpecifier<?> postSort(Pageable page) {
-		if (!page.getSort().isEmpty()) {
-			for (Sort.Order order : page.getSort()) {
-				Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-				switch (order.getProperty()){
-					case "recommendation":
-						return new OrderSpecifier(direction, post.recommendation);
-					case "postKey":
-						return new OrderSpecifier(direction, post.postKey);
-					case "date":
-						return new OrderSpecifier(direction, post.date);
-					case "views":
-						return new OrderSpecifier(direction, post.views);
-				}
-			}
-		}
-		return null;
-	}
+        if (!page.getSort().isEmpty()) {
+            for (Sort.Order order : page.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+                switch (order.getProperty()){
+                    case "recommendation":
+                        return new OrderSpecifier(direction, post.recommendation);
+                    case "postKey":
+                        return new OrderSpecifier(direction, post.postKey);
+                    case "date":
+                        return new OrderSpecifier(direction, post.date);
+                    case "views":
+                        return new OrderSpecifier(direction, post.views);
+                }
+            }
+        }
+        return null;
+    }
 
 	@Override
 	public Long deleteOnePost(int post_key, String userId) {
@@ -103,9 +106,9 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 		return queryFactory.select(post).from(post)
 				.where(post.postKey.eq(post_key).and(post.writer.eq(userId))).fetchOne();
 	}
-
+	
 	/*
-	 * Post ��ƼƼ���� ���� ū Ű�� ��ȯ (Test ����)
+	 * Post 엔티티에서 가장 큰 키값 반환 (Test 전용)
 	 */
 	@Override
 	public int getPostKeyMaxValue() {
@@ -115,5 +118,11 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	@Override
 	public String getImagefileName(int post_key) {
 		return queryFactory.select(post.thumbnail).from(post).where(post.postKey.eq(post_key)).fetchOne();
+	}
+
+	@Override
+	public Post findByPostKey(int postKey) {
+		return queryFactory.select(post).from(post).leftJoin(post.comment , comment).fetchJoin()
+				.where(post.postKey.eq(postKey)).fetchOne();
 	}
 }

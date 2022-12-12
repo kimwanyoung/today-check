@@ -28,19 +28,19 @@ public class CustomProfileRepositoryImpl extends QuerydslRepositorySupport imple
 	}
 	
 	@Override
-	public List<ProfileMissionDTO> getCreateEntity(Long userId) {
+	public List<ProfileMissionDTO> getCreateEntity(String accoundId) {
 		return queryFactory.select(Projections.bean(ProfileMissionDTO.class , mission.id
 				, mission.title , mission.thumbnail , mission.content , mission.startDate , mission.endDate))
 				.from(mission).rightJoin(mission.admin , userEntity)
-				.where(userEntity.userId.eq(userId)).fetch();
+				.where(userEntity.id.eq(accoundId)).fetch();
 	}
 
 	@Override
-	public List<ProfileMissionDTO> getJoinMissionList(Long userId) {
+	public List<ProfileMissionDTO> getJoinMissionList(String accoundId) {
 		return queryFactory.select(Projections.bean(ProfileMissionDTO.class , mission.id , mission.title ,
 				mission.thumbnail , mission.content , mission.startDate , mission.endDate))
 				.from(mission).rightJoin(mission.participants , userEntity)
-				.where(userEntity.userId.eq(userId)).fetch();
+				.where(userEntity.id.eq(accoundId)).fetch();
 	}
 	
 	// recommander , post , comment 

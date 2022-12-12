@@ -15,55 +15,55 @@ import com.team.todaycheck.main.DTO.MessageDTO;
 @RestControllerAdvice
 public class GeneralExceptionHandler {
 	/*
-	 * 계정을 찾을 수 없을 때 ,
+	 * 계정을 찾을 수 없을 때 , 
 	 */
 	@ExceptionHandler({
-			AccountException.class , AccountNotFoundException.class , NotAuthorizationException.class , NoSuchElementException.class
-			, UnknownPostException.class , FileNotFoundException.class , NullPointerException.class
+		AccountException.class , AccountNotFoundException.class , NotAuthorizationException.class , NoSuchElementException.class
+		, UnknownPostException.class , FileNotFoundException.class , NullPointerException.class , DuplicateAccountException.class
 	})
 	public MessageDTO handleBadRequestException(Exception e) {
-		return MessageDTO.builder()
-				.code("-1")
-				.message(e.getMessage())
-				.build();
+	    return MessageDTO.builder()
+	    		.code("-1")
+	    		.message(e.getMessage())
+	    		.build();
 	}
-
+	
 	// RefreshToken 만료되었을때
-	@ExceptionHandler({
-			InvalidateTokenException.class
+	@ExceptionHandler({ 
+		InvalidateTokenException.class
 	})
 	public MessageDTO handleInvalidateTokenException(Exception e) {
-		return MessageDTO.builder()
-				.code("-2")
-				.message(e.getMessage())
-				.build();
+	    return MessageDTO.builder()
+	    		.code("-2")
+	    		.message(e.getMessage())
+	    		.build();
 	}
-
+	
 	// refreshToken 쿠키가 없을 때
 	@ExceptionHandler({
-			MissingRequestCookieException.class
+		MissingRequestCookieException.class
 	})
 	public MessageDTO handleNotAuthorizationRequestException(Exception e) {
-		return MessageDTO.builder()
-				.code("-3")
-				.message(e.getMessage())
-				.build();
+	    return MessageDTO.builder()
+	    		.code("-3")
+	    		.message(e.getMessage())
+	    		.build();
 	}
-
+	
 	// refreshToken이 변조되었을 때
 	@ExceptionHandler({
-			FalsifyTokenException.class
+		FalsifyTokenException.class
 	})
 	public MessageDTO handleFlasifyTokenException(Exception e) {
-		return MessageDTO.builder()
-				.code("-4")
-				.message(e.getMessage())
-				.build();
+	    return MessageDTO.builder()
+	    		.code("-4")
+	    		.message(e.getMessage())
+	    		.build();
 	}
-
+	
 	// AccessToken 만료되어 새로운 refreshToken 발급해야함
 	@ExceptionHandler({
-			ExpireAccessTokenException.class
+		ExpireAccessTokenException.class
 	})
 	public MessageDTO handleExpireAccessTokenException(Exception e) {
 		return MessageDTO.builder()

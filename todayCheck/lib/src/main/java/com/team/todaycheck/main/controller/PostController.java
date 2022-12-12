@@ -36,14 +36,14 @@ import com.team.todaycheck.main.service.PostService;
 public class PostController {
 
 	@Autowired PostService postService;
-
+	
 	// 만약 415 Unsupported MediaType ERROR 에러를 만난다면 적절한 MediaType 을 설정했는지 확인
 	/*
 	 * 요청 방식 :
 	 * form-data 형식
 	 * 1 . JSON 데이터 요청
-	 * key : request
-	 * Content-type : application/json
+	 * key : request 
+	 * Content-type : application/json 
 	 * value : # JSON 값 #
 	 * 2 . ImageFile 요청
 	 * key : image
@@ -51,9 +51,9 @@ public class PostController {
 	 * value : # image #
 	 */
 	@RequestMapping(value = "/post" , method = RequestMethod.POST , consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
-	public MessageDTO addPost(@RequestPart(value="request") PostDTO postData , @RequestPart(value="image") MultipartFile imgFile
+	public MessageDTO addPost(@RequestPart(value="request") PostDTO postData , @RequestPart(value="image") MultipartFile imgFile 
 			, HttpServletRequest request) throws IllegalStateException, IOException {
-			
+		
 		String header = request.getHeader("Authorization");
 		int number = postService.addPost(postData , imgFile , header);
 		return MessageDTO.builder()
@@ -61,14 +61,14 @@ public class PostController {
 				.message(Integer.toString(number))
 				.build();
 	}
-
+	
 	// 단일 이미지 전송
 	@RequestMapping(value = "/getImageData/{postNumber}" , method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getImageData(@PathVariable("postNumber") String postNumber) throws FileNotFoundException {
 		ResponseEntity<byte[]> result = null;
 		File imageFile = postService.getImageData(postNumber);
 		HttpHeaders header = new HttpHeaders();
-
+		
 		try {
 			header.add("Content-Type" , Files.probeContentType(imageFile.toPath()));
 			result = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK);
@@ -77,44 +77,44 @@ public class PostController {
 		}
 		return result;
 	}
-
+	
 	// /wholePost?page=0&size=20&sort=postKey,desc
 	@RequestMapping(value = "/wholePost" , method = RequestMethod.GET)
 	public List<PostDTO> getAllPost(Pageable pageable) {
 		return postService.getAllPost(pageable);
 	}
-
+	
 	@RequestMapping(value = "/onePost" , method = RequestMethod.GET)
 	public PostDTO getOnePost(@RequestParam(name = "number") String postNumber) {
 		return postService.getOnePost(Integer.parseInt(postNumber));
 	}
-
+	
 	@RequestMapping(value = "/post/{postNumber}" , method = RequestMethod.DELETE)
 	public MessageDTO deletePost(@PathVariable(name = "postNumber") String postNumber , HttpServletRequest request) {
 		String header = request.getHeader("Authorization");
 		postService.deletePost(postNumber , header);
-
+		
 		return MessageDTO.builder()
 				.code("1")
 				.message("게시글이 삭제되었습니다")
 				.build();
 	}
-
+	
 	@RequestMapping(value = "/post/{postNumber}" , method = RequestMethod.PATCH)
 	public MessageDTO modifyPost(@PathVariable(name = "postNumber") String postNumber , @RequestBody PostDTO postData , HttpServletRequest request) {
 		String header = request.getHeader("Authorization");
 		postService.modifyPost(postData , Integer.parseInt(postNumber) , header);
-
+		
 		return MessageDTO.builder()
 				.code("1")
 				.message("게시글이 수정되었습니다")
 				.build();
 	}
-
+	
 	@RequestMapping(value = "/post/recommendation/{postNumber}" , method = RequestMethod.PATCH)
 	public MessageDTO increaseRecommendation(@PathVariable(name = "postNumber") String postNumber , HttpServletRequest request) {
 		String header = request.getHeader("Authorization");
-
+		
 		if(postService.increaseRecommendation(postNumber , header)) {
 			return MessageDTO.builder()
 					.code("1")
@@ -124,22 +124,22 @@ public class PostController {
 			return MessageDTO.builder()
 					.code("1")
 					.message("이미 추천한 게시물입니다.")
-					.build();
+					.build();			
 		}
 	}
-
+	
 	@RequestMapping(value = "/comment/{postNumber}" , method = RequestMethod.POST)
-	public MessageDTO addCommentData(@PathVariable(name = "postNumber") String postNumber ,
-									 HttpServletRequest request , @RequestBody CommentDTO CommentDTO) {
+	public MessageDTO addCommentData(@PathVariable(name = "postNumber") String postNumber , 
+			HttpServletRequest request , @RequestBody CommentDTO CommentDTO) {
 		String header = request.getHeader("Authorization");
-
+		
 		postService.addComment(postNumber , CommentDTO , header);
 		return MessageDTO.builder()
 				.code("1")
 				.message("댓글을 등록했습니다.")
 				.build();
 	}
-
+	
 	@RequestMapping(value = "/comment/{commentId}" , method = RequestMethod.DELETE)
 	public MessageDTO removeCommentData(@PathVariable(name = "commentId") String commentId , HttpServletRequest request) {
 		String header = request.getHeader("Authorization");

@@ -4,32 +4,24 @@ import { GrAddCircle } from 'react-icons/gr';
 import axios from 'axios';
 import PostingModal from './Modal/PostingModal';
 import { getAccessToken, setAccessToken } from '../../cookie/Cookie';
-import { useNavigate } from 'react-router-dom';
+axios.defaults.headers.common.Authorization = getAccessToken();
 
 const Posting = () => {
   const [posts, setPosts] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get(
-        `/post/wholePost?page=0&size=20&sort=postKey,desc
-      `
-      )
-      .then(res => {
-        setPosts(res.data);
-
-        if (res.data.code === '-5') {
+      .get(`/post/wholePost`)
+      .then(data => {
+        if (data.data.code === '-5') {
           axios
             .get('/refreshToken')
             .then(data => {
               setAccessToken(data.data.message);
-              axios
-                .get('/post/wholePost?page=0&size=20&sort=postKey,desc')
-                .then(res => {
-                  setPosts(res.data);
-                });
+              axios.get('/post/wholePost').then(data => {
+                console.log(data);
+              });
             })
             .catch(err => console.log(err));
         }
@@ -41,31 +33,70 @@ const Posting = () => {
     setOpenModal(prev => !prev);
   };
 
-  const onErrorImage = e => {
-    e.target.src = 'https://via.placeholder.com/350x200';
-  };
-  console.log(posts);
+  const testData = [
+    {
+      title: 'title test',
+      userId: 'wanyoung',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      thumbnail: 'https://via.placeholder.com/350x200',
+      date: '2022-11-10',
+      postKey: 1,
+    },
+    {
+      title: 'title test',
+      userId: 'wanyoung',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      thumbnail: 'https://via.placeholder.com/350x200',
+      date: '2022-11-10',
+      postKey: 2,
+    },
+    {
+      title: 'title test',
+      userId: 'wanyoung',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      thumbnail: 'https://via.placeholder.com/350x200',
+      date: '2022-11-10',
+      postKey: 3,
+    },
+    {
+      title: 'title test',
+      userId: 'wanyoung',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      thumbnail: 'https://via.placeholder.com/350x200',
+      date: '2022-11-10',
+      postKey: 4,
+    },
+    {
+      title: 'title test',
+      userId: 'wanyoung',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      thumbnail: 'https://via.placeholder.com/350x200',
+      date: '2022-11-10',
+      postKey: 5,
+    },
+    {
+      title: 'title test',
+      userId: 'wanyoung',
+      description: '이것은 런던에서 시작하여 지구 한바퀴를 돌아 ....',
+      thumbnail: 'https://via.placeholder.com/350x200',
+      date: '2022-11-10',
+      postKey: 6,
+    },
+  ];
 
   return (
     <PostingWrapper>
-      {posts?.map((props, idx) => (
-        <PostCard
-          key={idx}
-          onClick={() => navigate('/postingDetail', { state: props })}
-        >
-          <img
-            src={`data:image/;base64,${props.image.body}`}
-            onError={onErrorImage}
-            alt="thumbnail"
-          />
+      {testData.map((props, idx) => (
+        <PostCard key={idx}>
+          <img src={props.thumbnail} alt="thumbnail" />
           <PostCardContent>
             <PostTitle>{props.title}</PostTitle>
             <PostDesc>{props.description}</PostDesc>
           </PostCardContent>
-          <PostUser>{props.writer}</PostUser>
+          <PostUser>{props.userId}</PostUser>
         </PostCard>
       ))}
-      {openModal && <PostingModal setOpenModal={setOpenModal} />}
+      {openModal && <PostingModal />}
       <AddIcon onClick={handleOpenModal} />
     </PostingWrapper>
   );
@@ -88,7 +119,7 @@ const AddIcon = styled(GrAddCircle)`
 
 const PostingWrapper = styled.section`
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
   width: 100vw;
   height: 100vh;
@@ -107,11 +138,6 @@ const PostCard = styled.div`
 
   :hover {
     transform: translateY(-1rem);
-  }
-
-  img {
-    width: 350px;
-    height: 200px;
   }
 `;
 

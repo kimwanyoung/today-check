@@ -27,7 +27,7 @@ public class CustomCommentRepositoryImpl extends QuerydslRepositorySupport imple
 	}
 	
 	/*
-	 *  CommentId ���� ���� ū commentId Ű���� ��ȯ�մϴ�.
+	 *  CommentId 에서 가장 큰 commentId 키값을 반환합니다.
 	 */
 	@Override
 	public Long getCommentIdKeyMaxValue() {

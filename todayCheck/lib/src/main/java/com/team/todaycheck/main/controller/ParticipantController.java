@@ -38,84 +38,84 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/participant")
 public class ParticipantController {
-
+	
 	private final IMissionService missionService;
 	private final JwtService jwtService;
 	private final UserRepository userRepos;
-
+	
 	@GetMapping(value = "")
 	public ResponseEntity<String> list() {
 		return ResponseEntity.ok("a");
 	}
-
+	
 	@PostMapping(value = "/{id}")
-	@ApiOperation(value = "미션 참여", notes = "주어진 미션 아이디를 가진 미션에 참여한다")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "성공적으로 참여함"),
-			@ApiResponse(code = 401, message = "권한 없음"),
-			@ApiResponse(code = 409, message = "이미 참여함"),
-			@ApiResponse(code = 500, message = "서버 오류"),
+    @ApiOperation(value = "미션 참여", notes = "주어진 미션 아이디를 가진 미션에 참여한다")
+    @ApiResponses(value = { 
+    		@ApiResponse(code = 200, message = "성공적으로 참여함"),
+    		@ApiResponse(code = 401, message = "권한 없음"),
+    		@ApiResponse(code = 409, message = "이미 참여함"),
+    		@ApiResponse(code = 500, message = "서버 오류"),
 	})
-	public ResponseEntity join(@PathVariable long id, @CookieValue(name = "refreshToken") String cookie) throws Exception {
-		MissionDTO mission = missionService.findById(id);
-		if (mission == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-
-		Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
-
-		RefreshToken token = o.orElse(null);
-		if (token == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
-
-		UserEntity user = userRepos.findById(token.getKeyEmail());
-		for (ParticipantDTO participant : mission.getParticipants()) {
-			if (participant.getEmail() == user.getId()) {
-				return ResponseEntity.status(HttpStatus.CONFLICT).build();
-			}
-		}
-
-		ParticipantDTO participant = ParticipantDTO.builder()
-				.id(user.getUserId())
-				.build();
-		mission.getParticipants().add(participant);
-
-		missionService.save(mission);
-
-		return ResponseEntity.ok().build();
-	}
-
+    public ResponseEntity join(@PathVariable long id, @CookieValue(name = "refreshToken") String cookie) throws Exception {
+    	MissionDTO mission = missionService.findById(id);
+    	if (mission == null) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    	}
+    	
+    	Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
+    	
+    	RefreshToken token = o.orElse(null);
+    	if (token == null) {
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    	}
+    	
+    	UserEntity user = userRepos.findById(token.getKeyEmail());
+    	for (ParticipantDTO participant : mission.getParticipants()) {
+    		if (participant.getEmail() == user.getId()) {
+    			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    		}
+    	}
+    	
+    	ParticipantDTO participant = ParticipantDTO.builder()
+    			.id(user.getUserId())
+    			.build();
+    	mission.getParticipants().add(participant);
+    	
+    	missionService.save(mission);
+    	
+        return ResponseEntity.ok().build();
+    }
+	
 	@DeleteMapping(value = "/{id}")
 	@ApiOperation(value = "미션 탈퇴", notes = "주어진 미션 아이디를 가진 미션에서 탈퇴한다")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "성공적으로 탈퇴함"),
-			@ApiResponse(code = 401, message = "권한 없음"),
-			@ApiResponse(code = 500, message = "서버 오류"),
+    @ApiResponses(value = { 
+    		@ApiResponse(code = 200, message = "성공적으로 탈퇴함"),
+    		@ApiResponse(code = 401, message = "권한 없음"),
+    		@ApiResponse(code = 500, message = "서버 오류"),
 	})
 	public ResponseEntity leave(@PathVariable long id, @CookieValue(name = "refreshToken") String cookie) throws Exception {
-		MissionDTO mission = missionService.findById(id);
-		if (mission == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-
-		Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
-
-		RefreshToken token = o.orElse(null);
-		if (token == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
-
-		UserEntity user = userRepos.findById(token.getKeyEmail());
-		for (ParticipantDTO participant : mission.getParticipants()) {
-			if (participant.getEmail() == user.getId()) {
-				mission.getParticipants().remove(participant);
-				break;
-			}
-		}
-
-		missionService.save(mission);
-
-		return ResponseEntity.ok().build();
-	}
+    	MissionDTO mission = missionService.findById(id);
+    	if (mission == null) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    	}
+    	
+    	Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
+    	
+    	RefreshToken token = o.orElse(null);
+    	if (token == null) {
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    	}
+    	
+    	UserEntity user = userRepos.findById(token.getKeyEmail());
+    	for (ParticipantDTO participant : mission.getParticipants()) {
+    		if (participant.getEmail() == user.getId()) {
+    			mission.getParticipants().remove(participant);
+    			break;
+    		}
+    	}
+    	
+    	missionService.save(mission);
+    	
+        return ResponseEntity.ok().build();
+    }
 }

@@ -15,12 +15,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfiguration implements WebMvcConfigurer {
-
-    @Bean
+	
+	@Bean
     public Docket restAPI() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("groupName1")
-                .apiInfo(apiInfo())
+        		.groupName("groupName1")
+        		.apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.team.todaycheck.main"))
                 .paths(PathSelectors.any())
@@ -31,7 +31,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
         return new ApiInfoBuilder()
                 .title("Spring Boot REST API")
                 .version("1.0.0")
-                .description("미션 커뮤니티 today check 의 swagger api 입니다.")
+                .description("미션 커뮤니티 today check의 swagger api 입니다.")
                 .build();
     }
 }

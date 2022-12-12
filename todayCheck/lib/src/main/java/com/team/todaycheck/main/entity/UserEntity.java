@@ -38,17 +38,17 @@ public class UserEntity implements UserDetails {
 	@Id
 	@GeneratedValue
 	private Long userId;
-
+	
 	@Column(length=50 , nullable = false)
 	private String id;
-
+	
 	@Column(length=50 , nullable = false)
 	private String password;
-
+	
 	@ElementCollection(fetch = FetchType.EAGER)
-	@Builder.Default
-	private List<String> roles = new ArrayList<>();
-
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
+	
 	@Column(name = "ADMIN" , length = 10 , nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Admin admin;
@@ -63,13 +63,13 @@ public class UserEntity implements UserDetails {
 	@Builder.Default
 	@OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL , mappedBy = "userEntity" , orphanRemoval = true)
 	private List<Post> post = new ArrayList<Post>();
-
+	
 	@JsonIgnore
 	@Builder.Default
 	@OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL , mappedBy = "admin" , orphanRemoval = true)
 	private List<Mission> mission = new ArrayList<Mission>();
-
-
+	
+	
 	// 연관관계 편의 메소드
 	public void addpost(Post postData) {
 		post.add(postData);
@@ -79,20 +79,20 @@ public class UserEntity implements UserDetails {
 		mission.add(missionData);
 		missionData.setAdmin(this);
 	}
-
+	
 	public enum Admin {
 		ADMin , GENERAL
 	}
-
+	
 	public String getRoleKey(){
-		return this.roles.get(0);
-	}
-
+        return this.roles.get(0);
+    }
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.roles.stream()
 				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
+                .collect(Collectors.toList());
 	}
 
 	@Override

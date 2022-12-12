@@ -15,21 +15,21 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class ProfileMissionDTO {
-	@ApiParam(value = "½Äº°ÀÚ")
+	@ApiParam(value = "ì‹ë³„ì")
     private Long id;
 
-	@ApiParam(value = "¹Ì¼Ç Æ÷½ºÆ® Å¸ÀÌÆ²")
+	@ApiParam(value = "ë¯¸ì…˜ í¬ìŠ¤íŠ¸ íƒ€ì´í‹€")
     private String title;
 	
-	@ApiParam(value = "Æ÷½ºÆ® ½æ³×ÀÏ")
+	@ApiParam(value = "í¬ìŠ¤íŠ¸ ì¸ë„¤ì¼")
     private String thumbnail;
 	
-	@ApiParam(value = "¹Ì¼Ç Æ÷½ºÆ® ³»¿ë")
+	@ApiParam(value = "ë¯¸ì…˜ í¬ìŠ¤íŠ¸ ë‚´ìš©")
     private String content;
 
-	@ApiParam(value = "¹Ì¼Ç ½ÃÀÛ ³¯ÀÚ")
+	@ApiParam(value = "ë¯¸ì…˜ ì‹œì‘ ë‚ ì")
     private LocalDateTime startDate;
 	
-	@ApiParam(value = "¹Ì¼Ç Á¾·á ³¯ÀÚ")
+	@ApiParam(value = "ë¯¸ì…˜ ì¢…ë£Œ ë‚ ì")
     private LocalDateTime endDate;
 }

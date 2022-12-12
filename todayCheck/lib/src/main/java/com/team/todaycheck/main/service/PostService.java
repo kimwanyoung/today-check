@@ -3,6 +3,7 @@ package com.team.todaycheck.main.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,43 +37,44 @@ import com.team.todaycheck.main.repository.UserRepository;
 @Service
 @Transactional
 public class PostService {
-
+	
 	@Autowired PostRepository postRepos;
 	@Autowired UserRepository userRepos;
 	@Autowired CommentRepository commentRepos;
-
-	private String fileDir = "/Users/kwy/Documents/imageFile";
-
+	
+	private String fileDir = "C:\\devtool\\upload\\";
+	
 	public int addPost(PostDTO post , MultipartFile imgFile , String header) throws IllegalStateException, IOException {
 		String userId = getUserIdFromToken(header);
-		System.out.print("id : " + userId);
 		UserEntity user = userRepos.findById(userId);
-
+		
 		if(user == null) throw new FalsifyTokenException("토큰이 변조되었거나 손상되었습니다.");
 
 		post.setWriter(userId);
 		Post postData = toEntity(post);
 		// 이미지 추출
-		if(!imgFile.isEmpty()) {
+		if(imgFile != null) {
 			String origName = imgFile.getOriginalFilename();
 			String uuid = UUID.randomUUID().toString(); // 중복을 처리하기 위한 UUID
 			String extension = origName.substring(origName.lastIndexOf(".")); // 확장자 추출
 			String savedName = uuid + extension;
-
+			
 			imgFile.transferTo(new File(fileDir + savedName)); // 파일 저장
 			postData.setThumbnail(savedName);
 		}
-
+		
 		user.addpost(postData);
-
+		
 		return postRepos.getPostKeyMaxValue();
 	}
-
+	
 	public List<PostDTO> getAllPost(Pageable pageable) {
 		HttpHeaders header = new HttpHeaders();
-		List<PostDTO> result = postRepos.getAllPost(pageable);
+		List<Post> result = postRepos.getAllPost(pageable);
 		File imageFile;
-		for(PostDTO data : result) {
+		List<PostDTO> resultDTO = new ArrayList<PostDTO>();
+		for(Post postData : result) {
+			PostDTO data = fromEntity(postData);
 			imageFile = new File(fileDir + data.getThumbnail());
 			try {
 				if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
@@ -80,11 +82,12 @@ public class PostService {
 			} catch (IOException e) { // 썸네일이 없을 때
 				data.setImage(null);
 			}
+			resultDTO.add(data);
 		}
-
-		return result;
+		
+		return resultDTO;
 	}
-
+	
 	public PostDTO getOnePost(int postnumber) {
 		postRepos.updateView(postnumber);
 		HttpHeaders header = new HttpHeaders();
@@ -96,10 +99,10 @@ public class PostService {
 		} catch (IOException e) { // 썸네일파일을 찾을 수 없을 때
 			data.setImage(null);
 		}
-
+		
 		return data;
 	}
-
+	
 	public static Post toEntity(PostDTO post) {
 		return Post.builder()
 				.postKey(post.getPostKey())
@@ -109,7 +112,7 @@ public class PostService {
 				.thumbnail(post.getThumbnail())
 				.build();
 	}
-
+	
 	public static PostDTO fromEntity(Post post) {
 		return PostDTO.builder()
 				.postKey(post.getPostKey())
@@ -119,13 +122,14 @@ public class PostService {
 				.thumbnail(post.getThumbnail())
 				.date(post.getDate())
 				.views(post.getViews())
+				.comment(post.getComment())
 				.recommendation(post.getRecommendation())
 				.build();
 	}
 
 	public void deletePost(String postNumber , String header) {
 		String userId = getUserIdFromToken(header);
-
+		
 		if(postRepos.deleteOnePost(Integer.parseInt(postNumber) , userId) != 1L) {
 			throw new NotAuthorizationException("게시물 번호가 잘못되었거나 , 해당 게시글은 작성자만 지울 수 있습니다.");
 		}
@@ -134,7 +138,7 @@ public class PostService {
 	public void modifyPost(PostDTO postData , int postNumber , String header) {
 		String userId = getUserIdFromToken(header);
 		Post post = postRepos.findByPostKey(postNumber , userId);
-
+		
 		if(post == null) {
 			throw new UnknownPostException("작성자가 다르거나 , 알 수 없는 페이지입니다.");
 		}
@@ -145,13 +149,13 @@ public class PostService {
 
 	public boolean increaseRecommendation(String postNumber , String header) {
 		String userId = getUserIdFromToken(header);
-
+		
 		return postRepos.increaseRecommander(Integer.parseInt(postNumber), userId);
 	}
 
 	public void addComment(String postNumber, CommentDTO CommentDTO, String header) {
 		String userId = getUserIdFromToken(header);
-
+		
 		Post result = postRepos.findByPostKey(Integer.parseInt(postNumber));
 		result.addComment(Comment.builder()
 				.writer(userId)
@@ -165,24 +169,24 @@ public class PostService {
 			throw new InvalidateTokenException("댓글 ID가 잘못되었거나 , 해당 게시글은 작성자만 지울 수 있습니다.");
 		};
 	}
-
+	
 	public static String getUserIdFromToken(String header) {
-		// We need a signing key, so we'll create one just for this example. Usually
-		// the key would be read from your application configuration instead.
-		String[] split_string = header.split("\\.");
-		String base64EncodedBody = split_string[1];
-		Base64 base64Url = new Base64(true);
-
-		//~~~~~~~~~ JWT Body ~~~~~~~~~
-		String body = new String(base64Url.decode(base64EncodedBody));
-		// System.out.println("JWT Body : "+body);
-		// JWT Body Ex ) {"sub":"thisisid","roles":["ROLE_USER"],"iat":1669686350,"exp":1669688150}
-
-		JsonParser parser = new JsonParser();
-		JsonElement element = parser.parse(body);
-
-		return element.getAsJsonObject().get("sub").getAsString();
-		// parsing END
+				// We need a signing key, so we'll create one just for this example. Usually
+				// the key would be read from your application configuration instead.
+				String[] split_string = header.split("\\.");
+		        String base64EncodedBody = split_string[1];
+		        Base64 base64Url = new Base64(true);
+		        
+		        //~~~~~~~~~ JWT Body ~~~~~~~~~
+		        String body = new String(base64Url.decode(base64EncodedBody));
+		        // System.out.println("JWT Body : "+body);
+		        // JWT Body Ex ) {"sub":"thisisid","roles":["ROLE_USER"],"iat":1669686350,"exp":1669688150}
+		        
+		        JsonParser parser = new JsonParser();
+				JsonElement element = parser.parse(body);
+				
+				return element.getAsJsonObject().get("sub").getAsString();
+				// parsing END
 	}
 
 	public File getImageData(String postNumber) {

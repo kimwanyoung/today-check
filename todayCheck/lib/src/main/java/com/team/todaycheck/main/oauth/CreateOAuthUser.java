@@ -21,7 +21,7 @@ import com.team.todaycheck.main.service.JwtService;
 
 @Service
 public class CreateOAuthUser {
-
+	
 	@Autowired
 	UserRepository userRepos;
 	@Autowired
@@ -60,7 +60,7 @@ public class CreateOAuthUser {
 			JsonElement element = parser.parse(result);
 
 			System.out.println(element);
-
+			
 			// int id = element.getAsJsonObject().get("id").getAsInt();
 			String nickName = element.getAsJsonObject().get("response").getAsJsonObject().get("email").getAsString().split("@")[0];
 			br.close();
@@ -107,18 +107,18 @@ public class CreateOAuthUser {
 
 			int responseCode = conn.getResponseCode();
 			System.out.println("responseCode : " + responseCode);
-
+			
 			while ((line = br.readLine()) != null) {
 				result += line;
 			}
-
+			
 			// Gson 라이브러리로 JSON파싱
 			JsonParser parser = new JsonParser();
 			JsonElement element = parser.parse(result);
-
+			
 			String nickName = element.getAsJsonObject().get("email").getAsString().split("@")[0];
 			System.out.println(nickName);
-
+			
 			UserEntity user = userRepos.findById(nickName);
 			if (user == null) { // 신규 가입
 				UserEntity createId = new UserEntity();
@@ -126,11 +126,11 @@ public class CreateOAuthUser {
 				createId.setId(nickName);
 				createId.setAdmin(Admin.GENERAL);
 				createId.setPassword("3SY2qeoLnho3BqI6jUmPFXTj3ejHEUKz");
-
+				
 				userRepos.save(createId);
 				user = createId;
 			}
-
+			
 			br.close();
 
 			Token tokenDTO = jwtTokenProvider.createAccessToken(user.getUsername(), user.getRoles());
@@ -138,8 +138,8 @@ public class CreateOAuthUser {
 			tokenDTO.setId(nickName);
 			tokenDTO.setCode("1");
 			return tokenDTO;
-
-
+			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
