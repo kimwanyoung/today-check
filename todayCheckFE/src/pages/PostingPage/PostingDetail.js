@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import axios from 'axios';
-import { getAccessToken } from '../../cookie/Cookie';
+import { getAccessToken, setAccessToken } from '../../cookie/Cookie';
 
 const PostingDetail = () => {
   const [comment, setComment] = useState('');
@@ -28,7 +28,20 @@ const PostingDetail = () => {
   const handleSubmit = e => {
     e.preventDefault();
     axios(postConfig)
-      .then(res => console.log(res))
+      .then(res => {
+        console.log(res);
+        if (res.data.code === '-5') {
+          axios
+            .get('/refreshToken')
+            .then(data => {
+              setAccessToken(data.data.message);
+              axios(postConfig).then(res => {
+                console.log(res);
+              });
+            })
+            .catch(err => console.log(err));
+        }
+      })
       .catch(err => console.log(err));
     setCommentList(prev => {
       return [...prev, comment];
