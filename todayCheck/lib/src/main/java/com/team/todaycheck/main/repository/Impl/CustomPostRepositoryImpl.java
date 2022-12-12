@@ -1,9 +1,9 @@
 package com.team.todaycheck.main.repository.Impl;
 
+import static com.team.todaycheck.main.entity.QComment.comment;
 // 기본 인스턴트
 import static com.team.todaycheck.main.entity.QPost.post;
 import static com.team.todaycheck.main.entity.QRecommander.recommander;
-import static com.team.todaycheck.main.entity.QComment.comment;
 
 import java.util.List;
 
@@ -13,11 +13,9 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
-import com.team.todaycheck.main.DTO.PostDTO;
 import com.team.todaycheck.main.entity.Post;
 import com.team.todaycheck.main.entity.Recommander;
 import com.team.todaycheck.main.repository.CustomPostRepository;
@@ -60,11 +58,15 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public List<PostDTO> getAllPost(Pageable pageable) {
+	public List<Post> getAllPost(Pageable pageable) {
+		/*
 		return queryFactory.select(Projections.bean(PostDTO.class , 
 				post.title , post.writer , post.description , post.thumbnail , post.date , post.postKey 
-				, post.views , post.recommendation)).from(post).orderBy(postSort(pageable))
-				.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
+				, post.views , post.recommendation , comment)).from(post).leftJoin(post.comment , comment).fetchJoin()
+				.orderBy(postSort(pageable)).offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
+				*/
+		return queryFactory.select(post).from(post).leftJoin(post.comment , comment).fetchJoin()
+				.orderBy(postSort(pageable)).offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
 	}
 	
 	/**

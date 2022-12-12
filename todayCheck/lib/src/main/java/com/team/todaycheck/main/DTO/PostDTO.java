@@ -29,8 +29,8 @@ public class PostDTO {
 	private int postKey;
 	private int views;
 	private int recommendation;
-	private ResponseEntity<byte[]> image;
 	private List<Comment> comment;
+	private ResponseEntity<byte[]> image;
 	@Override
 	public String toString() {
 		return "PostDTO [title=" + title + ", writer=" + writer + ", description=" + description + ", thumbnail="

@@ -3,6 +3,7 @@ package com.team.todaycheck.main.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,9 +70,11 @@ public class PostService {
 	
 	public List<PostDTO> getAllPost(Pageable pageable) {
 		HttpHeaders header = new HttpHeaders();
-		List<PostDTO> result = postRepos.getAllPost(pageable);
+		List<Post> result = postRepos.getAllPost(pageable);
 		File imageFile;
-		for(PostDTO data : result) {
+		List<PostDTO> resultDTO = new ArrayList<PostDTO>();
+		for(Post postData : result) {
+			PostDTO data = fromEntity(postData);
 			imageFile = new File(fileDir + data.getThumbnail());
 			try {
 				if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
@@ -79,9 +82,10 @@ public class PostService {
 			} catch (IOException e) { // 썸네일이 없을 때
 				data.setImage(null);
 			}
+			resultDTO.add(data);
 		}
 		
-		return result;
+		return resultDTO;
 	}
 	
 	public PostDTO getOnePost(int postnumber) {
