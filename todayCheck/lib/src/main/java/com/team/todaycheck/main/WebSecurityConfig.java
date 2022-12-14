@@ -12,12 +12,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.team.todaycheck.main.oauth.CustomOAuth2UserService;
@@ -25,10 +25,9 @@ import com.team.todaycheck.main.oauth.OAuth2Provider;
 import com.team.todaycheck.main.security.JwtAuthenticationFilter;
 import com.team.todaycheck.main.security.JwtTokenProvider;
 
-@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 	
 	@Autowired
 	JwtTokenProvider jwtTokenProvider;
@@ -48,16 +47,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
     private ClientRegistration getRegistration(String client) {
-        // API Client Id ºÒ·¯¿À±â
+    	// API Client Id ë¶ˆëŸ¬ì˜¤ê¸°
         String clientId = env.getProperty(
                 CLIENT_PROPERTY_KEY + client + ".client-id");
 
-        // API Client Id °ªÀÌ Á¸ÀçÇÏ´ÂÁö È®ÀÎÇÏ±â
+        // API Client Id ê°’ì´ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸í•˜ê¸°
         if (clientId == null) {
             return null;
         }
 
-        // API Client Secret ºÒ·¯¿À±â
+        // API Client Secret ë¶ˆëŸ¬ì˜¤ê¸°
         String clientSecret = env.getProperty(
                 CLIENT_PROPERTY_KEY + client + ".client-secret");
 
@@ -84,44 +83,75 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository());
 	}
 	
-	// https://taesan94.tistory.com/109
-	@Override
-    protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable()	// Post ¿äÃ» block Á¦°Å
-        .authorizeRequests() // ÇØ´ç ¸Ş¼Òµå ¾Æ·¡´Â °¢ °æ·Î¿¡ µû¸¥ ±ÇÇÑÀ» ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù.
-        	.antMatchers("/admin/**").authenticated() // ÀÎÁõÀ» ½Ç½Ã
-            .antMatchers("/admin/**").hasRole("ADMIN") // °ıÈ£ÀÇ ±ÇÇÑÀ» °¡Áø À¯Àú¸¸ Á¢±Ù°¡´É, ROLE_°¡ ºÙ¾î¼­ Àû¿ë µÊ. Áï, Å×ÀÌºí¿¡ ROLE_±ÇÇÑ¸í À¸·Î ÀúÀåÇØ¾ß ÇÔ.
-            .antMatchers("/user/**").authenticated() // ÀÎÁõÀ» ½Ç½Ã
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable()	// Post ìš”ì²­ block ì œê±°
+        .authorizeRequests() // í•´ë‹¹ ë©”ì†Œë“œ ì•„ë˜ëŠ” ê° ê²½ë¡œì— ë”°ë¥¸ ê¶Œí•œì„ ì§€ì •í•  ìˆ˜ ìˆë‹¤.
+        	.antMatchers("/admin/**").authenticated() // ì¸ì¦ì„ ì‹¤ì‹œ
+            .antMatchers("/admin/**").hasRole("ADMIN") // ê´„í˜¸ì˜ ê¶Œí•œì„ ê°€ì§„ ìœ ì €ë§Œ ì ‘ê·¼ê°€ëŠ¥, ROLE_ê°€ ë¶™ì–´ì„œ ì ìš© ë¨. ì¦‰, í…Œì´ë¸”ì— ROLE_ê¶Œí•œëª… ìœ¼ë¡œ ì €ì¥í•´ì•¼ í•¨.
+            .antMatchers("/user/**").authenticated() // ì¸ì¦ì„ ì‹¤ì‹œ
             .antMatchers("/user/**").hasRole("USER")
             .antMatchers("/post/post").hasRole("USER")
             .antMatchers("/post/post/**").hasRole("USER")
             .antMatchers("/post/comment/**").authenticated()
             .antMatchers("/post/comment/**").hasRole("USER")
-            .antMatchers("/**").permitAll() // ÀÌ¿Ü ¿äÃ»Àº ´©±¸³ª °¡´É
-            .anyRequest().authenticated()  //  ·Î±×ÀÎµÈ »ç¿ëÀÚ°¡ ¿äÃ»À» ¼öÇàÇÒ ‹š ÇÊ¿äÇÏ´Ù  ¸¸¾à »ç¿ëÀÚ°¡ ÀÎÁõµÇÁö ¾Ê¾Ò´Ù¸é, ½ºÇÁ¸µ ½ÃÅ¥¸®Æ¼ ÇÊÅÍ´Â ¿äÃ»À» Àâ¾Æ³»°í »ç¿ëÀÚ¸¦ ·Î±×ÀÎ ÆäÀÌÁö·Î ¸®´ÙÀÌ·º¼Ç ÇØÁØ´Ù.
+            .antMatchers("/**").permitAll() // ì´ì™¸ ìš”ì²­ì€ ëˆ„êµ¬ë‚˜ ê°€ëŠ¥
+            .anyRequest().authenticated()  //  ë¡œê·¸ì¸ëœ ì‚¬ìš©ìê°€ ìš”ì²­ì„ ìˆ˜í–‰í•  Â‹Âš í•„ìš”í•˜ë‹¤  ë§Œì•½ ì‚¬ìš©ìê°€ ì¸ì¦ë˜ì§€ ì•Šì•˜ë‹¤ë©´, ìŠ¤í”„ë§ ì‹œíë¦¬í‹° í•„í„°ëŠ” ìš”ì²­ì„ ì¡ì•„ë‚´ê³  ì‚¬ìš©ìë¥¼ ë¡œê·¸ì¸ í˜ì´ì§€ë¡œ ë¦¬ë‹¤ì´ë ‰ì…˜ í•´ì¤€ë‹¤.
             .and()
          .logout()
              .permitAll()
-             // .logoutUrl("/logout") // ·Î±×¾Æ¿ô url
+             // .logoutUrl("/logout") // ë¡œê·¸ì•„ì›ƒ url
              .deleteCookies("refreshToken")
              // .logoutSuccessUrl("/")
              .and()
              .oauth2Login()
-				.loginPage("/requestRefreshToken") // ÀÎ°¡µÇÁö ¾ÊÀº Á¢±Ù ½Ã
+				.loginPage("/requestRefreshToken") // ì¸ê°€ë˜ì§€ ì•Šì€ ì ‘ê·¼ ì‹œ
 				.clientRegistrationRepository(clientRegistrationRepository())
 				.authorizedClientService(authorizedClientService())
 				.and()
          .exceptionHandling()
-			.accessDeniedPage("/accessDenied_page"); // ±ÇÇÑÀÌ ¾ø´Â ´ë»óÀÌ Á¢¼ÓÀ»½ÃµµÇßÀ» ¶§
+			.accessDeniedPage("/accessDenied_page"); // ê¶Œí•œì´ ì—†ëŠ” ëŒ€ìƒì´ ì ‘ì†ì„ì‹œë„í–ˆì„ ë•Œ
 		
-		/*
-		http.exceptionHandling()
-		.authenticationEntryPoint((request, response, authException) -> {
-            response.sendRedirect("/securityException");
-		});
-		*/
+		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), // í•„í„°
+				UsernamePasswordAuthenticationFilter.class);
 		
-		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), // ÇÊÅÍ
+		return http.build();
+	}
+	
+	/* https://taesan94.tistory.com/109
+		deprecation ëœ ì½”ë“œ
+	
+	@Override
+    protected void configure(HttpSecurity http) throws Exception {
+		http.csrf().disable()	// Post ìš”ì²­ block ì œê±°
+        .authorizeRequests() // í•´ë‹¹ ë©”ì†Œë“œ ì•„ë˜ëŠ” ê° ê²½ë¡œì— ë”°ë¥¸ ê¶Œí•œì„ ì§€ì •í•  ìˆ˜ ìˆë‹¤.
+        	.antMatchers("/admin/**").authenticated() // ì¸ì¦ì„ ì‹¤ì‹œ
+            .antMatchers("/admin/**").hasRole("ADMIN") // ê´„í˜¸ì˜ ê¶Œí•œì„ ê°€ì§„ ìœ ì €ë§Œ ì ‘ê·¼ê°€ëŠ¥, ROLE_ê°€ ë¶™ì–´ì„œ ì ìš© ë¨. ì¦‰, í…Œì´ë¸”ì— ROLE_ê¶Œí•œëª… ìœ¼ë¡œ ì €ì¥í•´ì•¼ í•¨.
+            .antMatchers("/user/**").authenticated() // ì¸ì¦ì„ ì‹¤ì‹œ
+            .antMatchers("/user/**").hasRole("USER")
+            .antMatchers("/post/post").hasRole("USER")
+            .antMatchers("/post/post/**").hasRole("USER")
+            .antMatchers("/post/comment/**").authenticated()
+            .antMatchers("/post/comment/**").hasRole("USER")
+            .antMatchers("/**").permitAll() // ì´ì™¸ ìš”ì²­ì€ ëˆ„êµ¬ë‚˜ ê°€ëŠ¥
+            .anyRequest().authenticated()  //  ë¡œê·¸ì¸ëœ ì‚¬ìš©ìê°€ ìš”ì²­ì„ ìˆ˜í–‰í•  Â‹Âš í•„ìš”í•˜ë‹¤  ë§Œì•½ ì‚¬ìš©ìê°€ ì¸ì¦ë˜ì§€ ì•Šì•˜ë‹¤ë©´, ìŠ¤í”„ë§ ì‹œíë¦¬í‹° í•„í„°ëŠ” ìš”ì²­ì„ ì¡ì•„ë‚´ê³  ì‚¬ìš©ìë¥¼ ë¡œê·¸ì¸ í˜ì´ì§€ë¡œ ë¦¬ë‹¤ì´ë ‰ì…˜ í•´ì¤€ë‹¤.
+            .and()
+         .logout()
+             .permitAll()
+             // .logoutUrl("/logout") // ë¡œê·¸ì•„ì›ƒ url
+             .deleteCookies("refreshToken")
+             // .logoutSuccessUrl("/")
+             .and()
+             .oauth2Login()
+				.loginPage("/requestRefreshToken") // ì¸ê°€ë˜ì§€ ì•Šì€ ì ‘ê·¼ ì‹œ
+				.clientRegistrationRepository(clientRegistrationRepository())
+				.authorizedClientService(authorizedClientService())
+				.and()
+         .exceptionHandling()
+			.accessDeniedPage("/accessDenied_page"); // ê¶Œí•œì´ ì—†ëŠ” ëŒ€ìƒì´ ì ‘ì†ì„ì‹œë„í–ˆì„ ë•Œ
+		
+		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), // í•„í„°
 				UsernamePasswordAuthenticationFilter.class);
 	}
+	 */
 }

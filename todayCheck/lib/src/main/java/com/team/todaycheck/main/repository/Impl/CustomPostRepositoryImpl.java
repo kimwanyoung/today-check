@@ -1,6 +1,7 @@
 package com.team.todaycheck.main.repository.Impl;
 
-// ±âº» ÀÎ½ºÅÏÆ®
+import static com.team.todaycheck.main.entity.QComment.comment;
+// ê¸°ë³¸ ì¸ìŠ¤í„´íŠ¸
 import static com.team.todaycheck.main.entity.QPost.post;
 import static com.team.todaycheck.main.entity.QRecommander.recommander;
 
@@ -12,11 +13,9 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
-import com.team.todaycheck.main.DTO.PostDTO;
 import com.team.todaycheck.main.entity.Post;
 import com.team.todaycheck.main.entity.Recommander;
 import com.team.todaycheck.main.repository.CustomPostRepository;
@@ -31,7 +30,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 	
 	/*
-	 * Á¶È¸¼ö 1 Áõ°¡½ÃÅ°´Â Äõ¸®
+	 * ì¡°íšŒìˆ˜ 1 ì¦ê°€ì‹œí‚¤ëŠ” ì¿¼ë¦¬
 	 */
 	@Override
 	public void updateView(int postnumber) {
@@ -41,7 +40,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 
 	/*
-	 * ÃßÃµÀÎ È®ÀÎ ÈÄ update 1 ¸®ÅÏ
+	 * ì¶”ì²œì¸ í™•ì¸ í›„ update 1 ë¦¬í„´
 	 */
 	@Override
 	public boolean increaseRecommander(int postNumber , String userId) {
@@ -59,16 +58,20 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public List<PostDTO> getAllPost(Pageable pageable) {
+	public List<Post> getAllPost(Pageable pageable) {
+		/*
 		return queryFactory.select(Projections.bean(PostDTO.class , 
 				post.title , post.writer , post.description , post.thumbnail , post.date , post.postKey 
-				, post.views , post.recommendation)).from(post).orderBy(postSort(pageable))
-				.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
+				, post.views , post.recommendation , comment)).from(post).leftJoin(post.comment , comment).fetchJoin()
+				.orderBy(postSort(pageable)).offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
+				*/
+		return queryFactory.select(post).from(post).leftJoin(post.comment , comment).fetchJoin()
+				.orderBy(postSort(pageable)).offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
 	}
 	
 	/**
-     * OrderSpecifier ¸¦ Äõ¸®·Î ¹İÈ¯ÇÏ¿© Á¤·ÄÁ¶°ÇÀ» ¸ÂÃçÁØ´Ù.
-     * ¸®½ºÆ® Á¤·Ä
+     * OrderSpecifier ë¥¼ ì¿¼ë¦¬ë¡œ ë°˜í™˜í•˜ì—¬ ì •ë ¬ì¡°ê±´ì„ ë§ì¶°ì¤€ë‹¤.
+     * ë¦¬ìŠ¤íŠ¸ ì •ë ¬
      * @param page
      * @return
      */
@@ -105,7 +108,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	}
 	
 	/*
-	 * Post ¿£Æ¼Æ¼¿¡¼­ °¡Àå Å« Å°°ª ¹İÈ¯ (Test Àü¿ë)
+	 * Post ì—”í‹°í‹°ì—ì„œ ê°€ì¥ í° í‚¤ê°’ ë°˜í™˜ (Test ì „ìš©)
 	 */
 	@Override
 	public int getPostKeyMaxValue() {
@@ -115,5 +118,11 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 	@Override
 	public String getImagefileName(int post_key) {
 		return queryFactory.select(post.thumbnail).from(post).where(post.postKey.eq(post_key)).fetchOne();
+	}
+
+	@Override
+	public Post findByPostKey(int postKey) {
+		return queryFactory.select(post).from(post).leftJoin(post.comment , comment).fetchJoin()
+				.where(post.postKey.eq(postKey)).fetchOne();
 	}
 }

@@ -15,11 +15,11 @@ import com.team.todaycheck.main.DTO.MessageDTO;
 @RestControllerAdvice
 public class GeneralExceptionHandler {
 	/*
-	 * °èÁ¤À» Ã£À» ¼ö ¾øÀ» ¶§ , 
+	 * ê³„ì •ì„ ì°¾ì„ ìˆ˜ ì—†ì„ ë•Œ , 
 	 */
 	@ExceptionHandler({
 		AccountException.class , AccountNotFoundException.class , NotAuthorizationException.class , NoSuchElementException.class
-		, UnknownPostException.class , FileNotFoundException.class , NullPointerException.class
+		, UnknownPostException.class , FileNotFoundException.class , NullPointerException.class , DuplicateAccountException.class
 	})
 	public MessageDTO handleBadRequestException(Exception e) {
 	    return MessageDTO.builder()
@@ -28,7 +28,7 @@ public class GeneralExceptionHandler {
 	    		.build();
 	}
 	
-	// RefreshToken ¸¸·áµÇ¾úÀ»¶§
+	// RefreshToken ë§Œë£Œë˜ì—ˆì„ë•Œ
 	@ExceptionHandler({ 
 		InvalidateTokenException.class
 	})
@@ -39,7 +39,7 @@ public class GeneralExceptionHandler {
 	    		.build();
 	}
 	
-	// refreshToken ÄíÅ°°¡ ¾øÀ» ¶§
+	// refreshToken ì¿ í‚¤ê°€ ì—†ì„ ë•Œ
 	@ExceptionHandler({
 		MissingRequestCookieException.class
 	})
@@ -50,7 +50,7 @@ public class GeneralExceptionHandler {
 	    		.build();
 	}
 	
-	// refreshTokenÀÌ º¯Á¶µÇ¾úÀ» ¶§
+	// refreshTokenì´ ë³€ì¡°ë˜ì—ˆì„ ë•Œ
 	@ExceptionHandler({
 		FalsifyTokenException.class
 	})
@@ -61,7 +61,7 @@ public class GeneralExceptionHandler {
 	    		.build();
 	}
 	
-	// AccessToken ¸¸·áµÇ¾î »õ·Î¿î refreshToken ¹ß±ŞÇØ¾ßÇÔ
+	// AccessToken ë§Œë£Œë˜ì–´ ìƒˆë¡œìš´ refreshToken ë°œê¸‰í•´ì•¼í•¨
 	@ExceptionHandler({
 		ExpireAccessTokenException.class
 	})

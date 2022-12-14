@@ -32,10 +32,10 @@ public class ProfileController {
 	
 	@RequestMapping(value = "/profile/{accoundId}" , method = RequestMethod.PATCH)
 	public MessageDTO updateUserProfile(@PathVariable("accoundId") String accoundId , @RequestBody ModifyProfileDTO profileDTO 
-			, HttpServletRequest request , HttpServletResponse response) throws AccountNotFoundException, NumberFormatException {
+			, HttpServletRequest request , HttpServletResponse response) throws NumberFormatException, AccountNotFoundException {
 		
 		String header = request.getHeader("Authorization");
-		if(header == null) throw new NotAuthorizationException("Authorization ≈‰≈´¿Ã æ¯Ω¿¥œ¥Ÿ.");
+		if(header == null) throw new NotAuthorizationException("Authorization ÌÜ†ÌÅ∞Ïù¥ ÏóÜÏäµÎãàÎã§.");
 		return profileService.updateProfile(accoundId , profileDTO , header , response);
 	}
 }

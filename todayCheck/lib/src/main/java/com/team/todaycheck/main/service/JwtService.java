@@ -30,7 +30,7 @@ public class JwtService {
 		String loginUserEmail = refreshToken.getKeyEmail();
 
 		RefreshToken token = refreshTokenRepository.existsByKeyEmail(loginUserEmail);
-		if (token != null) { // ±âÁ¸ Á¸ÀçÇÏ´Â ÅäÅ« Á¦°Å
+		if (token != null) { // ê¸°ì¡´ ì¡´ì¬í•˜ëŠ” í† í° ì œê±°
 			refreshTokenRepository.deleteByKeyEmail(loginUserEmail);
 		}
 		refreshTokenRepository.save(refreshToken);
@@ -49,7 +49,7 @@ public class JwtService {
 			
 			return createRefreshJson(createdAccessToken);
 		} catch (NoSuchElementException e) {
-			throw new FalsifyTokenException("º¯Á¶µÇ°Å³ª, ¾Ë ¼ö ¾ø´Â RefreshToken ÀÔ´Ï´Ù.");
+			throw new FalsifyTokenException("ë³€ì¡°ë˜ê±°ë‚˜, ì•Œ ìˆ˜ ì—†ëŠ” RefreshToken ì…ë‹ˆë‹¤.");
 		}
 	}
 
@@ -57,13 +57,13 @@ public class JwtService {
 		Map<String, String> map = new HashMap<>();
 		if (createdAccessToken == null) {
 			map.put("code", "-1");
-			map.put("message", "Refresh ÅäÅ«ÀÌ ¸¸·áµÇ¾ú½À´Ï´Ù. ·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.");
+			map.put("message", "Refresh í† í°ì´ ë§Œë£Œë˜ì—ˆìŠµë‹ˆë‹¤. ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.");
 			map.put("accessToken", "null");
 			return map;
 		}
-		// ±âÁ¸¿¡ Á¸ÀçÇÏ´Â accessToken Á¦°Å
+		// ê¸°ì¡´ì— ì¡´ì¬í•˜ëŠ” accessToken ì œê±°
 		map.put("code", "1");
-		map.put("message", "Refresh ÅäÅ«À» ÅëÇÑ Access Token »ı¼ºÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
+		map.put("message", "Refresh í† í°ì„ í†µí•œ Access Token ìƒì„±ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
 		map.put("accessToken", createdAccessToken);
 
 		return map;

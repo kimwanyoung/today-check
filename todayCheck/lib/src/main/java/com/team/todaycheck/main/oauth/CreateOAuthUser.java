@@ -31,20 +31,20 @@ public class CreateOAuthUser {
 
 	public Token createNaverUser(String token) {
 
-		String reqURL = "https://openapi.naver.com/v1/nid/me"; // access_tokenÀ» ÀÌ¿ëÇÏ¿© »ç¿ëÀÚ Á¤º¸ Á¶È¸
+		String reqURL = "https://openapi.naver.com/v1/nid/me"; // access_tokenì„ ì´ìš©í•˜ì—¬ ì‚¬ìš©ì ì •ë³´ ì¡°íšŒ
 		try {
 			URL url = new URL(reqURL);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
 			conn.setRequestMethod("GET");
 			conn.setDoOutput(true);
-			conn.setRequestProperty("Authorization", "Bearer " + token); // Àü¼ÛÇÒ header ÀÛ¼º, access_tokenÀü¼Û
+			conn.setRequestProperty("Authorization", "Bearer " + token); // ì „ì†¡í•  header ì‘ì„±, access_tokenì „ì†¡
 
-			// °á°ú ÄÚµå°¡ 200ÀÌ¶ó¸é ¼º°ø
+			// ê²°ê³¼ ì½”ë“œê°€ 200ì´ë¼ë©´ ì„±ê³µ
 			int responseCode = conn.getResponseCode();
 			System.out.println("responseCode : " + responseCode);
 
-			// ¿äÃ»À» ÅëÇØ ¾òÀº JSONÅ¸ÀÔÀÇ Response ¸Ş¼¼Áö ÀĞ¾î¿À±â
+			// ìš”ì²­ì„ í†µí•´ ì–»ì€ JSONíƒ€ì…ì˜ Response ë©”ì„¸ì§€ ì½ì–´ì˜¤ê¸°
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line = "";
 			String result = "";
@@ -54,7 +54,7 @@ public class CreateOAuthUser {
 			}
 			System.out.println("response body : " + result);
 
-			// Gson ¶óÀÌºê·¯¸®·Î JSONÆÄ½Ì
+			// Gson ë¼ì´ë¸ŒëŸ¬ë¦¬ë¡œ JSONíŒŒì‹±
 
 			JsonParser parser = new JsonParser();
 			JsonElement element = parser.parse(result);
@@ -66,7 +66,7 @@ public class CreateOAuthUser {
 			br.close();
 
 			UserEntity user = userRepos.findById(nickName);
-			if (user == null) { // ½Å±Ô °¡ÀÔ
+			if (user == null) { // ì‹ ê·œ ê°€ì…
 				UserEntity createId = new UserEntity();
 				createId.setRoles(Arrays.asList("ROLE_USER"));
 				createId.setId(nickName);
@@ -100,7 +100,7 @@ public class CreateOAuthUser {
 			conn.setDoOutput(true);
 			conn.setRequestProperty("Authorization", "Bearer " + token);
 
-			// ¿äÃ»À» ÅëÇØ ¾òÀº JSONÅ¸ÀÔÀÇ Response ¸Ş¼¼Áö ÀĞ¾î¿À±â
+			// ìš”ì²­ì„ í†µí•´ ì–»ì€ JSONíƒ€ì…ì˜ Response ë©”ì„¸ì§€ ì½ì–´ì˜¤ê¸°
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line = "";
 			String result = "";
@@ -112,7 +112,7 @@ public class CreateOAuthUser {
 				result += line;
 			}
 			
-			// Gson ¶óÀÌºê·¯¸®·Î JSONÆÄ½Ì
+			// Gson ë¼ì´ë¸ŒëŸ¬ë¦¬ë¡œ JSONíŒŒì‹±
 			JsonParser parser = new JsonParser();
 			JsonElement element = parser.parse(result);
 			
@@ -120,7 +120,7 @@ public class CreateOAuthUser {
 			System.out.println(nickName);
 			
 			UserEntity user = userRepos.findById(nickName);
-			if (user == null) { // ½Å±Ô °¡ÀÔ
+			if (user == null) { // ì‹ ê·œ ê°€ì…
 				UserEntity createId = new UserEntity();
 				createId.setRoles(Arrays.asList("ROLE_USER"));
 				createId.setId(nickName);

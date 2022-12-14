@@ -70,7 +70,7 @@ public class UserEntity implements UserDetails {
 	private List<Mission> mission = new ArrayList<Mission>();
 	
 	
-	// ¿¬°ü°ü°è ÆíÀÇ ¸Ş¼Òµå
+	// ì—°ê´€ê´€ê³„ í¸ì˜ ë©”ì†Œë“œ
 	public void addpost(Post postData) {
 		post.add(postData);
 		postData.setUserEntity(this);

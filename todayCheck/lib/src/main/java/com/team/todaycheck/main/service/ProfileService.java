@@ -15,21 +15,24 @@ import com.team.todaycheck.main.DTO.ModifyProfileDTO;
 import com.team.todaycheck.main.DTO.ProfileDTO;
 import com.team.todaycheck.main.DTO.ProfileMissionDTO;
 import com.team.todaycheck.main.entity.UserEntity;
+import com.team.todaycheck.main.exception.DuplicateAccountException;
 import com.team.todaycheck.main.repository.ProfileRepository;
+import com.team.todaycheck.main.repository.UserRepository;
 
 @Service
 @Transactional
 public class ProfileService {
 	
 	@Autowired ProfileRepository profileRepos;
+	@Autowired UserRepository userRepos;
 	
 	public ProfileDTO getProfile(String accoundId) throws AccountNotFoundException {
 		UserEntity user = profileRepos.findById(accoundId);
-		if(user == null) throw new AccountNotFoundException("Á¸ÀçÇÏÁö ¾Ê´Â È¸¿ø Á¤º¸ÀÔ´Ï´Ù.");
+		if(user == null) throw new AccountNotFoundException("ì¡´ì¬í•˜ì§€ ì•ŠëŠ” íšŒì› ì •ë³´ì…ë‹ˆë‹¤.");
 		List<ProfileMissionDTO> joinMission = profileRepos.getJoinMissionList(accoundId);
 		List<ProfileMissionDTO> createMission = profileRepos.getCreateEntity(accoundId);
 		
-		// fetch() °á°ú ºó°ªÀº nullÀ» ³Ö±â¶§¹®¿¡ null°ª Á¦°Å
+		// fetch() ê²°ê³¼ ë¹ˆê°’ì€ nullì„ ë„£ê¸°ë•Œë¬¸ì— nullê°’ ì œê±°
 		if(joinMission.get(0).getId() == null) joinMission.remove(0);
 		if(createMission.get(0).getId() == null) createMission.remove(0);
 		
@@ -51,14 +54,17 @@ public class ProfileService {
 		UserEntity user = profileRepos.findById(accoundId);
 		String userToken = PostService.getUserIdFromToken(header);
 		
-		if(user == null) throw new AccountNotFoundException("°èÁ¤À» Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+		if(user == null) throw new AccountNotFoundException("ê³„ì •ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 		if(profileDTO.getUserId() == null || !userToken.equals(profileDTO.getUserId())) 
-			throw new AccountNotFoundException("°èÁ¤ ¼ÒÀ¯ÀÚ¸¸ °èÁ¤À» º¯°æÇÒ ¼ö ÀÖ½À´Ï´Ù.");
+			throw new AccountNotFoundException("ê³„ì • ì†Œìœ ìë§Œ ê³„ì •ì„ ë³€ê²½í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
 		
-		if(!profileDTO.getUserId().equals(profileDTO.getId())) { // À½ °èÁ¤ ¾ÆÀÌµğ°¡ º¯°æµÇ¾úÀ» °æ¿ì
+		if(!profileDTO.getUserId().equals(profileDTO.getId())) { // ìŒ ê³„ì • ì•„ì´ë””ê°€ ë³€ê²½ë˜ì—ˆì„ ê²½ìš°
+			UserEntity result = userRepos.findById(profileDTO.getId());
+			if(result != null) throw new DuplicateAccountException("ì´ë¯¸ ì¡´ì¬í•˜ëŠ” íšŒì›ì…ë‹ˆë‹¤.");
+			
 			Cookie myCookie = new Cookie("refreshToken", null);
 			myCookie.setMaxAge(0);
-			myCookie.setPath("/"); // refreshToken Æó±â
+			myCookie.setPath("/"); // refreshToken íê¸°
 			
 			profileRepos.setUserFromContent(profileDTO.getUserId() , profileDTO.getId());
 		}
@@ -70,7 +76,7 @@ public class ProfileService {
 		
 		return MessageDTO.builder()
 				.code("1")
-				.message("Á¤º¸¸¦ ¾÷µ¥ÀÌÅÍÇß½À´Ï´Ù.")
+				.message("ì •ë³´ë¥¼ ì—…ë°ì´í„°í–ˆìŠµë‹ˆë‹¤.")
 				.build();
 	}
 }
