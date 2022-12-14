@@ -1,2 +1,6 @@
 /.metadata/
 /Servers
+todayCheck/lib/bin/
+
+# class file
+*.class

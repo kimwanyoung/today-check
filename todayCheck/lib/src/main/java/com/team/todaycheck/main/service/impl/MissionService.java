@@ -2,13 +2,10 @@ package com.team.todaycheck.main.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.security.auth.login.AccountException;
 
 import org.springframework.stereotype.Service;
 
@@ -93,12 +90,7 @@ public class MissionService implements IMissionService {
 
 	@Override
 	public MissionDTO findById(long id) {
-		Optional<Mission> result = missionRepository.findById(id);
-		if (result.isEmpty()) {
-			return null;
-		}
-		
-		return fromEntity(result.get());
+		return fromEntity(missionRepository.findById(id).get());
 	}
 
 	public static MissionDTO fromEntity(Mission mission) {

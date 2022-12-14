@@ -18,6 +18,26 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.7.4'
+    id 'java'
+}
+
+// plane 파일 비활성화
+jar {
+	enabled = false
+}
+
+group = 'com.team.todaycheck'
+version = '0.1.1-SNAPSHOT'
+// 자바 버전 설정
+//sourceCompatibility = '8'
+//targetCompatibility = '8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
@@ -35,7 +55,10 @@ implementation group: 'org.springframework.boot', name: 'spring-boot-starter-sec
 implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
 implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
-implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.1.1'
+// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.4'
+// https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml
+implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.11.4'
 // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
 implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.4'
 implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
@@ -47,7 +70,6 @@ implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'com.google.guava:guava:31.0.1-jre'
 	implementation 'com.h2database:h2:2.1.212'
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
-	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.7.4'
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.7.4'
 	testImplementation group: 'org.springframework.batch', name: 'spring-batch-test', version: '4.3.7'
@@ -58,6 +80,9 @@ implementation 'io.jsonwebtoken:jjwt:0.9.1'
     compile("com.querydsl:querydsl-apt:4.2.1")
     compile("com.querydsl:querydsl-jpa:4.2.1")
     compile("com.querydsl:querydsl-collections:4.2.1")
+	//compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 tasks.named('test') {

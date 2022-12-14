@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountNotFoundException;
@@ -28,6 +27,7 @@ import com.team.todaycheck.main.DTO.LoginResponseDTO;
 import com.team.todaycheck.main.DTO.RegistryDTO;
 import com.team.todaycheck.main.entity.UserEntity;
 import com.team.todaycheck.main.entity.UserEntity.Admin;
+import com.team.todaycheck.main.exception.FalsifyTokenException;
 import com.team.todaycheck.main.repository.UserRepository;
 import com.team.todaycheck.main.service.JwtService;
 import com.team.todaycheck.main.service.LoginService;
@@ -52,17 +52,17 @@ class UserTest {
 	private String adminPermissionsPassword = "Zr3268ZWH48yy4";
 	
     @Test
-    @DisplayName("ÀÎ°¡µÇÁö ¾Ê´Â Á¢±Ù Â÷´Ü")
+    @DisplayName("ì¸ê°€ë˜ì§€ ì•ŠëŠ” ì ‘ê·¼ ì°¨ë‹¨ ë° ë¦¬ë‹¤ì´ë ‰íŠ¸")
     public void springSecurityTest() throws Exception {
     	mvc.perform(MockMvcRequestBuilders.get("/user/test").accept(MediaType.APPLICATION_JSON))
-    	.andExpect(status().isForbidden());
+    	.andExpect(status().is3xxRedirection());
     	
     	mvc.perform(MockMvcRequestBuilders.get("/admin/test").accept(MediaType.APPLICATION_JSON))
-    	.andExpect(status().isForbidden());
+    	.andExpect(status().is3xxRedirection());
     }
     
     @Test
-    @DisplayName("Àß¸øµÈ ¾ÆÀÌµğ »ğÀÔ")
+    @DisplayName("ì˜ëª»ëœ ì•„ì´ë”” ì‚½ì…")
     public void inputWrongId() throws Exception {
     	LoginRequestDTO login = new LoginRequestDTO();
     	login.setId("gGGfa3424gfg42.g3r3daws");
@@ -72,12 +72,12 @@ class UserTest {
     }
     
     @Test
-    @DisplayName("Àß¸øµÈ ºñ¹Ğ¹øÈ£ »ğÀÔ")
+    @DisplayName("ì˜ëª»ëœ ë¹„ë°€ë²ˆí˜¸ ì‚½ì…")
     public void inputWrongPassword() throws Exception {
     	UserEntity loginResult = userRepos.findById(userPermissionsID);
     	if(loginResult == null) {
     		RegistryDTO regisDto = RegistryDTO.builder().id(userPermissionsID).password(userPermissionsPassword).build();
-    		loginService.createId(regisDto); // Á¸ÀçÇÏÁö ¾Ê´Â °èÁ¤ °¡ÀÔ    		
+    		loginService.createId(regisDto); // ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê³„ì • ê°€ì…    		
     	}
     	LoginRequestDTO login = new LoginRequestDTO();
     	login.setId(userPermissionsID);
@@ -87,12 +87,12 @@ class UserTest {
     }
     
     @Test
-    @DisplayName("Áßº¹µÈ ¾ÆÀÌµğ °¡ÀÔ")
+    @DisplayName("ì¤‘ë³µëœ ì•„ì´ë”” ê°€ì…")
     public void existIdRepos() throws Exception {
     	UserEntity loginResult = userRepos.findById(userPermissionsID);
     	if(loginResult == null) {
     		RegistryDTO regisDto = RegistryDTO.builder().id(userPermissionsID).password(userPermissionsPassword).build();
-    		loginService.createId(regisDto); // Á¸ÀçÇÏÁö ¾Ê´Â °èÁ¤ °¡ÀÔ    		
+    		loginService.createId(regisDto); // ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê³„ì • ê°€ì…    		
     	}
     	
     	RegistryDTO login = new RegistryDTO();
@@ -103,18 +103,18 @@ class UserTest {
     }
     
     @Test
-    @DisplayName("º¯Á¶µÈ RefreshToken Â÷´Ü")
+    @DisplayName("ë³€ì¡°ëœ RefreshToken ì°¨ë‹¨")
     public void tokenAuthorizationTest() throws Exception {
-    	Assertions.assertThrows(NoSuchElementException.class , () -> jwtService.validateRefreshToken("thisIsNotValuableToken"));
+    	Assertions.assertThrows(FalsifyTokenException.class , () -> jwtService.validateRefreshToken("thisIsNotValuableToken"));
     }
     
     @Test
-    @DisplayName("ÀÎ°¡µÈ USER ±ÇÇÑÀÇ »ç¿ëÀÚ Á¢±Ù Çã¿ë")
+    @DisplayName("ì¸ê°€ëœ USER ê¶Œí•œì˜ ì‚¬ìš©ì ì ‘ê·¼ í—ˆìš©")
     public void authorizedUserRequest() throws Exception {
     	UserEntity loginResult = userRepos.findById(userPermissionsID);
     	if(loginResult == null) {
     		RegistryDTO regisDto = RegistryDTO.builder().id(userPermissionsID).password(userPermissionsPassword).build();
-    		loginService.createId(regisDto); // Á¸ÀçÇÏÁö ¾Ê´Â °èÁ¤ °¡ÀÔ    		
+    		loginService.createId(regisDto); // ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê³„ì • ê°€ì…    		
     	}
     	
     	LoginRequestDTO loginDto = LoginRequestDTO.builder().id(userPermissionsID).password(userPermissionsPassword).build();
@@ -125,7 +125,7 @@ class UserTest {
     }
     
     @Test
-    @DisplayName("ÀÎ°¡µÈ ADMIN ±ÇÇÑÀÇ »ç¿ëÀÚ Á¢±Ù Çã¿ë")
+    @DisplayName("ì¸ê°€ëœ ADMIN ê¶Œí•œì˜ ì‚¬ìš©ì ì ‘ê·¼ í—ˆìš©")
     public void authorizedAdminRequest() throws Exception {
     	UserEntity loginResult = userRepos.findById(adminPermissionsId);
     	if(loginResult == null) {
@@ -147,12 +147,12 @@ class UserTest {
     }
     
     @Test
-    @DisplayName("RefreshToken À¸·Î »õ·Î¿î AccessToken ¹ß±Ş")
+    @DisplayName("RefreshToken ìœ¼ë¡œ ìƒˆë¡œìš´ AccessToken ë°œê¸‰")
     public void issueNewAccessToken() throws Exception {
     	UserEntity loginResult = userRepos.findById(userPermissionsID);
     	if(loginResult == null) {
     		RegistryDTO regisDto = RegistryDTO.builder().id(userPermissionsID).password(userPermissionsPassword).build();
-    		loginService.createId(regisDto); // Á¸ÀçÇÏÁö ¾Ê´Â °èÁ¤ °¡ÀÔ    		
+    		loginService.createId(regisDto); // ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê³„ì • ê°€ì…    		
     	}
     	
     	LoginRequestDTO loginDto = LoginRequestDTO.builder().id(userPermissionsID).password(userPermissionsPassword).build();

@@ -16,27 +16,27 @@ import io.swagger.annotations.ApiParam;
 @AllArgsConstructor
 @Builder
 public class MissionDTO {
-	@ApiParam(value = "½Äº°ÀÚ")
+	@ApiParam(value = "ì‹ë³„ì")
     private Long id;
 	
-	@ApiParam(value = "ÁøÇàÀÚ")
+	@ApiParam(value = "ì§„í–‰ì")
     private ParticipantDTO admin;
 	
-	@ApiParam(value = "Âü¿©ÀÚµé")
+	@ApiParam(value = "ì°¸ì—¬ìë“¤")
 	private List<ParticipantDTO> participants;
 
-	@ApiParam(value = "¹Ì¼Ç Æ÷½ºÆ® Å¸ÀÌÆ²")
+	@ApiParam(value = "ë¯¸ì…˜ í¬ìŠ¤íŠ¸ íƒ€ì´í‹€")
     private String postTitle;
 	
-	@ApiParam(value = "Æ÷½ºÆ® ½æ³×ÀÏ")
+	@ApiParam(value = "í¬ìŠ¤íŠ¸ ì¸ë„¤ì¼")
     private String postPicture;
 	
-	@ApiParam(value = "¹Ì¼Ç Æ÷½ºÆ® ³»¿ë")
+	@ApiParam(value = "ë¯¸ì…˜ í¬ìŠ¤íŠ¸ ë‚´ìš©")
     private String postContent;
 
-	@ApiParam(value = "¹Ì¼Ç ½ÃÀÛ ³¯ÀÚ")
+	@ApiParam(value = "ë¯¸ì…˜ ì‹œì‘ ë‚ ì")
     private LocalDateTime startDate;
 	
-	@ApiParam(value = "¹Ì¼Ç Á¾·á ³¯ÀÚ")
+	@ApiParam(value = "ë¯¸ì…˜ ì¢…ë£Œ ë‚ ì")
     private LocalDateTime endDate;
 }

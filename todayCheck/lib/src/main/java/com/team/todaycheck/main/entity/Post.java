@@ -44,7 +44,7 @@ public class Post {
 	private Date date;
 	
 	@Column(nullable = false , length=50)
-	private String userId;
+	private String writer;
 	
 	@Column(nullable = false , length=200)
 	private String title;
@@ -65,7 +65,7 @@ public class Post {
 	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "userId_id", nullable = false)
+	@JoinColumn(name = "userId", nullable = false)
 	private UserEntity userEntity;
 	
 	@JsonIgnore
@@ -77,7 +77,7 @@ public class Post {
 	@OneToMany(mappedBy = "post" , cascade = CascadeType.PERSIST , fetch = FetchType.LAZY , orphanRemoval = true)
 	private List<Comment> comment = new LinkedList<Comment>();
 	
-	// ¿¬°ü°ü°è ÆíÀÇ ¸Ş¼Òµå
+	// ì—°ê´€ê´€ê³„ í¸ì˜ ë©”ì†Œë“œ
 	public void addRecommander(Recommander rc) {
 		recommander.add(rc);
 		rc.setPost(this);

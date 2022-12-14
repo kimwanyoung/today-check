@@ -5,7 +5,7 @@ import static com.querydsl.core.types.PathMetadataFactory.*;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
-import javax.annotation.processing.Generated;
+import javax.annotation.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
 
@@ -40,9 +40,9 @@ public class QPost extends EntityPathBase<Post> {
 
     public final QUserEntity userEntity;
 
-    public final StringPath userId = createString("userId");
-
     public final NumberPath<Integer> views = createNumber("views", Integer.class);
+
+    public final StringPath writer = createString("writer");
 
     public QPost(String variable) {
         this(Post.class, forVariable(variable), INITS);

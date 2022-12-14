@@ -7,6 +7,7 @@ import java.util.Collections;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -44,7 +45,7 @@ import com.team.todaycheck.main.service.PostService;
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Test ¼ø¼­¸¦ Á¦½ÃÇÕ´Ï´Ù.
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Test ìˆœì„œë¥¼ ì œì‹œí•©ë‹ˆë‹¤.
 @TestInstance(Lifecycle.PER_CLASS)
 @Rollback(value = true)
 public class PostTest {
@@ -59,30 +60,33 @@ public class PostTest {
 	
 	private String testUserId = "wfa3fg51qqeRTf351wD";
 	private String testUserPw = "FgG34lcp091xZCbnfaw";
-	private int postNumber = 0;
 	/*
-	 *  testerHeader1 Àº testUserId ÀÇ ÅäÅ«ÀÔ´Ï´Ù.
-	 *  testerHeader2 ´Â testUserId °¡ ¾Æ´Ñ ÀÓÀÇÀÇ Access ÅäÅ«ÀÔ´Ï´Ù.
+	 *  testerHeader1 ì€ testUserId ì˜ í† í°ì…ë‹ˆë‹¤.
+	 *  testerHeader2 ëŠ” testUserId ê°€ ì•„ë‹Œ ì„ì˜ì˜ Access í† í°ì…ë‹ˆë‹¤.
 	 */
 	private String testerHeader1 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3ZmEzZmc1MXFxZVJUZjM1MXdEIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY2OTczMzc1OSwiZXhwIjoxNjY5NzM1NTU5fQ.ZcO1cZIy1S-Rx3_N6s7Zh1U4MxcjEcTEy83fQsFIG2A";
 	private String testerHeader2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmd2dkIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY2OTczMzc1OSwiZXhwIjoxNjY5NzM1NTU5fQ.LS1Eb5SZpPcE4fpahedKXm4hjb6SHZZlWqVHO-VGUf8";
 	
-	public void addPostAndReturnNumber() {
+	public int addPostAndReturnNumber() {
 		PostDTO post = PostDTO.builder()
 				.title("titleName")
-				.userId(testUserId)
+				.writer(testUserId)
 				.description("descData")
 				.thumbnail("thumbnail")
 				.build();
 		
-		// postService.addPost(post , testerHeader1);
-		postNumber = postRepos.getPostKeyMaxValue();
+		try {
+			postService.addPost(post , null , testerHeader1);
+		} catch (Exception e) {
+			System.out.println("ì˜ˆì™¸ ë°œìƒ : " + e);
+			return -1;
+		}
+		return postRepos.getPostKeyMaxValue();
 	}
 	
-	@Test
-	@Order(1)
-	@DisplayName("»õ Post µî·Ï")
-	public void addNewPost() {
+	/* í…ŒìŠ¤íŠ¸ ê³„ì • ìƒì„± */
+	@BeforeAll
+	public void createTestUser() {
 		if(userRepos.findById(testUserId) == null) {
 			UserEntity user = UserEntity.builder()
 					.admin(Admin.GENERAL)
@@ -93,23 +97,27 @@ public class PostTest {
 			
 			userRepos.save(user);
 		}
-		
+	}
+	
+	@Test
+	@Order(1)
+	@DisplayName("ìƒˆ Post ë“±ë¡")
+	public void addNewPost() {
 		PostDTO post = PostDTO.builder()
 				.title("titleName")
-				.userId(testUserId)
+				.writer(testUserId)
 				.description("descData")
 				.thumbnail("thumbnail")
 				.build();
 		
-		//Assertions.assertThatCode(() -> postService.addPost(post , testerHeader1)).doesNotThrowAnyException();
-		// Assertions.assertDoesNotThrow(() -> postService.addPost(post , testerHeader1));
-		// ¿¹¿Ü°¡ ¹ß»ıÇÏÁö ¾Ê¾ÒÀ» ‹š ÀúÀåµÈ postÅ°¸¦ ¹İÈ¯
-		postNumber = postRepos.getPostKeyMaxValue();
+		// Assertions.assertThatCode(() -> postService.addPost(post , testerHeader1)).doesNotThrowAnyException();
+		Assertions.assertDoesNotThrow(() -> postService.addPost(post , null , testerHeader1));
+		// ì˜ˆì™¸ê°€ ë°œìƒí•˜ì§€ ì•Šì•˜ì„ Â‹Âš ì €ì¥ëœ postí‚¤ë¥¼ ë°˜í™˜
 	}
 	
 	@Test
 	@Order(2)
-	@DisplayName("Post ¸®½ºÆ® °¡Á®¿À±â")
+	@DisplayName("Post ë¦¬ìŠ¤íŠ¸ ê°€ì ¸ì˜¤ê¸°")
 	public void getAllPost() {
 		PageRequest pageRequest = PageRequest.of(1, 1, Sort.by(Sort.Direction.DESC, "postKey"));
 		//Assertions.assertThatCode(() -> postController.getAllPost(pageRequest)).doesNotThrowAnyException();
@@ -118,18 +126,18 @@ public class PostTest {
 	
 	@Test
 	@Order(3)
-	@DisplayName("Æ¯Á¤ Æ÷½ºÆ® °¡Á®¿À±â")
+	@DisplayName("íŠ¹ì • í¬ìŠ¤íŠ¸ ê°€ì ¸ì˜¤ê¸°")
 	public void getPostOne() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		PostDTO result = postService.getOnePost(postNumber);
 		Assertions.assertNotNull(result);
 	}
 	
 	@Test
 	@Order(4)
-	@DisplayName("µ¿ÀÏ ÀÛ¼ºÀÚ°¡ Post ¼öÁ¤")
+	@DisplayName("ë™ì¼ ì‘ì„±ìê°€ Post ìˆ˜ì •")
 	public void sameAuthorModifyPost() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		PostDTO modifiedPost = PostDTO.builder()
 				.title("modifyTitleName")
 				.description("modifyDescriptionData")
@@ -141,9 +149,9 @@ public class PostTest {
 	
 	@Test
 	@Order(5)
-	@DisplayName("´Ù¸¥ ÀÛ¼ºÀÚ°¡ Post ¼öÁ¤ °ÅºÎ")
+	@DisplayName("ë‹¤ë¥¸ ì‘ì„±ìê°€ Post ìˆ˜ì • ê±°ë¶€")
 	public void otherAuthorModifyPost() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		PostDTO modifiedPost = PostDTO.builder()
 				.title("modifyTitleName")
 				.description("modifyDescriptionData")
@@ -155,17 +163,17 @@ public class PostTest {
 	
 	@Test
 	@Order(6)
-	@DisplayName("Post »èÁ¦")
+	@DisplayName("Post ì‚­ì œ")
 	public void deletePost() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		Assertions.assertDoesNotThrow(() -> postService.deletePost(Integer.toString(postNumber) , testerHeader1));
 	}
 	
 	@Test
 	@Order(7)
-	@DisplayName("Comment µî·Ï")
+	@DisplayName("Comment ë“±ë¡")
 	public void addComment() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		CommentDTO comment = CommentDTO.builder()
 				.content(testUserId)
 				.build();
@@ -174,9 +182,9 @@ public class PostTest {
 	
 	@Test
 	@Order(8)
-	@DisplayName("µî·ÏÀÚ°¡ ¾Æ´Ñ ´Ù¸¥ »ç¿ëÀÚ°¡ Comment »èÁ¦")
+	@DisplayName("ë“±ë¡ìê°€ ì•„ë‹Œ ë‹¤ë¥¸ ì‚¬ìš©ìê°€ Comment ì‚­ì œ")
 	public void removeCommitFromAnotherUser() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		CommentDTO comment = CommentDTO.builder()
 				.content(testUserId)
 				.build();
@@ -189,9 +197,9 @@ public class PostTest {
 	
 	@Test
 	@Order(8)
-	@DisplayName("µ¿ÀÏ »ç¿ëÀÚ°¡ Comment »èÁ¦")
+	@DisplayName("ë™ì¼ ì‚¬ìš©ìê°€ Comment ì‚­ì œ")
 	public void removeCommitFromSameUser() {
-		addPostAndReturnNumber();
+		int postNumber = addPostAndReturnNumber();
 		CommentDTO comment = CommentDTO.builder()
 				.content(testUserId)
 				.build();
@@ -204,7 +212,7 @@ public class PostTest {
 	
 	@Test
 	@Order(9)
-	@DisplayName("ÀÎÁõÀÌ ÇÊ¿äÇÑ ¿äÃ»¿¡ Á¸ÀçÇÏÁö ¾Ê´Â Çì´õ ¿¹¿Ü ¹ß»ı")
+	@DisplayName("ì¸ì¦ì´ í•„ìš”í•œ ìš”ì²­ì— ì¡´ì¬í•˜ì§€ ì•ŠëŠ” í—¤ë” ì˜ˆì™¸ ë°œìƒ")
 	public void notexistHeaderException() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/post/post").accept(MediaType.APPLICATION_JSON))
     	.andExpect(status().is3xxRedirection());

@@ -37,17 +37,17 @@ public class PostController {
 
 	@Autowired PostService postService;
 	
-	// ¸¸¾à 415 Unsupported MediaType ERROR ¿¡·¯¸¦ ¸¸³­´Ù¸é ÀûÀıÇÑ MediaType À» ¼³Á¤Çß´ÂÁö È®ÀÎ
+	// ë§Œì•½ 415 Unsupported MediaType ERROR ì—ëŸ¬ë¥¼ ë§Œë‚œë‹¤ë©´ ì ì ˆí•œ MediaType ì„ ì„¤ì •í–ˆëŠ”ì§€ í™•ì¸
 	/*
-	 * ¿äÃ» ¹æ½Ä :
-	 * form-data Çü½Ä
-	 * 1 . JSON µ¥ÀÌÅÍ ¿äÃ»
+	 * ìš”ì²­ ë°©ì‹ :
+	 * form-data í˜•ì‹
+	 * 1 . JSON ë°ì´í„° ìš”ì²­
 	 * key : request 
 	 * Content-type : application/json 
-	 * value : # JSON °ª #
-	 * 2 . ImageFile ¿äÃ»
+	 * value : # JSON ê°’ #
+	 * 2 . ImageFile ìš”ì²­
 	 * key : image
-	 * Content-type : image/jpeg , image/png ... Å¬¶óÀÌ¾ğÆ®¿¡¼­ È®ÀåÀÚ¿¡ ¸Â°Ô ¼³Á¤
+	 * Content-type : image/jpeg , image/png ... í´ë¼ì´ì–¸íŠ¸ì—ì„œ í™•ì¥ìì— ë§ê²Œ ì„¤ì •
 	 * value : # image #
 	 */
 	@RequestMapping(value = "/post" , method = RequestMethod.POST , consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -62,7 +62,7 @@ public class PostController {
 				.build();
 	}
 	
-	// ´ÜÀÏ ÀÌ¹ÌÁö Àü¼Û
+	// ë‹¨ì¼ ì´ë¯¸ì§€ ì „ì†¡
 	@RequestMapping(value = "/getImageData/{postNumber}" , method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getImageData(@PathVariable("postNumber") String postNumber) throws FileNotFoundException {
 		ResponseEntity<byte[]> result = null;
@@ -73,7 +73,7 @@ public class PostController {
 			header.add("Content-Type" , Files.probeContentType(imageFile.toPath()));
 			result = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK);
 		} catch (IOException e) {
-			throw new FileNotFoundException("ÀÌ¹ÌÁö ÆÄÀÏÀ» Ã£Áö ¸øÇß½À´Ï´Ù.");
+			throw new FileNotFoundException("ì´ë¯¸ì§€ íŒŒì¼ì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
 		}
 		return result;
 	}
@@ -96,7 +96,7 @@ public class PostController {
 		
 		return MessageDTO.builder()
 				.code("1")
-				.message("°Ô½Ã±ÛÀÌ »èÁ¦µÇ¾ú½À´Ï´Ù")
+				.message("ê²Œì‹œê¸€ì´ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤")
 				.build();
 	}
 	
@@ -107,7 +107,7 @@ public class PostController {
 		
 		return MessageDTO.builder()
 				.code("1")
-				.message("°Ô½Ã±ÛÀÌ ¼öÁ¤µÇ¾ú½À´Ï´Ù")
+				.message("ê²Œì‹œê¸€ì´ ìˆ˜ì •ë˜ì—ˆìŠµë‹ˆë‹¤")
 				.build();
 	}
 	
@@ -118,12 +118,12 @@ public class PostController {
 		if(postService.increaseRecommendation(postNumber , header)) {
 			return MessageDTO.builder()
 					.code("1")
-					.message("ÇØ´ç °Ô½Ã¹°À» ÃßÃµÇß½À´Ï´Ù.")
+					.message("í•´ë‹¹ ê²Œì‹œë¬¼ì„ ì¶”ì²œí–ˆìŠµë‹ˆë‹¤.")
 					.build();
 		} else {
 			return MessageDTO.builder()
 					.code("1")
-					.message("ÀÌ¹Ì ÃßÃµÇÑ °Ô½Ã¹°ÀÔ´Ï´Ù.")
+					.message("ì´ë¯¸ ì¶”ì²œí•œ ê²Œì‹œë¬¼ì…ë‹ˆë‹¤.")
 					.build();			
 		}
 	}
@@ -136,7 +136,7 @@ public class PostController {
 		postService.addComment(postNumber , CommentDTO , header);
 		return MessageDTO.builder()
 				.code("1")
-				.message("´ñ±ÛÀ» µî·ÏÇß½À´Ï´Ù.")
+				.message("ëŒ“ê¸€ì„ ë“±ë¡í–ˆìŠµë‹ˆë‹¤.")
 				.build();
 	}
 	
@@ -146,7 +146,7 @@ public class PostController {
 		postService.deleteComment(commentId , header);
 		return MessageDTO.builder()
 				.code("1")
-				.message("´ñ±ÛÀ» »èÁ¦Çß½À´Ï´Ù.")
+				.message("ëŒ“ê¸€ì„ ì‚­ì œí–ˆìŠµë‹ˆë‹¤.")
 				.build();
 	}
 }
