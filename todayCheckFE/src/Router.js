@@ -5,12 +5,12 @@ import Navigation from './components/Navigation';
 import styled from 'styled-components';
 
 //components
-import Mypage from './pages/Mypage';
 import Posting from './pages/PostingPage/Posting';
 import LoginCallback from './pages/LoginPage/LoginCallback';
 import NaverLoginCallback from './pages/LoginPage/NaverLoginCallback';
 import Home from './pages/HomePage/Home';
 import MissionDetail from './pages/HomePage/MissionDetail';
+import Mypage from './pages/Mypage/Mypage';
 
 const Router = () => {
   return (
