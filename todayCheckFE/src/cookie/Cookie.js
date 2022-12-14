@@ -38,6 +38,18 @@ export const setAccessKey = accessKey => {
   });
 };
 
+export const setAccessId = accessId => {
+  const today = new Date();
+  const expireDate = today.setDate(today.getDate() + 5);
+
+  return cookies.set('accessId', accessId, {
+    expires: new Date(expireDate),
+    httpOnly: false,
+    sameSite: 'strict',
+    path: '/',
+  });
+};
+
 export const getAccessToken = () => {
   return cookies.get('accessToken');
 };
@@ -48,6 +60,10 @@ export const getRefreshToken = () => {
 
 export const getAccessKey = () => {
   return cookies.get('accessKey');
+};
+
+export const getAccessId = () => {
+  return cookies.get('accessId');
 };
 
 export const removeRefreshToken = () => {
