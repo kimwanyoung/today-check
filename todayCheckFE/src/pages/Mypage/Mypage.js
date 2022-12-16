@@ -77,6 +77,7 @@ const Mypage = () => {
         </UserAvater>
         <UserInformations>
           <UserInformationFixButton
+            ormationFixButton
             checkClick={fixButtonClick}
             onClick={() => setFixButtonClick(!fixButtonClick)}
           >
@@ -192,6 +193,10 @@ const Mypage = () => {
 export default Mypage;
 
 const MainContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
   background-color: #eeeeff;
@@ -236,7 +241,8 @@ const UserInformationFixButton = styled.div`
   color: white;
   margin-top: 10px;
   position: absolute;
-  right: 10px;
+  top: 1.5rem;
+  right: 1rem;
   width: 45px;
   text-align: center;
   border-radius: 15px;
