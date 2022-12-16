@@ -11,6 +11,7 @@ import LoginCallback from './pages/LoginPage/LoginCallback';
 import NaverLoginCallback from './pages/LoginPage/NaverLoginCallback';
 import Home from './pages/HomePage/Home';
 import MissionDetail from './pages/HomePage/MissionDetail';
+import PostingDetail from './pages/PostingPage/PostingDetail';
 
 const Router = () => {
   return (
@@ -26,6 +27,7 @@ const Router = () => {
           <Route path="/login/callback" element={<LoginCallback />} />
           <Route path="/login/navercallback" element={<NaverLoginCallback />} />
           <Route path="/posting" element={<Posting />} />
+          <Route path="/postingDetail" element={<PostingDetail />} />
         </Routes>
       </Container>
     </BrowserRouter>

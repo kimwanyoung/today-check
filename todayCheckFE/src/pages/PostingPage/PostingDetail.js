@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import axios from 'axios';
 import { getAccessToken, setAccessToken } from '../../cookie/Cookie';
+import { useEffect } from 'react';
 
 const PostingDetail = () => {
   const [comment, setComment] = useState('');
@@ -70,8 +71,8 @@ const PostingDetail = () => {
         </Desc>
         <Comment onSubmit={handleSubmit}>
           <CommentBox>
-            {commentList.map((prop, idx) => (
-              <CommentContent key={idx}>{prop}</CommentContent>
+            {location.state.comment.map((prop, idx) => (
+              <CommentContent key={idx}>{prop.content}</CommentContent>
             ))}
           </CommentBox>
           <CommentInput onChange={handleComment} value={comment} />
