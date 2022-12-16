@@ -42,7 +42,7 @@ public class PostService {
 	@Autowired UserRepository userRepos;
 	@Autowired CommentRepository commentRepos;
 	
-	private String fileDir = "/Users/kwy/Documents/imageFile";
+	private String fileDir = "C:\\devtool\\upload\\";
 	
 	public int addPost(PostDTO post , MultipartFile imgFile , String header) throws IllegalStateException, IOException {
 		String userId = getUserIdFromToken(header);

@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  # 데이터베이스
+    db:
+      container_name: todayCheckMysql
+      image: tjseocld/mysql:8.0.29
+      restart: always
+      command: mysqld --default-authentication-plugin=mysql_native_password
+      environment:
+        MYSQL_ROOT_PASSWORD: password
+        MYSQL_DATABASE: todaycheck
+      ports:
+        - '3306:3306'
+  
+  # 서버
+    web:
+      container_name: todayCheckServer
+      restart: always
+      environment:
+      - "JAVA_OPTS=--add-opens java.base/java.lang.invoke=ALL-UNNAMED"
+      links:
+        - db
+      build:
+        context: .
+        dockerfile: Dockerfile-server
+      ports:
+        - '8080:8080'
+
+  # 클라이언트
+    client:
+      container_name: todayCheckClient
+      restart: always
+      links:
+        - web
+      build:
+        context: .
+        dockerfile: Dockerfile-client
+      ports:
+        - '3000:3000'
