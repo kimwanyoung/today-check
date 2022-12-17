@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 
+import java.io.IOException;
+
 import javax.security.auth.login.AccountException;
 import javax.transaction.Transactional;
 
@@ -48,7 +50,7 @@ public class ProfileTest {
 	@Test
 	@Order(1)
 	@DisplayName("사용자 정보 변경")
-	public void testUserInfoChange() throws AccountException {
+	public void testUserInfoChange() throws AccountException, IllegalStateException, IOException {
 		loginService.createId(RegistryDTO.builder()
 				.id(testUserId)
 				.password(testUserPw)
@@ -62,7 +64,7 @@ public class ProfileTest {
 			.phoneNumber("01012341234")
 		.build();
 		
-		MessageDTO result = profileService.updateProfile(testUserId, modifyData , testerHeader1, null);
+		MessageDTO result = profileService.updateProfile(testUserId, modifyData , testerHeader1, null , null);
 		assertEquals(result.getCode() , "1");
 	}
 	
@@ -88,7 +90,7 @@ public class ProfileTest {
 			.phoneNumber("01012341234")
 		.build();
 		
-		assertThrows(DuplicateAccountException.class , () -> profileService.updateProfile(testUserId2 , modifyData , testerHeader2, null));
+		assertThrows(DuplicateAccountException.class , () -> profileService.updateProfile(testUserId2 , modifyData , testerHeader2, null , null));
 	}
 	
 	@Test
