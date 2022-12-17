@@ -4,6 +4,8 @@ import { useLocation } from 'react-router-dom';
 import { FaRegThumbsUp } from 'react-icons/fa';
 import axios from 'axios';
 import { getAccessToken, setAccessToken } from '../../cookie/Cookie';
+import { GrFormTrash } from 'react-icons/gr';
+import { useEffect } from 'react';
 
 const PostingDetail = () => {
   const [comment, setComment] = useState('');
@@ -23,6 +25,20 @@ const PostingDetail = () => {
 
   const handleComment = e => {
     setComment(e.target.value);
+  };
+
+  const handleDelete = id => {
+    const deleteConfig = {
+      method: 'delete',
+      url: `/post/comment/${id}`,
+      headers: {
+        Authorization: getAccessToken(),
+      },
+    };
+
+    axios(deleteConfig)
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
   };
 
   const handleSubmit = e => {
@@ -69,9 +85,13 @@ const PostingDetail = () => {
           <p>{location.state.description}</p>
         </Desc>
         <Comment onSubmit={handleSubmit}>
+          <CommentTtitle>댓글 수 {location.state.comment.length}</CommentTtitle>
           <CommentBox>
-            {commentList.map((prop, idx) => (
-              <CommentContent key={idx}>{prop}</CommentContent>
+            {location.state.comment.map((prop, idx) => (
+              <CommentContent key={idx}>
+                {prop.content}
+                <Trash onClick={() => handleDelete(prop.commentId)} />
+              </CommentContent>
             ))}
           </CommentBox>
           <CommentInput onChange={handleComment} value={comment} />
@@ -170,8 +190,23 @@ const CommentBox = styled.div`
 
 const CommentContent = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 2rem;
   padding-left: 1rem;
+`;
+
+const CommentTtitle = styled.h2`
+  display: flex;
+  align-items: center;
+  top: 0;
+  width: 100%;
+  height: 3rem;
+  padding-left: 1rem;
+  color: grey;
+`;
+
+const Trash = styled(GrFormTrash)`
+  color: red;
 `;

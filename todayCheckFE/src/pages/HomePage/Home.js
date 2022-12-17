@@ -56,8 +56,7 @@ const RightContainer = styled.div`
 
 const HomeBoxContainer = styled.div`
   display: flex;
-  justify-content: space-evenly;
-  align-content: center;
-  flex-flow: row wrap;
-  flex-grow: 2;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
 `;
