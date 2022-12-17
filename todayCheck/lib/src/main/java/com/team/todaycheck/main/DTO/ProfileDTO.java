@@ -2,6 +2,8 @@ package com.team.todaycheck.main.DTO;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +20,7 @@ public class ProfileDTO {
 	private String id;
 	private String password;
 	private List<String> roles;
+	private ResponseEntity<byte[]> profileImages;
 	private String address;
 	private String phoneNumber;
 	private List<ProfileMissionDTO> createMission;

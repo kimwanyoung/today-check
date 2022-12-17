@@ -45,6 +45,9 @@ public class UserEntity implements UserDetails {
 	@Column(length=50 , nullable = false)
 	private String password;
 	
+	@Column(length=50)
+	private String profileImages;
+	
 	@ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
