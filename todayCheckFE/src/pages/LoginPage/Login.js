@@ -84,6 +84,7 @@ const Login = () => {
         .post('/login', userInfo)
         .then(response => {
           if (response.data.code === '-1') {
+            console.log(response);
             return alert('아이디 비밀번호를 확인해주세요!');
           }
           setRefreshToken(response.data.refreshToken);
