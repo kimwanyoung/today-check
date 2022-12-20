@@ -68,19 +68,13 @@ public class UserEntity implements UserDetails {
 	private List<Post> post = new ArrayList<Post>();
 	
 	@JsonIgnore
-	@Builder.Default
-	@OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL , mappedBy = "admin" , orphanRemoval = true)
-	private List<Mission> mission = new ArrayList<Mission>();
-	
+	@OneToMany(mappedBy = "mission", fetch = FetchType.LAZY , orphanRemoval = true)
+	private List<ParticipantsMission> mission;
 	
 	// 연관관계 편의 메소드
 	public void addpost(Post postData) {
 		post.add(postData);
 		postData.setUserEntity(this);
-	}
-	public void addMission(Mission missionData) {
-		mission.add(missionData);
-		missionData.setAdmin(this);
 	}
 	
 	public enum Admin {

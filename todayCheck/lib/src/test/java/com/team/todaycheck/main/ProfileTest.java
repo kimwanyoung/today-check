@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.security.auth.login.AccountException;
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,13 @@ public class ProfileTest {
 	private String testUserId2 = "Fge4t313ERW11e25O92";
 	private String testUserPw2 = "Vbz21AF41gyu6IUk542";
 	private String testerHeader2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJGZ2U0dDMxM0VSVzExZTI1TzkyIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY2OTczMzc1OSwiZXhwIjoxNjY5NzM1NTU5fQ.2XTl0wIbAExqxtJEy6cBzKo-s2CY5PhAEZ3l1q6krPg";
+	
+	// Test전 존재하는 회원 정보 삭제
+	@BeforeAll
+	public void deleteId() {
+		userRepos.deleteById(testUserId);
+		userRepos.deleteById(testUserId2);
+	}
 	
 	@Test
 	@Order(1)

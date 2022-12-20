@@ -44,7 +44,6 @@ public class ProfileService {
 		
 		
 		// fetch() 결과 빈값은 null을 넣기때문에 null값 제거
-		if(joinMission.get(0).getId() == null) joinMission.remove(0);
 		if(createMission.get(0).getId() == null) createMission.remove(0);
 		
 		ProfileDTO result = ProfileDTO.builder()

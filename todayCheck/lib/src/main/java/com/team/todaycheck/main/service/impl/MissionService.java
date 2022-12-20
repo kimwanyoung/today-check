@@ -1,23 +1,25 @@
 package com.team.todaycheck.main.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.team.todaycheck.main.DTO.MissionDTO;
 import com.team.todaycheck.main.DTO.ParticipantDTO;
-import com.team.todaycheck.main.DTO.RegistryDTO;
+import com.team.todaycheck.main.DTO.ProfileMissionDTO;
 import com.team.todaycheck.main.entity.Mission;
+import com.team.todaycheck.main.entity.ParticipantsMission;
+import com.team.todaycheck.main.entity.RefreshToken;
 import com.team.todaycheck.main.entity.UserEntity;
 import com.team.todaycheck.main.repository.IMissionRepository;
+import com.team.todaycheck.main.repository.ParticipantMissionRepository;
+import com.team.todaycheck.main.repository.ProfileRepository;
 import com.team.todaycheck.main.repository.UserRepository;
 import com.team.todaycheck.main.service.IMissionService;
-import com.team.todaycheck.main.service.LoginService;
+import com.team.todaycheck.main.service.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,8 +28,12 @@ import lombok.RequiredArgsConstructor;
 public class MissionService implements IMissionService {
 	private final IMissionRepository missionRepository;
 	private final UserRepository userRepository;
-	private final LoginService loginService;
+//	private final LoginService loginService;
+	private final ParticipantMissionRepository partMissionRepository;
+	private final ProfileRepository profileRepos;
+	private final JwtService jwtService;
 	
+	/*
 	@PostConstruct
 	void init() throws Exception {
 		if (userRepository.count() < 3) {
@@ -48,8 +54,9 @@ public class MissionService implements IMissionService {
 		}
 		
 		
-		if (missionRepository.count() == 0) {
+		if (partMissionRepository.count() == 0) {
 		
+			UserEntity user = userRepository.findById("demo@example.com");
 			// demo data
 			for (int i = 0; i < 10; i++) {
 				List<UserEntity> participants = new ArrayList<>();
@@ -66,16 +73,22 @@ public class MissionService implements IMissionService {
 						.content("to go gym every day in 2 months!")
 						.thumbnail("https://via.placeholder.com/350x150")
 						.admin(UserEntity.builder().userId(1L).build())
-						.participants(participants)
+						.participants(null)
 						.startDate(LocalDateTime.now())
 						.endDate(endDate)
 						.build(); 
 				
-				missionRepository.save(mission);
+				ParticipantsMission result = ParticipantsMission.builder()
+						.mission(mission)
+						.participants(user)
+						.build();
+				
+				partMissionRepository.save(result);
 			}
 		}
 	}
-
+	*/
+	
 	@Override
 	public MissionDTO save(MissionDTO dto) {
 		Mission result = missionRepository.save(toEntity(dto));
@@ -83,17 +96,13 @@ public class MissionService implements IMissionService {
 	}
 	
 	@Override
-	public List<MissionDTO> findAll() {
-		List<MissionDTO> missions = missionRepository.findAll().stream().map(x -> fromEntity(x)).collect(Collectors.toList());
-		return missions;
+	public List<ParticipantsMission> findAll() {
+		return partMissionRepository.findAllMission();
 	}
-
-	@Override
-	public MissionDTO findById(long id) {
-		return fromEntity(missionRepository.findById(id).get());
-	}
+	
 
 	public static MissionDTO fromEntity(Mission mission) {
+		/*
 		List<ParticipantDTO> participants = new ArrayList<>();
 		for (UserEntity entity : mission.getParticipants()) {
 			ParticipantDTO dto = ParticipantDTO.builder()
@@ -104,6 +113,7 @@ public class MissionService implements IMissionService {
 					.build();
 			participants.add(dto);
 		}
+		*/
 		
 		return MissionDTO.builder()
 				.id(mission.getId())
@@ -116,27 +126,20 @@ public class MissionService implements IMissionService {
 				.postTitle(mission.getTitle())
 				.postContent(mission.getContent())
 				.postPicture(mission.getThumbnail())
-				.participants(participants)
+				.participants(null)
 				.startDate(mission.getStartDate())
 				.endDate(mission.getEndDate())
 				.build();
 	}
 	
 	public static Mission toEntity(MissionDTO dto) {
-		List<UserEntity> participants = new ArrayList<>();
-		for (ParticipantDTO participant : dto.getParticipants()) {
-			participants.add(UserEntity.builder()
-					.userId(participant.getId())
-					.build());
-		}
-		
 		return Mission.builder()
 				.id(dto.getId())
 				.title(dto.getPostTitle())
 				.admin(UserEntity.builder().userId(dto.getAdmin().getId()).build())
 				.content(dto.getPostContent())
 				.thumbnail(dto.getPostPicture())
-				.participants(participants)
+				.participants(null)
 				.startDate(dto.getStartDate())
 				.endDate(dto.getEndDate())
 				.build();
@@ -146,5 +149,70 @@ public class MissionService implements IMissionService {
 	public MissionDTO addParticipant(MissionDTO dto, ParticipantDTO participant) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<ParticipantsMission> findMission(Long i) {
+		return partMissionRepository.findMission(i);
+	}
+
+	@Override
+	public Mission findById(Long id) {
+		return missionRepository.findById(id).get();
+	}
+
+	@Override
+	public ResponseEntity leaveMission(long id, String cookie) {
+		Mission mission = findById(id);
+    	if (mission == null) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    	}
+    	
+    	Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
+    	
+    	RefreshToken token = o.orElse(null);
+    	if (token == null) {
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    	}
+    	
+    	UserEntity user = userRepository.findById(token.getKeyEmail());
+    	partMissionRepository.leaveMission(user.getUserId() , id);
+    	
+        return ResponseEntity.ok().build();
+	}
+
+	@Override
+	public ResponseEntity<Object> joinMission(long id , String cookie) {
+		Mission mission = findById(id);
+    	
+    	if (mission == null) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    	}
+    	
+    	Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
+    	
+    	RefreshToken token = o.orElse(null);
+    	if (token == null) {
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    	}
+    	
+    	UserEntity user = userRepository.findById(token.getKeyEmail());
+    	List<ProfileMissionDTO> joinMission = profileRepos.getJoinMissionList(user.getId());
+    	
+    	for (ProfileMissionDTO participant : joinMission) {
+    		if (participant.getId() == id) {
+    			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    		}
+    	}
+    	
+    	ParticipantsMission participant = ParticipantsMission.builder()
+    			.mission(mission)
+    			.participants(user)
+    			.build();
+    	
+    	partMissionRepository.save(participant);
+    	
+    	return ResponseEntity.ok().build();
+
 	}
 }
