@@ -1,7 +1,11 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getAccessKey, getAccessToken } from '../../cookie/Cookie';
+import {
+  getAccessKey,
+  getAccessToken,
+  setAccessToken,
+} from '../../cookie/Cookie';
 import MypageBox from '../../components/Mypage/MypageBox';
 import TextField from '@mui/material/TextField';
 import MypageModal from './Modal/MypageModal';
@@ -44,7 +48,8 @@ const MypageData = [
 
 const Mypage = () => {
   const [fixButtonClick, setFixButtonClick] = useState(false);
-  const [missionData, setMissionData] = useState();
+  const [missionData, setMissionData] = useState([]);
+  const [createMission, setCreateMissionData] = useState([]);
   const [missionClick, setMissionClick] = useState(false);
   console.log(fixButtonClick);
   const userId = String(getAccessKey());
@@ -55,19 +60,20 @@ const Mypage = () => {
   const [password, setPassword] = useState(UserData.password);
   const [phoneNumber, setPhoneNumber] = useState(UserData.phoneNumber);
   const [address, setAddress] = useState(UserData.address);
-
-  console.log(currnetId);
-  // axios
-  //   .get(`/profile/profile/${userId}`, {
-  //     headers: { Authorization: `${accessToken}` },
-  //   })
-  //   .then(response => {
-  //     console.log(response);
-  //     setMissionData(response.data);
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   }, []);
+  useEffect(() => {
+    axios
+      .get(`/profile/profile/${userId}`, {
+        headers: { Authorization: `${accessToken}` },
+      })
+      .then(response => {
+        console.log(response);
+        setMissionData(response.data.joinMission);
+        setCreateMissionData(response.data.createMission);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <MainContainer>
@@ -144,34 +150,37 @@ const Mypage = () => {
           )}
         </UserInformations>
       </UserWrapper>
-      {missionClick && (
-        <MypageModal
-          setMissionClick={setMissionClick}
-          missionClick={missionClick}
-        />
-      )}
       <JoinMissionWrapper>
         <JoinHeading>참여한 미션</JoinHeading>
         <JoinMissionlistWrapper>
-          {MypageData.map((data, index) => (
-            <MypageBox
-              key={index}
-              id={data.id}
-              title={data.title}
-              content={data.content}
-              startDate={data.startDate}
-              endDate={data.endDate}
-              thumbnail={data.thumbnail}
-              setMissionClick={setMissionClick}
-              missionClick={missionClick}
-            />
+          {missionData?.map((data, index) => (
+            <>
+              <MypageBox
+                key={index}
+                id={data.id}
+                title={data.title}
+                content={data.content}
+                startDate={data.startDate}
+                endDate={data.endDate}
+                thumbnail={data.thumbnail}
+                setMissionClick={setMissionClick}
+                missionClick={missionClick}
+              />
+              {missionClick && (
+                <MypageModal
+                  postId={data.id}
+                  setMissionClick={setMissionClick}
+                  missionClick={missionClick}
+                />
+              )}
+            </>
           ))}
         </JoinMissionlistWrapper>
       </JoinMissionWrapper>
       <CreateMissionWrapper>
         <CreateHeading>생성한 미션</CreateHeading>
         <CreateMissionlistWrapper>
-          {MypageData.map((data, index) => (
+          {createMission.map((data, index) => (
             <MypageBox
               key={index}
               id={data.id}
@@ -303,11 +312,10 @@ const JoinHeading = styled.h1`
 const JoinMissionlistWrapper = styled.div`
   padding-left: 1rem;
   margin-top: 1rem;
+  width: 48vw;
   display: flex;
   justify-content: flex-start;
-  align-content: center;
-  flex-flow: row wrap;
-  flex-grow: 2;
+  align-items: center;
 `;
 
 const CreateMissionWrapper = styled.div`
@@ -326,6 +334,7 @@ const CreateMissionlistWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-content: center;
+  width: 48vw;
   flex-flow: row wrap;
   flex-grow: 2;
 `;
