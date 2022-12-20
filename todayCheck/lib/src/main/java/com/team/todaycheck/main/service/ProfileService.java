@@ -75,6 +75,15 @@ public class ProfileService {
 		String userToken = PostService.getUserIdFromToken(header);
 		
 		if(user == null) throw new AccountNotFoundException("계정을 찾을 수 없습니다.");
+		
+		// DTO가 null이면 회원정보를 수정하지 않습니다.
+		boolean dtoNullCheck = true;
+		if(profileDTO == null) {
+			profileDTO = new ModifyProfileDTO();
+			profileDTO.setUserId(userToken);
+			dtoNullCheck = false;
+		}
+		
 		if(profileDTO.getUserId() == null || !userToken.equals(profileDTO.getUserId())) 
 			throw new AccountNotFoundException("계정 소유자만 계정을 변경할 수 있습니다.");
 		
@@ -89,10 +98,13 @@ public class ProfileService {
 			profileRepos.setUserFromContent(profileDTO.getUserId() , profileDTO.getId());
 		}
 		
-		user.setId(profileDTO.getId());
-		user.setPassword(profileDTO.getPassword());
-		user.setAddress(profileDTO.getAddress());
-		user.setPhoneNumber(profileDTO.getPhoneNumber());
+		// 데이터 수정
+		if(dtoNullCheck) {
+			user.setId(profileDTO.getId());
+			user.setPassword(profileDTO.getPassword());
+			user.setAddress(profileDTO.getAddress());
+			user.setPhoneNumber(profileDTO.getPhoneNumber());
+		}
 		
 		// 이미지 추출
 		if(imgFile != null) {

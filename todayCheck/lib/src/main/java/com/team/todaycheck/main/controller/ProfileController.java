@@ -36,8 +36,8 @@ public class ProfileController {
 	}
 	
 	@RequestMapping(value = "/profile/{accoundId}" , method = RequestMethod.PATCH , consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
-	public MessageDTO updateUserProfile(@PathVariable("accoundId") String accoundId , @RequestPart(value = "request") ModifyProfileDTO profileDTO ,
-		@RequestPart("image") MultipartFile imgFile , HttpServletRequest request , HttpServletResponse response) 
+	public MessageDTO updateUserProfile(@PathVariable("accoundId") String accoundId , @RequestPart(value = "request" , required = false) ModifyProfileDTO profileDTO ,
+		@RequestPart(name = "image" , required = false) MultipartFile imgFile , HttpServletRequest request , HttpServletResponse response) 
 				throws NumberFormatException, AccountNotFoundException, IllegalStateException, IOException {
 		
 		String header = request.getHeader("Authorization");
