@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.security.auth.login.AccountException;
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -51,6 +52,11 @@ public class ProfileTest {
 	// Test전 존재하는 회원 정보 삭제
 	@BeforeAll
 	public void deleteId() {
+		userRepos.deleteById(testUserId);
+		userRepos.deleteById(testUserId2);
+	}
+	@AfterAll
+	public void deleteAfterTest() {
 		userRepos.deleteById(testUserId);
 		userRepos.deleteById(testUserId2);
 	}

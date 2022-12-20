@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team.todaycheck.main.entity.ParticipantsMission;
+import com.team.todaycheck.main.DTO.ParticipantsMissionDTO;
 import com.team.todaycheck.main.service.IMissionService;
 
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +34,7 @@ public class MissionController {
     		@ApiResponse(code = 200, message = "성공적으로 조회됨"),
     		@ApiResponse(code = 500, message = "서버 오류"),
 	})
-    public List<ParticipantsMission> getAll() {
+    public List<ParticipantsMissionDTO> getAll() {
     	return missionService.findAll();
     }
 
@@ -52,7 +52,7 @@ public class MissionController {
     		@ApiResponse(code = 404, message = "주어진 아이디를 가진 미션이 존재하지 않음"),
     		@ApiResponse(code = 500, message = "서버 오류"),
 	})
-    public List<ParticipantsMission> getMissionById(@ApiParam(value = "사용자 아이디", required = true, example = "1") @PathVariable long id) {
+    public List<ParticipantsMissionDTO> getMissionById(@ApiParam(value = "사용자 아이디", required = true, example = "1") @PathVariable long id) {
     	return missionService.findMission(id);
     }
 }

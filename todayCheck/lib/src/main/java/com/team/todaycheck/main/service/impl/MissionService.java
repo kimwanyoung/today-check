@@ -1,16 +1,31 @@
 package com.team.todaycheck.main.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import javax.security.auth.login.AccountNotFoundException;
+import javax.transaction.Transactional;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.team.todaycheck.main.DTO.MessageDTO;
+import com.team.todaycheck.main.DTO.MissionCertificationDTO;
 import com.team.todaycheck.main.DTO.MissionDTO;
 import com.team.todaycheck.main.DTO.ParticipantDTO;
+import com.team.todaycheck.main.DTO.ParticipantsMissionDTO;
 import com.team.todaycheck.main.DTO.ProfileMissionDTO;
 import com.team.todaycheck.main.entity.Mission;
+import com.team.todaycheck.main.entity.MissionCertification;
 import com.team.todaycheck.main.entity.ParticipantsMission;
 import com.team.todaycheck.main.entity.RefreshToken;
 import com.team.todaycheck.main.entity.UserEntity;
@@ -24,15 +39,16 @@ import com.team.todaycheck.main.service.JwtService;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MissionService implements IMissionService {
 	private final IMissionRepository missionRepository;
 	private final UserRepository userRepository;
-//	private final LoginService loginService;
 	private final ParticipantMissionRepository partMissionRepository;
 	private final ProfileRepository profileRepos;
 	private final JwtService jwtService;
 	
+	private String fileDir = "C:\\devtool\\upload\\";
 	/*
 	@PostConstruct
 	void init() throws Exception {
@@ -96,24 +112,47 @@ public class MissionService implements IMissionService {
 	}
 	
 	@Override
-	public List<ParticipantsMission> findAll() {
-		return partMissionRepository.findAllMission();
+	public List<ParticipantsMissionDTO> findAll() {
+		List<ParticipantsMission> result = partMissionRepository.findAllMission();
+		List<ParticipantsMissionDTO> list = new ArrayList<ParticipantsMissionDTO>();
+		File imageFile;
+		HttpHeaders header = new HttpHeaders();
+		
+		for(ParticipantsMission data : result) {
+			List<MissionCertification> certList = data.getMissionCertification();				
+			
+			List<MissionCertificationDTO> dto = new ArrayList<MissionCertificationDTO>();
+			
+			for(MissionCertification cert : certList) {
+				ResponseEntity<byte[]> imageData;
+				
+				imageFile = new File(fileDir + cert.getImage());
+				try {
+					if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
+					imageData = (new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
+				} catch (IOException e) {
+					imageData = (null);
+				}
+				
+				dto.add(MissionCertificationDTO.builder()
+						.date(cert.getCheckDate())
+						.keys(cert.getKeys())
+						.userName(cert.getUserName())
+						.image(imageData)
+						.build());
+			}
+			list.add(ParticipantsMissionDTO.builder()
+					.keys(data.getKeys())
+					.mission(data.getMission())
+					.participants(data.getParticipants())
+					.missionCertification(dto)
+					.build());
+		}
+		return list;
 	}
 	
 
 	public static MissionDTO fromEntity(Mission mission) {
-		/*
-		List<ParticipantDTO> participants = new ArrayList<>();
-		for (UserEntity entity : mission.getParticipants()) {
-			ParticipantDTO dto = ParticipantDTO.builder()
-					.id(entity.getUserId())
-					.email(entity.getId())
-					.name(entity.getId())
-					.avater("https://firebasestorage.googleapis.com/v0/b/instagram-clone-eb58a.appspot.com/o/default-profile.png?alt=media&token=30f8935d-0920-4ba7-960d-bcf35a0d26aa")
-					.build();
-			participants.add(dto);
-		}
-		*/
 		
 		return MissionDTO.builder()
 				.id(mission.getId())
@@ -152,8 +191,44 @@ public class MissionService implements IMissionService {
 	}
 
 	@Override
-	public List<ParticipantsMission> findMission(Long i) {
-		return partMissionRepository.findMission(i);
+	public List<ParticipantsMissionDTO> findMission(Long i) {
+		List<ParticipantsMission> result = partMissionRepository.findMission(i);
+		List<ParticipantsMissionDTO> list = new ArrayList<ParticipantsMissionDTO>();
+		File imageFile;
+		HttpHeaders header = new HttpHeaders();
+		
+		for(ParticipantsMission data : result) {
+			List<MissionCertification> certList = data.getMissionCertification();				
+			
+			List<MissionCertificationDTO> dto = new ArrayList<MissionCertificationDTO>();
+			
+			for(MissionCertification cert : certList) {
+				ResponseEntity<byte[]> imageData;
+				
+				imageFile = new File(fileDir + cert.getImage());
+				try {
+					if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
+					imageData = (new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
+				} catch (IOException e) {
+					imageData = (null);
+				}
+				
+				dto.add(MissionCertificationDTO.builder()
+						.date(cert.getCheckDate())
+						.keys(cert.getKeys())
+						.userName(cert.getUserName())
+						.image(imageData)
+						.build());
+			}
+			list.add(ParticipantsMissionDTO.builder()
+					.keys(data.getKeys())
+					.mission(data.getMission())
+					.participants(data.getParticipants())
+					.missionCertification(dto)
+					.build());
+		}
+		return list;
+		
 	}
 
 	@Override
@@ -213,6 +288,46 @@ public class MissionService implements IMissionService {
     	partMissionRepository.save(participant);
     	
     	return ResponseEntity.ok().build();
+	}
 
+	@Override
+	public MessageDTO certifyMission(Long id, MultipartFile image , String cookie) throws AccountNotFoundException, IllegalStateException, IOException {
+		
+		Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
+    	
+    	RefreshToken token = o.orElse(null);
+    	if (token == null) {
+    		throw new AccountNotFoundException("계정을 찾을 수 없습니다.");
+    	}
+    	UserEntity user = userRepository.findById(token.getKeyEmail());
+    	ParticipantsMission mission = partMissionRepository.findOneMission(user.getId(), id);
+    	
+    	if(image != null) {
+    		String origName = image.getOriginalFilename();
+			String uuid = UUID.randomUUID().toString(); // 중복을 처리하기 위한 UUID
+			String extension = origName.substring(origName.lastIndexOf(".")); // 확장자 추출
+			String savedName = uuid + extension;
+			
+			image.transferTo(new File(fileDir + savedName)); // 파일 저장
+			
+			MissionCertification result = MissionCertification.builder()
+				.image(savedName)
+				.userName(user.getId())
+				.build();
+			
+			mission.addMissionCertification(result);
+			
+			
+    	}
+    	
+		return MessageDTO.builder()
+				.code("1")
+				.message("인증이 완료되었습니다")
+				.build();
+	}
+
+	@Override
+	public MissionCertificationDTO getCertifyMission(Long id) {
+		return null;
 	}
 }

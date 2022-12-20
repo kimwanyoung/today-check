@@ -1,6 +1,6 @@
 package com.team.todaycheck.main.entity;
 
-import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,12 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,8 +39,12 @@ public class ParticipantsMission {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private UserEntity participants;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "Asia/Seoul")
-	@Temporal(TemporalType.TIMESTAMP)
-	@CreationTimestamp
-	private Date checkDate;
+	@OneToMany(mappedBy = "participantsMission" , cascade = CascadeType.PERSIST , fetch = FetchType.LAZY , orphanRemoval = true)
+	private List<MissionCertification> missionCertification;
+	
+	// 연관관계 편의 메소드
+	public void addMissionCertification(MissionCertification missionCertification) {
+		this.missionCertification.add(missionCertification);
+		missionCertification.setParticipantsMission(this);
+	}
 }

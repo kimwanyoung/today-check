@@ -1,5 +1,9 @@
 package com.team.todaycheck.main.controller;
 
+import java.io.IOException;
+
+import javax.security.auth.login.AccountNotFoundException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -7,9 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.team.todaycheck.main.DTO.MessageDTO;
+import com.team.todaycheck.main.DTO.MissionCertificationDTO;
 import com.team.todaycheck.main.service.IMissionService;
 
 import io.swagger.annotations.ApiOperation;
@@ -54,9 +62,14 @@ public class ParticipantController {
     	return missionService.leaveMission(id , cookie);
     }
 	
-//	@RequestMapping(value = "/certification/{id}")
-//	public MessageDTO certifyMission(@PathVariable("id") Long id , ) {
-//		
-//		return null;
-//	}
+	@RequestMapping(value = "/certification/{id}" , method = RequestMethod.POST)
+	public MessageDTO certifyMission(@PathVariable("id") Long id , @RequestParam(name = "image") MultipartFile image , 
+			@CookieValue(name = "refreshToken") String cookie) throws AccountNotFoundException, IllegalStateException, IOException {
+		return missionService.certifyMission(id , image , cookie);
+	}
+	
+	@RequestMapping(value = "/certification/{id}" , method = RequestMethod.GET)
+	public MissionCertificationDTO getCertifyMission(@PathVariable("id") Long id) {
+		return missionService.getCertifyMission(id);
+	}
 }

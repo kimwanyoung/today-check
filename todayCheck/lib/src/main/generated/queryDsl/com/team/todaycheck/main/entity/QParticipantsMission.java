@@ -22,11 +22,11 @@ public class QParticipantsMission extends EntityPathBase<ParticipantsMission> {
 
     public static final QParticipantsMission participantsMission = new QParticipantsMission("participantsMission");
 
-    public final DateTimePath<java.util.Date> checkDate = createDateTime("checkDate", java.util.Date.class);
-
     public final NumberPath<Long> keys = createNumber("keys", Long.class);
 
     public final QMission mission;
+
+    public final ListPath<MissionCertification, QMissionCertification> missionCertification = this.<MissionCertification, QMissionCertification>createList("missionCertification", MissionCertification.class, QMissionCertification.class, PathInits.DIRECT2);
 
     public final QUserEntity participants;
 

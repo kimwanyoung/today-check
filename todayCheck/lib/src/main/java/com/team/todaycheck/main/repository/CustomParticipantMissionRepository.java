@@ -12,5 +12,6 @@ public interface CustomParticipantMissionRepository {
 	List<ParticipantsMission> findAllMission();
 	@Transactional
 	void leaveMission(Long userId, long id);
+	ParticipantsMission findOneMission(String userId, Long missionId);
 	
 }
