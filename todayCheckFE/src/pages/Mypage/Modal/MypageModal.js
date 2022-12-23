@@ -1,18 +1,54 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import axios from 'axios';
+import { setAccessToken, getAccessToken } from '../../../cookie/Cookie';
 
-const MypageModal = ({ missionClick, setMissionClick }) => {
+const MypageModal = ({ missionClick, setMissionClick, postId }) => {
   const [imgFile, setImgFile] = useState('');
-  const imgRef = useRef();
+  const [img, setImg] = useState('');
 
-  const saveImgFile = () => {
-    const file = imgRef.current.files[0];
+  const saveImgFile = fileBlob => {
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImgFile(reader.result);
+    reader.readAsDataURL(fileBlob);
+    return new Promise(resolve => {
+      reader.onload = () => {
+        setImgFile(reader.result);
+        resolve();
+      };
+    });
+  };
+  const handleSubmit = () => {
+    const postInfo = new FormData();
+    postInfo.append('image', img);
+
+    const postConfig = {
+      method: 'patch',
+      // url: ``,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: getAccessToken(),
+      },
+      data: postInfo,
     };
+
+    axios(postConfig)
+      .then(res => {
+        console.log(res);
+        alert('인증 이미지 업로드 완료!');
+        if (res.data.code === '-5') {
+          axios
+            .get('/refreshToken')
+            .then(res => {
+              setAccessToken(res.data.message);
+              axios(postConfig).then(res => {
+                alert('인증 이미지 업로드 완료!');
+              });
+            })
+            .catch(err => console.log(err));
+        }
+      })
+      .catch(err => console.log(err));
   };
 
   return (
@@ -25,13 +61,15 @@ const MypageModal = ({ missionClick, setMissionClick }) => {
             id="fileUpload"
             type="file"
             accept="image/*"
-            onChange={saveImgFile}
-            ref={imgRef}
+            onChange={e => {
+              saveImgFile(e.target.files[0]);
+              setImg(e.target.files[0]);
+            }}
           />
           <ImageLabel htmlFor="fileUpload">
             {imgFile ? <img src={imgFile} /> : <div>이미지 업로드</div>}
           </ImageLabel>
-          <UploadButton type="submit">제출하기</UploadButton>
+          <UploadButton onClick={handleSubmit}>제출하기</UploadButton>
         </form>
       </ModalBox>
     </MypageModalWrapper>

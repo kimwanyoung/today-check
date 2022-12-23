@@ -1,10 +1,20 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { getAccessKey, getAccessToken } from '../../cookie/Cookie';
+import {
+  getAccessKey,
+  getAccessToken,
+  setAccessToken,
+  removeAccessToken,
+  removeRefreshToken,
+  setRefreshToken,
+} from '../../cookie/Cookie';
 import MypageBox from '../../components/Mypage/MypageBox';
 import TextField from '@mui/material/TextField';
 import MypageModal from './Modal/MypageModal';
+import userImage from '../../images/userImage.png';
+import { BiSave } from 'react-icons/bi';
+import { useLocation } from 'react-router-dom';
 
 const UserData = {
   address: '춘천',
@@ -45,132 +55,309 @@ const MypageData = [
 const Mypage = () => {
   const [fixButtonClick, setFixButtonClick] = useState(false);
   const [missionData, setMissionData] = useState();
+  const [joinMission, setJoinMission] = useState([]);
+  const [createMission, setCreateMissionData] = useState([]);
   const [missionClick, setMissionClick] = useState(false);
-  console.log(fixButtonClick);
   const userId = String(getAccessKey());
   const accessToken = String(getAccessToken());
-  console.log(userId);
-  const [currnetId, setCurrentId] = useState(UserData.id);
-  const [fixId, setFixId] = useState(UserData.id);
-  const [password, setPassword] = useState(UserData.password);
-  const [phoneNumber, setPhoneNumber] = useState(UserData.phoneNumber);
-  const [address, setAddress] = useState(UserData.address);
+  console.log(accessToken);
+  const [currnetId, setCurrentId] = useState(missionData?.id);
+  const [fixId, setFixId] = useState(missionData?.id);
+  const [password, setPassword] = useState(missionData?.password);
+  const [phoneNumber, setPhoneNumber] = useState(missionData?.phoneNumber);
+  const [address, setAddress] = useState(missionData?.address);
+  const [imgPriviewFile, setImgPriviewFile] = useState();
+  const [imgFile, setImgFile] = useState(missionData?.profileImages?.body);
+  const [image, setImage] = useState();
+  const imgRef = useRef();
+  const location = useLocation();
+  console.log(location.state);
 
   console.log(currnetId);
-  // axios
-  //   .get(`/profile/profile/${userId}`, {
-  //     headers: { Authorization: `${accessToken}` },
-  //   })
-  //   .then(response => {
-  //     console.log(response);
-  //     setMissionData(response.data);
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   }, []);
+  console.log(fixId);
+  console.log(password);
+  console.log(phoneNumber);
+  console.log(address);
+  console.log(imgFile);
+  console.log(missionData?.profileImages);
+
+  useEffect(() => {
+    axios
+      .get(`/profile/profile/${userId}`, {
+        headers: { Authorization: `${accessToken}` },
+      })
+      .then(response => {
+        console.log(response);
+        setMissionData(response.data);
+        setJoinMission(response.data.joinMission);
+        setCreateMissionData(response.data.createMission);
+        setMissionData(response.data);
+        setCurrentId(response.data.id);
+        setFixId(response.data.id);
+        setPassword(response.data.password);
+        setPhoneNumber(response.data.phoneNumber);
+        setAddress(response.data.address);
+        setImgFile(response.data.profileImages.body);
+        console.log(currnetId);
+        console.log(fixId);
+        console.log(password);
+        console.log(phoneNumber);
+        console.log(address);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
+
+  const submitButton = () => {
+    const userInfo = new FormData();
+
+    const userData = {
+      userId: currnetId,
+      id: fixId,
+      password: password,
+      phoneNumber: phoneNumber,
+      address: address,
+    };
+
+    const blob = new Blob([JSON.stringify(userData)], {
+      type: 'application/json',
+    });
+    userInfo.append('image', image);
+    console.log(image);
+    userInfo.append('request', blob);
+
+    // axios
+    //   .patch(`/profile/profile/${userId}`, userInfo, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //       Authorization: getAccessToken(),
+    //     },
+    //   })
+    //   .then(res => {
+    //     console.log(res.data.code);
+    //     console.log(res.data);
+    //     alert('프로필 사진이 변경되었습니다');
+    //     if (res.data.code === '1' && currnetId && password) {
+    //       removeAccessToken();
+    //       removeRefreshToken();
+    //       axios
+    //         .post('/login', { id: currnetId, password: password })
+    //         .then(response => {
+    //           if (response.data.code === '-1') {
+    //             console.log(response);
+    //             return alert('로그인 실패');
+    //           }
+    //           setRefreshToken(response.data.refreshToken);
+    //           setAccessToken(response.data.accessToken);
+    //           console.log(response.data.refreshToken);
+    //           console.log(response.data.accessToken);
+    //           alert('로그인 성공');
+    //         })
+    //         .catch(err => {
+    //           return alert('로그인 실패');
+    //         });
+    //     }
+    //   });
+  };
+
+  const imgPreview = fileBlob => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise(resolve => {
+      reader.onload = () => {
+        setImgPriviewFile(reader.result);
+        resolve();
+      };
+    });
+  };
+
+  console.log(image);
+  const userImgSubmit = e => {
+    e.preventDefault();
+    const userInfo = new FormData();
+
+    const data = {
+      userId: currnetId,
+      id: fixId,
+      password: password,
+      phoneNumber: phoneNumber,
+      address: address,
+    };
+
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    userInfo.append('image', image);
+    userInfo.append('request', blob);
+
+    for (let value of userInfo.values()) {
+      console.log(value);
+    }
+
+    axios
+      .patch(`/profile/profile/${userId}`, userInfo, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: getAccessToken(),
+        },
+      })
+      .then(res => {
+        console.log(res.data.code);
+        console.log(res.data);
+        alert('프로필 사진이 변경되었습니다');
+        if (res.data.code === '1' && currnetId && password) {
+          removeAccessToken();
+          removeRefreshToken();
+          axios
+            .post('/login', { id: currnetId, password: password })
+            .then(response => {
+              if (response.data.code === '-1') {
+                console.log(response);
+                return alert('로그인 실패');
+              }
+              setRefreshToken(response.data.refreshToken);
+              setAccessToken(response.data.accessToken);
+              console.log(response.data.refreshToken);
+              console.log(response.data.accessToken);
+            })
+            .catch(err => {
+              return alert('로그인 실패');
+            });
+        }
+      })
+      .catch(err => console.log(err));
+  };
 
   return (
     <MainContainer>
       <UserWrapper>
         <UserAvater>
-          <img src="https://via.placeholder.com/350x200" />
+          <form>
+            <UserImage
+              id="fileImageUpload"
+              type="file"
+              accept="image/*"
+              onChange={e => {
+                setImage(e.target.files[0]);
+                imgPreview(e.target.files[0]);
+              }}
+              ref={imgRef}
+            />
+            <UserImageLabel htmlFor="fileImageUpload">
+              {imgPriviewFile ? (
+                <img src={imgPriviewFile} alt="userImage" />
+              ) : (
+                <img
+                  src={imgFile ? `data:image/;base64, ${imgFile}` : userImage}
+                  alt="userImage"
+                />
+              )}
+            </UserImageLabel>
+            <SaveButtonWrapper onClick={userImgSubmit}>
+              <SaveButton />
+            </SaveButtonWrapper>
+          </form>
         </UserAvater>
         <UserInformations>
-          <UserInformationFixButton
-            checkClick={fixButtonClick}
-            onClick={() => setFixButtonClick(!fixButtonClick)}
-          >
-            {fixButtonClick ? '완료' : '수정'}
-          </UserInformationFixButton>
-          {fixButtonClick ? (
-            <>
-              <UserBox>
-                <span>현재아이디: </span>
-                <TextField
-                  id="standard-helperText"
-                  defaultValue={UserData.id}
-                  variant="standard"
-                  onChange={e => setCurrentId(e.target.value)}
-                />
-              </UserBox>
-              <UserBox>
-                <span>변경된아이디: </span>
-                <TextField
-                  id="standard-helperText"
-                  defaultValue={UserData.id}
-                  variant="standard"
-                  onChange={e => setFixId(e.target.value)}
-                />
-              </UserBox>
-              <UserBox>
-                <span>비밀번호: </span>
-                <TextField
-                  id="standard-helperText"
-                  defaultValue={UserData.password}
-                  variant="standard"
-                  onChange={e => setPassword(e.target.value)}
-                />
-              </UserBox>
-              <UserBox>
-                <span>전화번호: </span>
-                <TextField
-                  id="standard-helperText"
-                  defaultValue={UserData.phoneNumber}
-                  variant="standard"
-                  onChange={e => setPhoneNumber(e.target.value)}
-                />
-              </UserBox>
-              <UserBox>
-                <span>주소: </span>
-                <TextField
-                  id="standard-helperText"
-                  defaultValue={UserData.address}
-                  variant="standard"
-                  onChange={e => setAddress(e.target.value)}
-                />
-              </UserBox>
-            </>
-          ) : (
-            <>
-              <UserGreetings>안녕하세요</UserGreetings>
-              <UserName>
-                <span>{UserData.id}</span>님
-              </UserName>
-              <UserSpan>
-                <span>'오늘의 미션도 응원합니다'</span>
-              </UserSpan>
-            </>
-          )}
+          <form>
+            <UserInformationFixButton
+              checkClick={fixButtonClick}
+              onClick={() => setFixButtonClick(!fixButtonClick)}
+            >
+              {fixButtonClick ? <div onClick={submitButton}>완료</div> : '수정'}
+            </UserInformationFixButton>
+            {fixButtonClick ? (
+              <>
+                <UserBox>
+                  <span>현재아이디: </span>
+                  <TextField
+                    id="standard-helperText"
+                    defaultValue={currnetId}
+                    variant="standard"
+                    onChange={e => setCurrentId(e.target.value)}
+                  />
+                </UserBox>
+                <UserBox>
+                  <span>변경된아이디: </span>
+                  <TextField
+                    id="standard-helperText"
+                    defaultValue={fixId}
+                    variant="standard"
+                    onChange={e => setFixId(e.target.value)}
+                  />
+                </UserBox>
+                <UserBox>
+                  <span>새 비밀번호: </span>
+                  <TextField
+                    id="standard-helperText"
+                    defaultValue=""
+                    variant="standard"
+                    onChange={e => setPassword(e.target.value)}
+                  />
+                </UserBox>
+                <UserBox>
+                  <span>전화번호: </span>
+                  <TextField
+                    id="standard-helperText"
+                    defaultValue={phoneNumber}
+                    variant="standard"
+                    onChange={e => setPhoneNumber(e.target.value)}
+                  />
+                </UserBox>
+                <UserBox>
+                  <span>주소: </span>
+                  <TextField
+                    id="standard-helperText"
+                    defaultValue={address}
+                    variant="standard"
+                    onChange={e => setAddress(e.target.value)}
+                  />
+                </UserBox>
+              </>
+            ) : (
+              <>
+                <UserGreetings>안녕하세요</UserGreetings>
+                <UserName>
+                  <span>{UserData.id}</span>님
+                </UserName>
+                <UserSpan>
+                  <span>'오늘의 미션도 응원합니다'</span>
+                </UserSpan>
+              </>
+            )}
+          </form>
         </UserInformations>
       </UserWrapper>
-      {missionClick && (
-        <MypageModal
-          setMissionClick={setMissionClick}
-          missionClick={missionClick}
-        />
-      )}
       <JoinMissionWrapper>
         <JoinHeading>참여한 미션</JoinHeading>
         <JoinMissionlistWrapper>
-          {MypageData.map((data, index) => (
-            <MypageBox
-              key={index}
-              id={data.id}
-              title={data.title}
-              content={data.content}
-              startDate={data.startDate}
-              endDate={data.endDate}
-              thumbnail={data.thumbnail}
-              setMissionClick={setMissionClick}
-              missionClick={missionClick}
-            />
+          {joinMission?.map((data, index) => (
+            <>
+              <MypageBox
+                key={index}
+                id={data.id}
+                title={data.title}
+                content={data.content}
+                startDate={data.startDate}
+                endDate={data.endDate}
+                thumbnail={data.thumbnail}
+                setMissionClick={setMissionClick}
+                missionClick={missionClick}
+              />
+              {missionClick && (
+                <MypageModal
+                  postId={data.id}
+                  setMissionClick={setMissionClick}
+                  missionClick={missionClick}
+                />
+              )}
+            </>
           ))}
         </JoinMissionlistWrapper>
       </JoinMissionWrapper>
       <CreateMissionWrapper>
         <CreateHeading>생성한 미션</CreateHeading>
         <CreateMissionlistWrapper>
-          {MypageData.map((data, index) => (
+          {createMission.map((data, index) => (
             <MypageBox
               key={index}
               id={data.id}
@@ -192,6 +379,10 @@ const Mypage = () => {
 export default Mypage;
 
 const MainContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
   background-color: #eeeeff;
@@ -215,11 +406,50 @@ const UserWrapper = styled.div`
 
 const UserAvater = styled.div`
   position: absolute;
-  left: 20px;
+  width: 3rem;
+  height: 3rem;
+  margin-top: -13rem;
+  left: 2rem;
+`;
+
+const UserImageLabel = styled.label`
   img {
-    width: 230px;
-    height: 230px;
-    border-radius: 100%;
+    border: 6px solid black;
+    width: 14rem;
+    height: 14rem;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+`;
+
+const UserImage = styled.input`
+  visibility: hidden;
+`;
+
+const SaveButtonWrapper = styled.div`
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border-radius: 100%;
+  border: 1px solid gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 12rem;
+  left: 11rem;
+  cursor: pointer;
+
+  :hover {
+    background-color: #b0b0b0;
+  }
+`;
+
+const SaveButton = styled(BiSave)`
+  color: gray;
+  font-size: 30px;
+  :hover {
+    color: #d1d1d1;
   }
 `;
 
@@ -236,7 +466,8 @@ const UserInformationFixButton = styled.div`
   color: white;
   margin-top: 10px;
   position: absolute;
-  right: 10px;
+  top: 1.5rem;
+  right: 1rem;
   width: 45px;
   text-align: center;
   border-radius: 15px;
@@ -297,11 +528,10 @@ const JoinHeading = styled.h1`
 const JoinMissionlistWrapper = styled.div`
   padding-left: 1rem;
   margin-top: 1rem;
+  width: 48vw;
   display: flex;
   justify-content: flex-start;
-  align-content: center;
-  flex-flow: row wrap;
-  flex-grow: 2;
+  align-items: center;
 `;
 
 const CreateMissionWrapper = styled.div`
@@ -320,6 +550,7 @@ const CreateMissionlistWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-content: center;
+  width: 48vw;
   flex-flow: row wrap;
   flex-grow: 2;
 `;

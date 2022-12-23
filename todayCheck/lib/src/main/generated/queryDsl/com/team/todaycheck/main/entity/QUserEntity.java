@@ -5,7 +5,7 @@ import static com.querydsl.core.types.PathMetadataFactory.*;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
-import javax.annotation.Generated;
+import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
 
@@ -26,13 +26,15 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final StringPath id = createString("id");
 
-    public final ListPath<Mission, QMission> mission = this.<Mission, QMission>createList("mission", Mission.class, QMission.class, PathInits.DIRECT2);
+    public final ListPath<ParticipantsMission, QParticipantsMission> mission = this.<ParticipantsMission, QParticipantsMission>createList("mission", ParticipantsMission.class, QParticipantsMission.class, PathInits.DIRECT2);
 
     public final StringPath password = createString("password");
 
     public final StringPath phoneNumber = createString("phoneNumber");
 
     public final ListPath<Post, QPost> post = this.<Post, QPost>createList("post", Post.class, QPost.class, PathInits.DIRECT2);
+
+    public final StringPath profileImages = createString("profileImages");
 
     public final ListPath<String, StringPath> roles = this.<String, StringPath>createList("roles", String.class, StringPath.class, PathInits.DIRECT2);
 

@@ -4,9 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 
+import java.io.IOException;
+
 import javax.security.auth.login.AccountException;
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -45,10 +49,22 @@ public class ProfileTest {
 	private String testUserPw2 = "Vbz21AF41gyu6IUk542";
 	private String testerHeader2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJGZ2U0dDMxM0VSVzExZTI1TzkyIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY2OTczMzc1OSwiZXhwIjoxNjY5NzM1NTU5fQ.2XTl0wIbAExqxtJEy6cBzKo-s2CY5PhAEZ3l1q6krPg";
 	
+	// Test전 존재하는 회원 정보 삭제
+	@BeforeAll
+	public void deleteId() {
+		userRepos.deleteById(testUserId);
+		userRepos.deleteById(testUserId2);
+	}
+	@AfterAll
+	public void deleteAfterTest() {
+		userRepos.deleteById(testUserId);
+		userRepos.deleteById(testUserId2);
+	}
+	
 	@Test
 	@Order(1)
 	@DisplayName("사용자 정보 변경")
-	public void testUserInfoChange() throws AccountException {
+	public void testUserInfoChange() throws AccountException, IllegalStateException, IOException {
 		loginService.createId(RegistryDTO.builder()
 				.id(testUserId)
 				.password(testUserPw)
@@ -62,7 +78,7 @@ public class ProfileTest {
 			.phoneNumber("01012341234")
 		.build();
 		
-		MessageDTO result = profileService.updateProfile(testUserId, modifyData , testerHeader1, null);
+		MessageDTO result = profileService.updateProfile(testUserId, modifyData , testerHeader1, null , null);
 		assertEquals(result.getCode() , "1");
 	}
 	
@@ -88,7 +104,7 @@ public class ProfileTest {
 			.phoneNumber("01012341234")
 		.build();
 		
-		assertThrows(DuplicateAccountException.class , () -> profileService.updateProfile(testUserId2 , modifyData , testerHeader2, null));
+		assertThrows(DuplicateAccountException.class , () -> profileService.updateProfile(testUserId2 , modifyData , testerHeader2, null , null));
 	}
 	
 	@Test

@@ -5,7 +5,7 @@ import static com.querydsl.core.types.PathMetadataFactory.*;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
-import javax.annotation.Generated;
+import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
 
@@ -30,7 +30,7 @@ public class QMission extends EntityPathBase<Mission> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<UserEntity, QUserEntity> participants = this.<UserEntity, QUserEntity>createList("participants", UserEntity.class, QUserEntity.class, PathInits.DIRECT2);
+    public final ListPath<ParticipantsMission, QParticipantsMission> participants = this.<ParticipantsMission, QParticipantsMission>createList("participants", ParticipantsMission.class, QParticipantsMission.class, PathInits.DIRECT2);
 
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 

@@ -24,6 +24,7 @@
     "styled-reset": "^4.4.2",
     "web-vitals": "^2.1.4"
   },
+  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -52,5 +53,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1"
-  }
+  },
+  "proxy":"http://localhost:8080"
 }
