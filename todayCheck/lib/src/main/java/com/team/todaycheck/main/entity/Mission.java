@@ -1,15 +1,22 @@
 package com.team.todaycheck.main.entity;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -26,8 +33,8 @@ public class Mission {
     @JoinColumn(name="admin_id")
     private UserEntity admin;
 
-    @ManyToMany
-    private List<UserEntity> participants;
+    @OneToMany(mappedBy = "participants")
+    private List<ParticipantsMission> participants;
 
     @Column(nullable = false)
     private String title;
