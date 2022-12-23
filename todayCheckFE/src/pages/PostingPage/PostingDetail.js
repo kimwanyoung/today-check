@@ -64,6 +64,7 @@ const PostingDetail = () => {
     });
     setComment('');
   };
+
   return (
     <DetailWrapper>
       <DetailContentWrapper>
