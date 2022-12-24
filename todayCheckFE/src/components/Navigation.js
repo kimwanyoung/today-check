@@ -25,6 +25,7 @@ const Navigation = () => {
   const handleLogout = () => {
     removeAccessToken();
   };
+
   return (
     <HeaderContainer>
       {/* 로고 */}
