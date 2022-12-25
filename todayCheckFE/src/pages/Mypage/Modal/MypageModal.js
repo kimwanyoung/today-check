@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import { setAccessToken, getAccessToken } from '../../../cookie/Cookie';
 const MypageModal = ({ missionClick, setMissionClick, postId }) => {
   const [imgFile, setImgFile] = useState('');
   const [img, setImg] = useState('');
+  console.log(postId);
 
   const saveImgFile = fileBlob => {
     const reader = new FileReader();
@@ -23,8 +24,8 @@ const MypageModal = ({ missionClick, setMissionClick, postId }) => {
     postInfo.append('image', img);
 
     const postConfig = {
-      method: 'patch',
-      // url: ``,
+      method: 'post',
+      url: `/participant/certification/${postId}`,
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: getAccessToken(),

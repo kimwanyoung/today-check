@@ -11,7 +11,19 @@ const PostingDetail = () => {
   const [comment, setComment] = useState('');
   const [commentList, setCommentList] = useState([]);
   const location = useLocation();
-  console.log(location.state);
+
+  const getPostConfig = {
+    method: 'get',
+    url: `/post/onePost?number=${location.state.postKey}`,
+  };
+
+  useEffect(() => {
+    axios(getPostConfig)
+      .then(res => {
+        setCommentList(res.data.comment);
+      })
+      .catch(err => console.log(err));
+  }, []);
 
   const postConfig = {
     method: 'post',
@@ -36,16 +48,27 @@ const PostingDetail = () => {
       },
     };
 
+    setCommentList(prev =>
+      prev.filter(comment => {
+        console.log(comment);
+        return comment.commentId !== id;
+      })
+    );
+
     axios(deleteConfig)
-      .then(res => console.log(res))
+      .then(res => {
+        alert('댓글 삭제완료!');
+      })
       .catch(err => console.log(err));
   };
 
   const handleSubmit = e => {
     e.preventDefault();
+    setCommentList(prev => [...prev, comment]);
     axios(postConfig)
       .then(res => {
-        console.log(res);
+        setComment('');
+        window.location.reload();
         if (res.data.code === '-5') {
           axios
             .get('/refreshToken')
@@ -59,10 +82,6 @@ const PostingDetail = () => {
         }
       })
       .catch(err => console.log(err));
-    setCommentList(prev => {
-      return [...prev, comment];
-    });
-    setComment('');
   };
 
   return (
@@ -86,11 +105,11 @@ const PostingDetail = () => {
           <p>{location.state.description}</p>
         </Desc>
         <Comment onSubmit={handleSubmit}>
-          <CommentTtitle>댓글 수 {location.state.comment.length}</CommentTtitle>
+          <CommentTtitle>댓글 수 {commentList?.length}</CommentTtitle>
           <CommentBox>
-            {location.state.comment.map((prop, idx) => (
+            {commentList?.map((prop, idx) => (
               <CommentContent key={idx}>
-                {prop.content}
+                {prop.writer} : {prop.content}
                 <Trash onClick={() => handleDelete(prop.commentId)} />
               </CommentContent>
             ))}
@@ -139,7 +158,6 @@ const PostingImage = styled.img`
   width: 100%;
   height: 20rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
 const UserInfo = styled.div`
