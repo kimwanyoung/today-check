@@ -8,6 +8,10 @@ const GlobalStyles = createGlobalStyle`
         padding: 0;
         box-sizing: border-box;
         font-family: 'Noto Sans KR', sans-serif;
+        -ms-overflow-style: none;
+    }
+    ::-webkit-scrollbar {
+      display: none;
     }
     body {
         background-color: rgb(240, 240, 240);

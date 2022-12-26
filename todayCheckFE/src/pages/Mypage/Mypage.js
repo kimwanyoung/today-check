@@ -24,34 +24,6 @@ const UserData = {
   userId: 'yejin',
 };
 
-const MypageData = [
-  {
-    id: 1,
-    startDate: '2022-12-07T06:45:44.177Z',
-    endDate: '2022-12-07T06:45:44.177Z',
-    title: '코딩테스트 공부하실 분 구합니다.',
-    content: '코딩테스트 매일 하나씩 풀 예정입니다. 함께 하실 분 모집합니다.',
-    thumbnail:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-e2ZUrT6vhmG2nph1wWS3jpr1OdoYrfOTPQ&usqp=CAU',
-  },
-  {
-    id: 1,
-    startDate: '2022-12-07T06:45:44.177Z',
-    endDate: '2022-12-07T06:45:44.177Z',
-    title: '영어 스터디 모집합니다',
-    content: '코딩테스트 매일 하나씩 풀 예정입니다. 함께 하실 분 모집합니다.',
-    thumbnail: 'https://via.placeholder.com/350x200',
-  },
-  {
-    id: 1,
-    startDate: '2022-12-07T06:45:44.177Z',
-    endDate: '2022-12-07T06:45:44.177Z',
-    title: '코딩테스트 공부하실 분',
-    content: '코딩테스트 매일 하나씩 풀 예정입니다. 함께 하실 분 모집합니다.',
-    thumbnail: 'https://via.placeholder.com/350x200',
-  },
-];
-
 const Mypage = () => {
   const [fixButtonClick, setFixButtonClick] = useState(false);
   const [missionData, setMissionData] = useState();
@@ -59,8 +31,6 @@ const Mypage = () => {
   const [createMission, setCreateMissionData] = useState([]);
   const [missionClick, setMissionClick] = useState(false);
   const userId = String(getAccessKey());
-  const accessToken = String(getAccessToken());
-  console.log(accessToken);
   const [currnetId, setCurrentId] = useState(missionData?.id);
   const [fixId, setFixId] = useState(missionData?.id);
   const [password, setPassword] = useState(missionData?.password);
@@ -70,21 +40,11 @@ const Mypage = () => {
   const [imgFile, setImgFile] = useState(missionData?.profileImages?.body);
   const [image, setImage] = useState();
   const imgRef = useRef();
-  const location = useLocation();
-  console.log(location.state);
-
-  console.log(currnetId);
-  console.log(fixId);
-  console.log(password);
-  console.log(phoneNumber);
-  console.log(address);
-  console.log(imgFile);
-  console.log(missionData?.profileImages);
 
   useEffect(() => {
     axios
-      .get(`/profile/profile/${userId}`, {
-        headers: { Authorization: `${accessToken}` },
+      .get(`/profile/profile/user`, {
+        headers: { Authorization: `${getAccessToken()}` },
       })
       .then(response => {
         console.log(response);
@@ -98,11 +58,6 @@ const Mypage = () => {
         setPhoneNumber(response.data.phoneNumber);
         setAddress(response.data.address);
         setImgFile(response.data.profileImages.body);
-        console.log(currnetId);
-        console.log(fixId);
-        console.log(password);
-        console.log(phoneNumber);
-        console.log(address);
       })
       .catch(function (error) {
         console.log(error);
@@ -124,41 +79,7 @@ const Mypage = () => {
       type: 'application/json',
     });
     userInfo.append('image', image);
-    console.log(image);
     userInfo.append('request', blob);
-
-    // axios
-    //   .patch(`/profile/profile/${userId}`, userInfo, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //       Authorization: getAccessToken(),
-    //     },
-    //   })
-    //   .then(res => {
-    //     console.log(res.data.code);
-    //     console.log(res.data);
-    //     alert('프로필 사진이 변경되었습니다');
-    //     if (res.data.code === '1' && currnetId && password) {
-    //       removeAccessToken();
-    //       removeRefreshToken();
-    //       axios
-    //         .post('/login', { id: currnetId, password: password })
-    //         .then(response => {
-    //           if (response.data.code === '-1') {
-    //             console.log(response);
-    //             return alert('로그인 실패');
-    //           }
-    //           setRefreshToken(response.data.refreshToken);
-    //           setAccessToken(response.data.accessToken);
-    //           console.log(response.data.refreshToken);
-    //           console.log(response.data.accessToken);
-    //           alert('로그인 성공');
-    //         })
-    //         .catch(err => {
-    //           return alert('로그인 실패');
-    //         });
-    //     }
-    //   });
   };
 
   const imgPreview = fileBlob => {
@@ -172,7 +93,6 @@ const Mypage = () => {
     });
   };
 
-  console.log(image);
   const userImgSubmit = e => {
     e.preventDefault();
     const userInfo = new FormData();
@@ -189,10 +109,6 @@ const Mypage = () => {
     userInfo.append('image', image);
     userInfo.append('request', blob);
 
-    for (let value of userInfo.values()) {
-      console.log(value);
-    }
-
     axios
       .patch(`/profile/profile/${userId}`, userInfo, {
         headers: {
@@ -201,8 +117,6 @@ const Mypage = () => {
         },
       })
       .then(res => {
-        console.log(res.data.code);
-        console.log(res.data);
         alert('프로필 사진이 변경되었습니다');
         if (res.data.code === '1' && currnetId && password) {
           removeAccessToken();
@@ -211,13 +125,10 @@ const Mypage = () => {
             .post('/login', { id: currnetId, password: password })
             .then(response => {
               if (response.data.code === '-1') {
-                console.log(response);
                 return alert('로그인 실패');
               }
               setRefreshToken(response.data.refreshToken);
               setAccessToken(response.data.accessToken);
-              console.log(response.data.refreshToken);
-              console.log(response.data.accessToken);
             })
             .catch(err => {
               return alert('로그인 실패');
@@ -357,7 +268,7 @@ const Mypage = () => {
       <CreateMissionWrapper>
         <CreateHeading>생성한 미션</CreateHeading>
         <CreateMissionlistWrapper>
-          {createMission.map((data, index) => (
+          {createMission?.map((data, index) => (
             <MypageBox
               key={index}
               id={data.id}
