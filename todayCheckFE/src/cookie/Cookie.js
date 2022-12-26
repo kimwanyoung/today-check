@@ -77,3 +77,7 @@ export const removeAccessToken = () => {
 export const removeAccessId = () => {
   return cookies.remove('accessId', { sameSite: 'strict', path: '/' });
 };
+
+export const removeAccessKey = () => {
+  return cookies.remove('accessKey', { sameSite: 'strict', path: '/' });
+};
