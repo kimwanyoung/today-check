@@ -7,50 +7,15 @@ import {
   setAccessToken,
   removeAccessToken,
   removeRefreshToken,
+  removeAccessKey,
   setRefreshToken,
+  setAccessKey,
 } from '../../cookie/Cookie';
 import MypageBox from '../../components/Mypage/MypageBox';
 import TextField from '@mui/material/TextField';
 import MypageModal from './Modal/MypageModal';
 import userImage from '../../images/userImage.png';
 import { BiSave } from 'react-icons/bi';
-import { useLocation } from 'react-router-dom';
-
-const UserData = {
-  address: '춘천',
-  id: 'yejin',
-  password: '1234',
-  phoneNumber: '010-0000-0000',
-  userId: 'yejin',
-};
-
-const MypageData = [
-  {
-    id: 1,
-    startDate: '2022-12-07T06:45:44.177Z',
-    endDate: '2022-12-07T06:45:44.177Z',
-    title: '코딩테스트 공부하실 분 구합니다.',
-    content: '코딩테스트 매일 하나씩 풀 예정입니다. 함께 하실 분 모집합니다.',
-    thumbnail:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-e2ZUrT6vhmG2nph1wWS3jpr1OdoYrfOTPQ&usqp=CAU',
-  },
-  {
-    id: 1,
-    startDate: '2022-12-07T06:45:44.177Z',
-    endDate: '2022-12-07T06:45:44.177Z',
-    title: '영어 스터디 모집합니다',
-    content: '코딩테스트 매일 하나씩 풀 예정입니다. 함께 하실 분 모집합니다.',
-    thumbnail: 'https://via.placeholder.com/350x200',
-  },
-  {
-    id: 1,
-    startDate: '2022-12-07T06:45:44.177Z',
-    endDate: '2022-12-07T06:45:44.177Z',
-    title: '코딩테스트 공부하실 분',
-    content: '코딩테스트 매일 하나씩 풀 예정입니다. 함께 하실 분 모집합니다.',
-    thumbnail: 'https://via.placeholder.com/350x200',
-  },
-];
 
 const Mypage = () => {
   const [fixButtonClick, setFixButtonClick] = useState(false);
@@ -58,31 +23,28 @@ const Mypage = () => {
   const [joinMission, setJoinMission] = useState([]);
   const [createMission, setCreateMissionData] = useState([]);
   const [missionClick, setMissionClick] = useState(false);
-  const userId = String(getAccessKey());
+  const [userId, setUserId] = useState(String(getAccessKey()));
   const accessToken = String(getAccessToken());
-  console.log(accessToken);
+
+  // 사용자 프로필 정보
   const [currnetId, setCurrentId] = useState(missionData?.id);
   const [fixId, setFixId] = useState(missionData?.id);
   const [password, setPassword] = useState(missionData?.password);
   const [phoneNumber, setPhoneNumber] = useState(missionData?.phoneNumber);
   const [address, setAddress] = useState(missionData?.address);
+
+  // 이미지
   const [imgPriviewFile, setImgPriviewFile] = useState();
   const [imgFile, setImgFile] = useState(missionData?.profileImages?.body);
   const [image, setImage] = useState();
   const imgRef = useRef();
-  const location = useLocation();
-  console.log(location.state);
-
-  console.log(currnetId);
-  console.log(fixId);
-  console.log(password);
-  console.log(phoneNumber);
-  console.log(address);
-  console.log(imgFile);
-  console.log(missionData?.profileImages);
 
   useEffect(() => {
-    axios
+    getData();
+  }, []);
+
+  const getData = async () => {
+    await axios
       .get(`/profile/profile/${userId}`, {
         headers: { Authorization: `${accessToken}` },
       })
@@ -91,25 +53,19 @@ const Mypage = () => {
         setMissionData(response.data);
         setJoinMission(response.data.joinMission);
         setCreateMissionData(response.data.createMission);
-        setMissionData(response.data);
         setCurrentId(response.data.id);
         setFixId(response.data.id);
         setPassword(response.data.password);
         setPhoneNumber(response.data.phoneNumber);
         setAddress(response.data.address);
         setImgFile(response.data.profileImages.body);
-        console.log(currnetId);
-        console.log(fixId);
-        console.log(password);
-        console.log(phoneNumber);
-        console.log(address);
       })
       .catch(function (error) {
         console.log(error);
       });
-  }, []);
+  };
 
-  const submitButton = () => {
+  const submitButton = async () => {
     const userInfo = new FormData();
 
     const userData = {
@@ -123,44 +79,42 @@ const Mypage = () => {
     const blob = new Blob([JSON.stringify(userData)], {
       type: 'application/json',
     });
-    userInfo.append('image', image);
-    console.log(image);
     userInfo.append('request', blob);
 
-    // axios
-    //   .patch(`/profile/profile/${userId}`, userInfo, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //       Authorization: getAccessToken(),
-    //     },
-    //   })
-    //   .then(res => {
-    //     console.log(res.data.code);
-    //     console.log(res.data);
-    //     alert('프로필 사진이 변경되었습니다');
-    //     if (res.data.code === '1' && currnetId && password) {
-    //       removeAccessToken();
-    //       removeRefreshToken();
-    //       axios
-    //         .post('/login', { id: currnetId, password: password })
-    //         .then(response => {
-    //           if (response.data.code === '-1') {
-    //             console.log(response);
-    //             return alert('로그인 실패');
-    //           }
-    //           setRefreshToken(response.data.refreshToken);
-    //           setAccessToken(response.data.accessToken);
-    //           console.log(response.data.refreshToken);
-    //           console.log(response.data.accessToken);
-    //           alert('로그인 성공');
-    //         })
-    //         .catch(err => {
-    //           return alert('로그인 실패');
-    //         });
-    //     }
-    //   });
+    await axios
+      .patch(`/profile/profile/${userId}`, userInfo, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: getAccessToken(),
+        },
+      })
+      .then(res => {
+        removeAccessKey();
+        setAccessKey(fixId);
+        setUserId(fixId);
+        alert('프로필이 수정되었습니다');
+        if (res.data.code === '1' && currnetId && fixId && password) {
+          removeAccessToken();
+          removeRefreshToken();
+          axios
+            .post('/login', { id: fixId, password: password })
+            .then(response => {
+              if (response.data.code === '-1') {
+                console.log(response);
+                return alert('로그인에 실패했습니다');
+              }
+              setRefreshToken(response.data.refreshToken);
+              setAccessToken(response.data.accessToken);
+            })
+            .catch(err => {
+              return alert('이미 존재하는 아이디입니다.');
+            });
+        }
+      })
+      .catch(err => alert('프로필 수정 실패'));
   };
 
+  // 프로필 이미지 미리보기 기능
   const imgPreview = fileBlob => {
     const reader = new FileReader();
     reader.readAsDataURL(fileBlob);
@@ -172,26 +126,11 @@ const Mypage = () => {
     });
   };
 
-  console.log(image);
+  // 프로필 이미지 저장 기능
   const userImgSubmit = e => {
     e.preventDefault();
     const userInfo = new FormData();
-
-    const data = {
-      userId: currnetId,
-      id: fixId,
-      password: password,
-      phoneNumber: phoneNumber,
-      address: address,
-    };
-
-    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     userInfo.append('image', image);
-    userInfo.append('request', blob);
-
-    for (let value of userInfo.values()) {
-      console.log(value);
-    }
 
     axios
       .patch(`/profile/profile/${userId}`, userInfo, {
@@ -201,8 +140,6 @@ const Mypage = () => {
         },
       })
       .then(res => {
-        console.log(res.data.code);
-        console.log(res.data);
         alert('프로필 사진이 변경되었습니다');
         if (res.data.code === '1' && currnetId && password) {
           removeAccessToken();
@@ -211,13 +148,10 @@ const Mypage = () => {
             .post('/login', { id: currnetId, password: password })
             .then(response => {
               if (response.data.code === '-1') {
-                console.log(response);
                 return alert('로그인 실패');
               }
               setRefreshToken(response.data.refreshToken);
               setAccessToken(response.data.accessToken);
-              console.log(response.data.refreshToken);
-              console.log(response.data.accessToken);
             })
             .catch(err => {
               return alert('로그인 실패');
@@ -263,7 +197,11 @@ const Mypage = () => {
               checkClick={fixButtonClick}
               onClick={() => setFixButtonClick(!fixButtonClick)}
             >
-              {fixButtonClick ? <div onClick={submitButton}>완료</div> : '수정'}
+              {fixButtonClick ? (
+                <div onClick={submitButton}>완료</div>
+              ) : (
+                <div onClick={getData}>수정</div>
+              )}
             </UserInformationFixButton>
             {fixButtonClick ? (
               <>
@@ -271,7 +209,7 @@ const Mypage = () => {
                   <span>현재아이디: </span>
                   <TextField
                     id="standard-helperText"
-                    defaultValue={currnetId}
+                    defaultValue={fixId}
                     variant="standard"
                     onChange={e => setCurrentId(e.target.value)}
                   />
@@ -282,6 +220,9 @@ const Mypage = () => {
                     id="standard-helperText"
                     defaultValue={fixId}
                     variant="standard"
+                    inputProps={{
+                      maxLength: 10,
+                    }}
                     onChange={e => setFixId(e.target.value)}
                   />
                 </UserBox>
@@ -291,6 +232,9 @@ const Mypage = () => {
                     id="standard-helperText"
                     defaultValue=""
                     variant="standard"
+                    inputProps={{
+                      maxLength: 15,
+                    }}
                     onChange={e => setPassword(e.target.value)}
                   />
                 </UserBox>
@@ -300,6 +244,9 @@ const Mypage = () => {
                     id="standard-helperText"
                     defaultValue={phoneNumber}
                     variant="standard"
+                    inputProps={{
+                      maxLength: 11,
+                    }}
                     onChange={e => setPhoneNumber(e.target.value)}
                   />
                 </UserBox>
@@ -317,7 +264,7 @@ const Mypage = () => {
               <>
                 <UserGreetings>안녕하세요</UserGreetings>
                 <UserName>
-                  <span>{UserData.id}</span>님
+                  <span>{fixId}</span>님
                 </UserName>
                 <UserSpan>
                   <span>'오늘의 미션도 응원합니다'</span>
@@ -330,8 +277,36 @@ const Mypage = () => {
       <JoinMissionWrapper>
         <JoinHeading>참여한 미션</JoinHeading>
         <JoinMissionlistWrapper>
-          {joinMission?.map((data, index) => (
-            <>
+          {joinMission &&
+            joinMission?.map((data, index) => (
+              <>
+                <MypageBox
+                  key={index}
+                  id={data.id}
+                  title={data.title}
+                  content={data.content}
+                  startDate={data.startDate}
+                  endDate={data.endDate}
+                  thumbnail={data.thumbnail}
+                  setMissionClick={setMissionClick}
+                  missionClick={missionClick}
+                />
+                {missionClick && (
+                  <MypageModal
+                    postId={data.id}
+                    setMissionClick={setMissionClick}
+                    missionClick={missionClick}
+                  />
+                )}
+              </>
+            ))}
+        </JoinMissionlistWrapper>
+      </JoinMissionWrapper>
+      <CreateMissionWrapper>
+        <CreateHeading>생성한 미션</CreateHeading>
+        <CreateMissionlistWrapper>
+          {createMission &&
+            createMission?.map((data, index) => (
               <MypageBox
                 key={index}
                 id={data.id}
@@ -343,33 +318,7 @@ const Mypage = () => {
                 setMissionClick={setMissionClick}
                 missionClick={missionClick}
               />
-              {missionClick && (
-                <MypageModal
-                  postId={data.id}
-                  setMissionClick={setMissionClick}
-                  missionClick={missionClick}
-                />
-              )}
-            </>
-          ))}
-        </JoinMissionlistWrapper>
-      </JoinMissionWrapper>
-      <CreateMissionWrapper>
-        <CreateHeading>생성한 미션</CreateHeading>
-        <CreateMissionlistWrapper>
-          {createMission.map((data, index) => (
-            <MypageBox
-              key={index}
-              id={data.id}
-              title={data.title}
-              content={data.content}
-              startDate={data.startDate}
-              endDate={data.endDate}
-              thumbnail={data.thumbnail}
-              setMissionClick={setMissionClick}
-              missionClick={missionClick}
-            />
-          ))}
+            ))}
         </CreateMissionlistWrapper>
       </CreateMissionWrapper>
     </MainContainer>
@@ -501,8 +450,18 @@ const UserGreetings = styled.div`
 `;
 
 const UserName = styled.div`
-  margin-left: 200px;
-  font-size: 2.5rem;
+  display: block;
+  width: 300px;
+  max-height: 105px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: wrap;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin-top: 10px;
+  margin-left: 3rem;
+  font-size: 2.4rem;
+  text-align: right;
 
   span {
     font-size: 3.4rem;
@@ -510,8 +469,8 @@ const UserName = styled.div`
 `;
 
 const UserSpan = styled.div`
-  margin-top: 36px;
   margin-left: 34px;
+  margin-top: 1rem;
   font-size: 1.6rem;
 `;
 
