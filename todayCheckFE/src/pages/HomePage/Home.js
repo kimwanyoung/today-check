@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import HomeBox from '../../components/home/homeBox';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [missions, setMissions] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -17,8 +19,6 @@ const Home = () => {
         console.log(error);
       });
   }, []);
-
-  const handleTestMission = () => {};
 
   return (
     <RightContainer>
@@ -34,6 +34,9 @@ const Home = () => {
           postContent={data?.postContent}
         />
       ))}
+      <AddMisstion onClick={() => navigate('/createMission')}>
+        미션 등록하기!
+      </AddMisstion>
     </RightContainer>
   );
 };
@@ -53,9 +56,22 @@ const RightContainer = styled.div`
   padding-bottom: 1rem;
 `;
 
-const HomeBoxContainer = styled.div`
+const AddMisstion = styled.div`
+  position: absolute;
   display: flex;
-  justify-content: flex-start;
   align-items: center;
-  flex-wrap: wrap;
+  justify-content: center;
+  bottom: 2rem;
+  right: 2rem;
+  width: 8rem;
+  height: 3rem;
+  border-radius: 1rem;
+  background-color: #eb6440;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s all ease-in-out;
+
+  :hover {
+    transform: scale(1.1);
+  }
 `;
