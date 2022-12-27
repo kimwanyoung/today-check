@@ -145,9 +145,10 @@ const HomeBoxButton = styled.button`
   justify-content: center;
   width: 100px;
   height: 34px;
-  background-color: #bfbfff;
+  background-color: #eb6440;
+  color: white;
   &:active,
   &:hover {
-    background-color: #a5a5ff;
+    background-color: #eb6440;
   }
 `;

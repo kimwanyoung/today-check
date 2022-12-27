@@ -15,9 +15,6 @@ const MypageBox = ({
 
   return (
     <MypageBoxContainer onClick={() => setMissionClick(!missionClick)}>
-      <MypageBoxThumbnail>
-        <img src={thumbnail} alt="thumbnail" />
-      </MypageBoxThumbnail>
       <MypageBoxTitle>
         <span>{title}</span>
       </MypageBoxTitle>
@@ -32,13 +29,17 @@ export default MypageBox;
 
 const MypageBoxContainer = styled.div`
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   margin-left: 1rem;
   margin-bottom: 1rem;
   width: 13rem;
   height: 10rem;
-  background-color: #9292ff;
   border-radius: 10px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  background-color: #eff5f5;
 
   :hover {
     cursor: pointer;
@@ -57,33 +58,11 @@ const MypageBoxThumbnail = styled.div`
 `;
 
 const MypageBoxTitle = styled.div`
-  color: white;
-  width: 90%;
-  height: 60%;
-  position: absolute;
-  top: 34px;
-  right: 7px;
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  font-size: 1.2rem;
-
-  span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: normal;
-    line-height: 1.2;
-    word-wrap: break-word;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-  }
+  color: black;
+  height: 3rem;
+  font-size: 1.3rem;
 `;
 
 const MypageBoxDate = styled.div`
-  position: absolute;
-  bottom: 3px;
-  right: 7px;
   font-size: 0.8rem;
 `;

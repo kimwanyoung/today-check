@@ -7,7 +7,7 @@ import { getAccessToken, setAccessToken } from '../../cookie/Cookie';
 import { GrFormTrash } from 'react-icons/gr';
 import { useEffect } from 'react';
 import Button from '@mui/material/Button';
-import { useSlotProps } from '@mui/base';
+import UserImage from '../../components/UserImage';
 
 const PostingDetail = () => {
   const [comment, setComment] = useState('');
@@ -26,11 +26,6 @@ const PostingDetail = () => {
       })
       .catch(err => console.log(err));
   }, []);
-
-  const handleImgError = e => {
-    e.target.src = 'https://via.placeholder.com/150';
-  };
-
   const postConfig = {
     method: 'post',
     url: `/post/comment/${location.state.postKey}`,
@@ -118,7 +113,7 @@ const PostingDetail = () => {
             {commentList?.map((prop, idx) => (
               <CommentContent key={idx}>
                 <User>
-                  <img src="" onError={handleImgError} alt={prop.writer} />
+                  <UserImage userId={prop.writer} />
                   <UserCommentInfo>
                     <p>{prop.writer}</p>
                     <h2>{prop.date}</h2>
@@ -145,7 +140,8 @@ const DetailWrapper = styled.div`
   justify-content: center;
   width: 100vw;
   height: 100vh;
-  background-color: #eeeeff;
+  padding-left: 15rem;
+  background-color: #efefef;
   overflow-y: scroll;
 `;
 

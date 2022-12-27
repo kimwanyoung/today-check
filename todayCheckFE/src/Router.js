@@ -12,6 +12,7 @@ import Home from './pages/HomePage/Home';
 import MissionDetail from './pages/HomePage/MissionDetail';
 import PostingDetail from './pages/PostingPage/PostingDetail';
 import Mypage from './pages/Mypage/Mypage';
+import CreateMission from './pages/CreateMission';
 
 const Router = () => {
   return (
@@ -28,6 +29,7 @@ const Router = () => {
           <Route path="/login/navercallback" element={<NaverLoginCallback />} />
           <Route path="/posting" element={<Posting />} />
           <Route path="/postingDetail" element={<PostingDetail />} />
+          <Route path="/createMission" element={<CreateMission />} />
         </Routes>
       </Container>
     </BrowserRouter>
