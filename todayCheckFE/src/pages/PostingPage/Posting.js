@@ -5,6 +5,7 @@ import axios from 'axios';
 import PostingModal from './Modal/PostingModal';
 import { getAccessToken, setAccessToken } from '../../cookie/Cookie';
 import { useNavigate } from 'react-router-dom';
+import { AiFillHeart } from 'react-icons/ai';
 
 const Posting = () => {
   const [posts, setPosts] = useState([]);
@@ -61,8 +62,15 @@ const Posting = () => {
           <PostCardContent>
             <PostTitle>{props.title}</PostTitle>
             <PostDesc>{props.description}</PostDesc>
+            <PostDate>{props.date.slice(0, 10)}</PostDate>
           </PostCardContent>
-          <PostUser>{props.writer}</PostUser>
+          <PostUser>
+            <p>{props.writer}</p>
+            <p>
+              <AiFillHeart />
+              {props.recommendation}
+            </p>
+          </PostUser>
         </PostCard>
       ))}
       {openModal && <PostingModal setOpenModal={setOpenModal} />}
@@ -91,7 +99,8 @@ const PostingWrapper = styled.section`
   flex-wrap: wrap;
   width: 100vw;
   height: 100vh;
-  background-color: #eeeeff;
+  padding-left: 15rem;
+  background-color: #efefef;
   overflow: scroll;
 `;
 
@@ -107,17 +116,20 @@ const PostCard = styled.div`
     transform: translateY(-1rem);
   }
   img {
-    width: 350px;
-    height: 200px;
+    width: 23rem;
+    height: 10rem;
   }
 `;
 
 const PostCardContent = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   padding: 1rem;
+  height: 10rem;
+  overflow-y: hidden;
 `;
 
 const PostTitle = styled.h2`
@@ -129,14 +141,32 @@ const PostUser = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
-  height: 2rem;
+  height: 3rem;
   padding-left: 1rem;
+  padding-right: 1rem;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
+  font-weight: 700;
   bottom: 0;
+
+  p {
+    display: flex;
+    align-items: center;
+    svg {
+      margin-right: 0.5rem;
+      margin-bottom: 0.2rem;
+    }
+  }
 `;
 
 const PostDesc = styled.p`
   color: grey;
   margin-top: 1rem;
+`;
+
+const PostDate = styled.p`
+  position: absolute;
+  color: grey;
+  bottom: 0;
 `;

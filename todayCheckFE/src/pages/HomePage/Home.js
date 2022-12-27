@@ -22,20 +22,18 @@ const Home = () => {
 
   return (
     <RightContainer>
-      <HomeBoxContainer>
-        {missions?.map(data => (
-          <HomeBox
-            key={data?.id}
-            id={data?.id}
-            postPicture={data?.postPicture}
-            adminName={data?.admin?.name}
-            adminPicture={data?.admin?.avater}
-            participants={data?.participants?.length}
-            postTitle={data?.postTitle}
-            postContent={data?.postContent}
-          />
-        ))}
-      </HomeBoxContainer>
+      {missions?.map(data => (
+        <HomeBox
+          key={data?.id}
+          id={data?.id}
+          postPicture={data?.postPicture}
+          adminName={data?.admin?.name}
+          adminPicture={data?.admin?.avater}
+          participants={data?.participants?.length}
+          postTitle={data?.postTitle}
+          postContent={data?.postContent}
+        />
+      ))}
     </RightContainer>
   );
 };
@@ -43,9 +41,13 @@ const Home = () => {
 export default Home;
 
 const RightContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   height: 100vh;
   width: 100vw;
-  background-color: #eeeeff;
+  padding-left: 15rem;
+  background-color: #efefef;
   overflow-x: hidden;
   overflow-y: scroll;
   padding-bottom: 1rem;

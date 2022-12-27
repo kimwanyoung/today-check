@@ -14,7 +14,7 @@ const GlobalStyles = createGlobalStyle`
       display: none;
     }
     body {
-        background-color: rgb(240, 240, 240);
+        background-color: #EFF5F5;
     }
 
     button {
