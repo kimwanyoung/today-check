@@ -11,11 +11,14 @@ import java.util.UUID;
 import javax.security.auth.login.AccountNotFoundException;
 import javax.transaction.Transactional;
 
+import com.team.todaycheck.main.exception.NotAuthorizationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team.todaycheck.main.DTO.MessageDTO;
@@ -106,9 +109,66 @@ public class MissionService implements IMissionService {
 	*/
 	
 	@Override
-	public MissionDTO save(MissionDTO dto) {
-		Mission result = missionRepository.save(toEntity(dto));
-		return fromEntity(result);
+	public boolean save(Mission mission, List<MultipartFile> multipartFiles, String cookie) throws IOException {
+		Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
+
+		RefreshToken token = o.orElse(null);
+		if (token == null) {
+			throw new NotAuthorizationException();
+		}
+
+		File imageFile = null;
+		HttpHeaders header = new HttpHeaders();
+
+		UserEntity user = userRepository.findById(token.getKeyEmail());
+
+
+		List<MissionCertification> certList = new ArrayList<>();
+
+		ParticipantsMission pm = ParticipantsMission.builder()
+				.mission(mission)
+				.missionCertification(new ArrayList<>())
+				.build();
+
+		for (MultipartFile multipartFile : multipartFiles) {
+			// 파일이 비어 있지 않을 때 작업을 시작해야 오류가 나지 않는다
+			if(!multipartFile.isEmpty()) {
+				// jpeg, png, gif 파일들만 받아서 처리할 예정
+				String contentType = multipartFile.getContentType();
+				String originalFileExtension;
+				// 확장자 명이 없으면 이 파일은 잘 못 된 것이다
+				if (ObjectUtils.isEmpty(contentType)) {
+					break;
+				} else {
+					if (contentType.contains("image/jpeg")) {
+						originalFileExtension = ".jpg";
+					} else if (contentType.contains("image/png")) {
+						originalFileExtension = ".png";
+					} else if (contentType.contains("image/gif")) {
+						originalFileExtension = ".gif";
+					}
+					// 다른 파일 명이면 아무 일 하지 않는다
+					else {
+						break;
+					}
+				}
+				String new_file_name = Long.toString(System.nanoTime()) + originalFileExtension;
+
+				imageFile = new File(fileDir + new_file_name);
+				multipartFile.transferTo(imageFile);
+
+				pm.addMissionCertification(MissionCertification.builder()
+						.userName(user.getUsername())
+						.image(new_file_name)
+						.build());
+			}
+		}
+
+		if (partMissionRepository.save(pm) == null) {
+			return false;
+		}
+
+		return true;
 	}
 	
 	@Override
@@ -182,12 +242,6 @@ public class MissionService implements IMissionService {
 				.startDate(dto.getStartDate())
 				.endDate(dto.getEndDate())
 				.build();
-	}
-
-	@Override
-	public MissionDTO addParticipant(MissionDTO dto, ParticipantDTO participant) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
