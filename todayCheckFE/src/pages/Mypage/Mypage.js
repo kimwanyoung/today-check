@@ -14,7 +14,6 @@ import {
 import MypageBox from '../../components/Mypage/MypageBox';
 import TextField from '@mui/material/TextField';
 import MypageModal from './Modal/MypageModal';
-import userImage from '../../images/userImage.png';
 import { BiSave } from 'react-icons/bi';
 
 const Mypage = () => {
@@ -27,8 +26,8 @@ const Mypage = () => {
   const accessToken = String(getAccessToken());
 
   // 사용자 프로필 정보
-  const [currnetId, setCurrentId] = useState(missionData?.id);
-  const [fixId, setFixId] = useState(missionData?.id);
+  const [currnetId, setCurrentId] = useState(userId);
+  const [fixId, setFixId] = useState('');
   const [password, setPassword] = useState(missionData?.password);
   const [phoneNumber, setPhoneNumber] = useState(missionData?.phoneNumber);
   const [address, setAddress] = useState(missionData?.address);
@@ -60,9 +59,13 @@ const Mypage = () => {
         setAddress(response.data.address);
         setImgFile(response.data.profileImages.body);
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(err => {
+        console.log(err);
       });
+  };
+
+  const handleErrorImg = e => {
+    e.target.src = 'https://via.placeholder.com/150';
   };
 
   const submitButton = async () => {
@@ -131,7 +134,6 @@ const Mypage = () => {
     e.preventDefault();
     const userInfo = new FormData();
     userInfo.append('image', image);
-
     axios
       .patch(`/profile/profile/${userId}`, userInfo, {
         headers: {
@@ -178,11 +180,16 @@ const Mypage = () => {
             />
             <UserImageLabel htmlFor="fileImageUpload">
               {imgPriviewFile ? (
-                <img src={imgPriviewFile} alt="userImage" />
+                <img
+                  src={imgPriviewFile}
+                  alt="userImage"
+                  onError={handleErrorImg}
+                />
               ) : (
                 <img
-                  src={imgFile ? `data:image/;base64, ${imgFile}` : userImage}
+                  src={`data:image/;base64, ${imgFile}`}
                   alt="userImage"
+                  onError={handleErrorImg}
                 />
               )}
             </UserImageLabel>
@@ -204,7 +211,7 @@ const Mypage = () => {
               )}
             </UserInformationFixButton>
             {fixButtonClick ? (
-              <>
+              <UserBoxWrapper>
                 <UserBox>
                   <span>현재아이디: </span>
                   <TextField
@@ -259,7 +266,7 @@ const Mypage = () => {
                     onChange={e => setAddress(e.target.value)}
                   />
                 </UserBox>
-              </>
+              </UserBoxWrapper>
             ) : (
               <>
                 <UserGreetings>안녕하세요</UserGreetings>
@@ -334,38 +341,38 @@ const MainContainer = styled.div`
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  background-color: #eeeeff;
+  padding-left: 15rem;
+  background-color: #efefef;
   overflow: scroll;
 `;
 
 const UserWrapper = styled.div`
   margin-top: 1rem;
-  margin-bottom: 2rem;
-  margin-left: 2rem;
   position: relative;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 700px;
-  height: 45%;
+  width: 70%;
+  height: 40%;
   border-radius: 10px;
   background-color: white;
+  padding: 5rem;
 `;
 
 const UserAvater = styled.div`
   position: absolute;
-  width: 3rem;
-  height: 3rem;
+  top: 13rem;
+  width: 25%;
   margin-top: -13rem;
   left: 2rem;
 `;
 
 const UserImageLabel = styled.label`
   img {
-    border: 6px solid black;
-    width: 14rem;
-    height: 14rem;
+    border: 1px solid black;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     cursor: pointer;
   }
@@ -410,14 +417,13 @@ const UserInformations = styled.div`
 `;
 
 const UserInformationFixButton = styled.div`
-  background-color: #9292ff;
-  box-shadow: 0px 0px 2px 2px rgb(120, 120, 255);
+  background-color: #eb6440;
   color: white;
   margin-top: 10px;
   position: absolute;
   top: 1.5rem;
   right: 1rem;
-  width: 45px;
+  width: 5rem;
   text-align: center;
   border-radius: 15px;
   padding: 6px 4px;
@@ -426,18 +432,17 @@ const UserInformationFixButton = styled.div`
   transition: 0.5s;
 
   :hover {
-    background-color: #6e6eff;
+    background-color: #eb6440;
+    opacity: 0.8;
   }
 `;
 
 // 수정 버튼 눌렀을 때
 const UserBox = styled.div`
-  font-size: 1.3rem;
-  padding: 13px 0;
+  font-size: 1rem;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
-
   span {
     margin-right: 10px;
   }
@@ -465,6 +470,7 @@ const UserName = styled.div`
 
   span {
     font-size: 3.4rem;
+    color: #eb6440;
   }
 `;
 
@@ -480,6 +486,12 @@ const JoinMissionWrapper = styled.div`
 `;
 
 const JoinHeading = styled.h1`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 3rem;
+  background-color: rgba(235, 100, 64, 0.6);
+  color: white;
   padding-left: 2.5rem;
   font-size: 1.3rem;
 `;
@@ -487,18 +499,25 @@ const JoinHeading = styled.h1`
 const JoinMissionlistWrapper = styled.div`
   padding-left: 1rem;
   margin-top: 1rem;
-  width: 48vw;
+  width: 50rem;
+  height: 15rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 `;
 
 const CreateMissionWrapper = styled.div`
-  margin-top: 1rem;
-  height: auto;
+  width: 50rem;
+  height: 15rem;
 `;
 
 const CreateHeading = styled.h1`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 3rem;
+  background-color: rgba(235, 100, 64, 0.6);
+  color: white;
   padding-left: 2.5rem;
   font-size: 1.3rem;
 `;
@@ -509,7 +528,16 @@ const CreateMissionlistWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-content: center;
-  width: 48vw;
+  width: 50rem;
   flex-flow: row wrap;
   flex-grow: 2;
+`;
+
+const UserBoxWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  width: 30rem;
+  margin-top: 3rem;
 `;

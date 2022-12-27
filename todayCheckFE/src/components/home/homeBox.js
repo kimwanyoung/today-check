@@ -12,17 +12,31 @@ const HomeBox = ({
   postTitle,
   postContent,
 }) => {
+  const handleErrorImg = e => {
+    e.target.src = 'https://via.placeholder.com/150';
+  };
+
   return (
     <HomeBoxContainer>
       {/* admin user 정보  */}
       <HomeBoxHead>
-        <img src={adminPicture} alt="postPicture" />
+        {/* src={adminPicture} */}
+        <img
+          src="https://via.placeholder.com/150"
+          alt="postPicture"
+          onError={handleErrorImg}
+        />
         <span>{adminName}</span>
       </HomeBoxHead>
 
       {/*  main picture */}
       <HomeBoxPicture>
-        <img src={postPicture} alt="" />
+        {/* src={postPicture} */}
+        <img
+          src="https://via.placeholder.com/150"
+          alt="post"
+          onError={handleErrorImg}
+        />
       </HomeBoxPicture>
 
       {/* title, content */}
@@ -70,7 +84,7 @@ const HomeBoxHead = styled.div`
     width: 25px;
     height: 25px;
     margin-right: 5px;
-    border-radius: 100%;
+    border-radius: 50%;
   }
 `;
 

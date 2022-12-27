@@ -11,7 +11,11 @@ import { FaGoogle } from 'react-icons/fa';
 import { IoPersonAdd } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { setAccessToken, setRefreshToken } from '../../cookie/Cookie';
+import {
+  setAccessKey,
+  setAccessToken,
+  setRefreshToken,
+} from '../../cookie/Cookie';
 
 const CLIENT_ID =
   '33798723249-7235eh6dkueqvlb5982qulnrv11tlqdj.apps.googleusercontent.com';
@@ -89,6 +93,8 @@ const Login = () => {
           }
           setRefreshToken(response.data.refreshToken);
           setAccessToken(response.data.accessToken);
+          setAccessKey(response.data.id);
+          // setAccessKey(res)
           navigate('/');
         })
         .catch(err => {

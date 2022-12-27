@@ -16,7 +16,7 @@ const MypageBox = ({
   return (
     <MypageBoxContainer onClick={() => setMissionClick(!missionClick)}>
       <MypageBoxThumbnail>
-        <img src={thumbnail} />
+        <img src={thumbnail} alt="thumbnail" />
       </MypageBoxThumbnail>
       <MypageBoxTitle>
         <span>{title}</span>
