@@ -130,37 +130,39 @@ public class MissionService implements IMissionService {
 				.missionCertification(new ArrayList<>())
 				.build();
 
-		for (MultipartFile multipartFile : multipartFiles) {
-			// 파일이 비어 있지 않을 때 작업을 시작해야 오류가 나지 않는다
-			if(!multipartFile.isEmpty()) {
-				// jpeg, png, gif 파일들만 받아서 처리할 예정
-				String contentType = multipartFile.getContentType();
-				String originalFileExtension;
-				// 확장자 명이 없으면 이 파일은 잘 못 된 것이다
-				if (ObjectUtils.isEmpty(contentType)) {
-					break;
-				} else {
-					if (contentType.contains("image/jpeg")) {
-						originalFileExtension = ".jpg";
-					} else if (contentType.contains("image/png")) {
-						originalFileExtension = ".png";
-					} else if (contentType.contains("image/gif")) {
-						originalFileExtension = ".gif";
-					}
-					// 다른 파일 명이면 아무 일 하지 않는다
-					else {
+		if (multipartFiles != null) {
+			for (MultipartFile multipartFile : multipartFiles) {
+				// 파일이 비어 있지 않을 때 작업을 시작해야 오류가 나지 않는다
+				if (!multipartFile.isEmpty()) {
+					// jpeg, png, gif 파일들만 받아서 처리할 예정
+					String contentType = multipartFile.getContentType();
+					String originalFileExtension;
+					// 확장자 명이 없으면 이 파일은 잘 못 된 것이다
+					if (ObjectUtils.isEmpty(contentType)) {
 						break;
+					} else {
+						if (contentType.contains("image/jpeg")) {
+							originalFileExtension = ".jpg";
+						} else if (contentType.contains("image/png")) {
+							originalFileExtension = ".png";
+						} else if (contentType.contains("image/gif")) {
+							originalFileExtension = ".gif";
+						}
+						// 다른 파일 명이면 아무 일 하지 않는다
+						else {
+							break;
+						}
 					}
+					String new_file_name = Long.toString(System.nanoTime()) + originalFileExtension;
+
+					imageFile = new File(fileDir + new_file_name);
+					multipartFile.transferTo(imageFile);
+
+					pm.addMissionCertification(MissionCertification.builder()
+							.userName(user.getUsername())
+							.image(new_file_name)
+							.build());
 				}
-				String new_file_name = Long.toString(System.nanoTime()) + originalFileExtension;
-
-				imageFile = new File(fileDir + new_file_name);
-				multipartFile.transferTo(imageFile);
-
-				pm.addMissionCertification(MissionCertification.builder()
-						.userName(user.getUsername())
-						.image(new_file_name)
-						.build());
 			}
 		}
 
