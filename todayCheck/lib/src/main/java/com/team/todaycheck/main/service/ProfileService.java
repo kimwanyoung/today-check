@@ -34,7 +34,7 @@ public class ProfileService {
 	
 	@Autowired ProfileRepository profileRepos;
 	@Autowired UserRepository userRepos;
-	private String fileDir = "/Users/yejin/Documents/project/today-check/todayCheck/image/";
+	private String fileDir = "C:\\devtool\\upload\\";
 	
 	public ProfileDTO getProfile(String accoundId) throws AccountNotFoundException {
 		UserEntity user = profileRepos.findById(accoundId);
@@ -82,20 +82,20 @@ public class ProfileService {
 			profileDTO = new ModifyProfileDTO();
 			profileDTO.setUserId(userToken);
 			dtoNullCheck = false;
-		}
-		
-		if(profileDTO.getUserId() == null || !userToken.equals(profileDTO.getUserId())) 
-			throw new AccountNotFoundException("계정 소유자만 계정을 변경할 수 있습니다.");
-		
-		if(!profileDTO.getUserId().equals(profileDTO.getId())) { // 음 계정 아이디가 변경되었을 경우
-			UserEntity result = userRepos.findById(profileDTO.getId());
-			if(result != null) throw new DuplicateAccountException("이미 존재하는 회원입니다.");
+		} else {
+			if(profileDTO.getUserId() == null || !userToken.equals(profileDTO.getUserId())) 
+				throw new AccountNotFoundException("계정 소유자만 계정을 변경할 수 있습니다.");
 			
-			Cookie myCookie = new Cookie("refreshToken", null);
-			myCookie.setMaxAge(0);
-			myCookie.setPath("/"); // refreshToken 폐기
-			
-			profileRepos.setUserFromContent(profileDTO.getUserId() , profileDTO.getId());
+			if(!profileDTO.getUserId().equals(profileDTO.getId())) { // 음 계정 아이디가 변경되었을 경우
+				UserEntity result = userRepos.findById(profileDTO.getId());
+				if(result != null) throw new DuplicateAccountException("이미 존재하는 회원입니다.");
+				
+				Cookie myCookie = new Cookie("refreshToken", null);
+				myCookie.setMaxAge(0);
+				myCookie.setPath("/"); // refreshToken 폐기
+				
+				profileRepos.setUserFromContent(profileDTO.getUserId() , profileDTO.getId());
+			}
 		}
 		
 		// 데이터 수정
@@ -116,6 +116,8 @@ public class ProfileService {
 			imgFile.transferTo(new File(fileDir + savedName)); // 파일 저장
 			user.setProfileImages(savedName);
 		}
+		
+		userRepos.save(user);
 		
 		return MessageDTO.builder()
 				.code("1")
