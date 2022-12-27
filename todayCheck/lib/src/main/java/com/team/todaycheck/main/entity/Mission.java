@@ -44,7 +44,7 @@ public class Mission {
     private String content;
     
     @Column(nullable = false)
-    private String thumbnail;
+    private String thumbnail = "";
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
