@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import styled from 'styled-components';
-import logo from '../images/todayCheckLogo.png';
+import logo from '../images/TodayCheck.png';
+import { MdKeyboardArrowDown } from 'react-icons/md';
 import { getAccessToken, removeAccessToken } from '../cookie/Cookie';
 
 // icons
@@ -12,6 +13,7 @@ import { FaUser } from 'react-icons/fa';
 
 const Navigation = () => {
   const [isLogin, setIsLogin] = useState(false);
+  const [myArrow, setMyArrow] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -20,18 +22,22 @@ const Navigation = () => {
     } else {
       setIsLogin(false);
     }
-  }, []);
+  });
 
   const handleLogout = () => {
     removeAccessToken();
   };
 
+  const handleMyPageArrowClick = () => {
+    setMyArrow(true);
+  };
+
   return (
     <HeaderContainer>
       {/* 로고 */}
-      <LogoWrapper>
+      <div>
         <TodayCheckLogo src={logo} />
-      </LogoWrapper>
+      </div>
 
       <NavWrapper>
         {/* 홈 버튼 */}
@@ -72,42 +78,40 @@ const Navigation = () => {
 export default Navigation;
 
 const HeaderContainer = styled.div`
-  width: 240px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15rem;
   height: 100vh;
-  float: left;
-  border-right: 4.5px solid #f0f0f0;
-  background-color: white;
-`;
-
-const LogoWrapper = styled.div`
-  display: block;
+  background-color: #eff5f5;
+  padding-top: 2rem;
 `;
 
 const TodayCheckLogo = styled.img`
-  width: 139px;
-  height: 24px;
-  margin: 25px 15px;
+  width: 100%;
+  height: 100%;
 `;
 
 const NavWrapper = styled.ul`
   display: flex;
   flex-direction: column;
-  width: 225px;
+  width: 10rem;
 `;
 
 const HomeNavButton = styled.li`
   display: flex;
   justify-content: start;
   align-items: center;
-  width: 200px;
-  height: 43px;
-  margin-left: 10px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  font-size: 15px;
+  width: 13rem;
+  height: 3rem;
+  margin-left: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 1.3rem;
+  border-radius: 0.3rem;
+  font-size: 1rem;
   font-weight: 900;
-  background-color: ${props => (props.pageName === '/' ? '#BFBFFF' : '')};
-  color: ${props => (props.pageName === '/' ? '#5151FF' : '#828282')};
+  background-color: ${props => (props.pageName === '/' ? '#497174' : '')};
+  color: ${props => (props.pageName === '/' ? '#FEFEFE' : '#828282')};
   opacity: ${props => (props.pageName === '/' ? '0.8' : '')};
   font-family: 'HallymGothic-Regular';
   transition-property: background-color;
@@ -118,28 +122,22 @@ const HomeNavButton = styled.li`
     margin-left: 10px;
     margin-right: 15px;
   }
-
-  &{HomeNavButton}:hover {
-    background-color: #BFBFFF;
-    color: #5151FF;
-    opacity: 0.8;
-  };
 `;
 
 const PostingNavButton = styled.li`
   display: flex;
   justify-content: start;
   align-items: center;
-  width: 200px;
-  height: 43px;
-  margin-left: 10px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  font-size: 15px;
+  width: 13rem;
+  height: 3rem;
+  margin-left: 1rem;
+  margin-bottom: 1.3rem;
+  border-radius: 0.3rem;
+  font-size: 1rem;
   font-weight: 900;
   background-color: ${props =>
-    props.pageName === '/posting' ? '#BFBFFF' : ''};
-  color: ${props => (props.pageName === '/posting' ? '#5151FF' : '#828282')};
+    props.pageName === '/posting' ? '#497174' : ''};
+  color: ${props => (props.pageName === '/posting' ? '#FEFEFE' : '#828282')};
   opacity: ${props => (props.pageName === '/posting' ? '0.8' : '')};
   font-family: 'HallymGothic-Regular';
   transition-property: background-color;
@@ -150,27 +148,21 @@ const PostingNavButton = styled.li`
     margin-left: 10px;
     margin-right: 16px;
   }
-
-  &{PostingNavButton}:hover {
-    background-color: #BFBFFF;
-    color: #5151FF;
-    opacity: 0.8;
-  }
 `;
 
 const MypageNavButton = styled.li`
   display: flex;
   justify-content: start;
   align-items: center;
-  width: 200px;
-  height: 43px;
-  margin-left: 10px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  font-size: 15px;
+  width: 13rem;
+  height: 3rem;
+  margin-left: 1rem;
+  margin-bottom: 1.3rem;
+  border-radius: 0.3rem;
+  font-size: 1rem;
   font-weight: 900;
-  background-color: ${props => (props.pageName === '/mypage' ? '#BFBFFF' : '')};
-  color: ${props => (props.pageName === '/mypage' ? '#5151FF' : '#828282')};
+  background-color: ${props => (props.pageName === '/mypage' ? '#497174' : '')};
+  color: ${props => (props.pageName === '/mypage' ? '#FEFEFE' : '#828282')};
   opacity: ${props => (props.pageName === '/mypage' ? '0.8' : '')};
   font-family: 'HallymGothic-Regular';
   transition-property: background-color;
@@ -180,13 +172,6 @@ const MypageNavButton = styled.li`
     font-size: 19px;
     margin-left: 12px;
     margin-right: 17px;
-  }
-
-  &{MypageNavButton}:hover {
-    background-color: #BFBFFF;
-    color: #5151FF;
-    opacity: 0.8;
-    font-family: 'HallymGothic-Regular';
   }
 `;
 
@@ -201,15 +186,16 @@ const Login = styled.li`
   border-radius: 5px;
   font-size: 15px;
   font-weight: 900;
-  background-color: #bfbfff;
-  color: #5151ff;
+  background-color: #eb6440;
+  color: white;
   opacity: 0.8;
   font-family: 'HallymGothic-Regular';
   transition-property: background-color;
   transition-duration: 0.5s;
 
-  &:hover {
-    background-color: #6565ff;
+  :hover {
+    background-color: #eb6440;
+    opacity: 1;
     color: white;
   }
 `;
@@ -220,5 +206,5 @@ const LoginMove = styled(Link)`
   bottom: 5px;
   left: 4px;
   text-decoration: none;
-  color: #5151ff;
+  color: #eb6440;
 `;
