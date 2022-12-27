@@ -356,7 +356,7 @@ const UserWrapper = styled.div`
   width: 70%;
   height: 40%;
   border-radius: 10px;
-  background-color: white;
+  background-color: #eff5f5;
   padding: 5rem;
 `;
 

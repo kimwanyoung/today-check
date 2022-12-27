@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import HomeBox from '../../components/home/homeBox';
+import HomeBox from '../../components/home/HomeBox';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
@@ -22,16 +22,16 @@ const Home = () => {
 
   return (
     <RightContainer>
-      {missions?.map(data => (
+      {missions?.map((data, idx) => (
         <HomeBox
-          key={data?.id}
-          id={data?.id}
-          postPicture={data?.postPicture}
+          key={idx}
+          id={data?.mission.id}
+          postPicture={data?.mission?.postPicture}
           adminName={data?.admin?.name}
           adminPicture={data?.admin?.avater}
-          participants={data?.participants?.length}
-          postTitle={data?.postTitle}
-          postContent={data?.postContent}
+          participants={data?.mission.participants.length + 1}
+          postTitle={data?.mission.title}
+          postContent={data?.mission.content}
         />
       ))}
       <AddMisstion onClick={() => navigate('/createMission')}>

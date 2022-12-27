@@ -30,23 +30,20 @@ const CreateMission = () => {
   const handleSubmit = e => {
     e.preventDefault();
     const formData = new FormData();
-    const missionData = {
-      ...missionInfo,
-      multipartFiles: image,
-    };
-    const blob = new Blob([JSON.stringify(missionData)], {
-      type: 'application/json',
-    });
-    formData.append('data', blob);
+    formData.append('title', missionInfo.title);
+    formData.append('content', missionInfo.content);
+    formData.append('startDate', missionInfo.startDate + 'T12:00:00');
+    formData.append('endDate', missionInfo.endDate + 'T12:00:00');
+    formData.append('thumbnail', missionInfo.thumbnail);
+    formData.append('multipartFiles', image);
 
     const postConfig = {
       method: 'post',
       url: '/mission',
       headers: {
-        'Content-Type': 'multipart/form-data',
         Authorization: getAccessToken(),
       },
-      formData,
+      data: formData,
     };
 
     axios(postConfig)
