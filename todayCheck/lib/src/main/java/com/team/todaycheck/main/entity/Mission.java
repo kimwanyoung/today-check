@@ -47,6 +47,9 @@ public class Mission {
     private String thumbnail = "";
 
     @Column(nullable = false)
+    private String thumbnailUrl = "";
+
+    @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate;
 

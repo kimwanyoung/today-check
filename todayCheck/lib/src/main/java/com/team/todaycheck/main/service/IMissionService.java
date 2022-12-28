@@ -17,7 +17,7 @@ import com.team.todaycheck.main.entity.Mission;
 import com.team.todaycheck.main.entity.ParticipantsMission;
 
 public interface IMissionService {
-	boolean save(Mission dto, List<MultipartFile> multipartFiles, String cookie) throws IOException;
+	boolean save(Mission dto, MultipartFile multipartFile, String cookie) throws IOException;
 	
 	public List<ParticipantsMissionDTO> findAll();
 	Mission findById(Long id);
