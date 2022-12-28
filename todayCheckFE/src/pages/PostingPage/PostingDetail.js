@@ -147,10 +147,10 @@ const DetailWrapper = styled.div`
 
 const DetailContentWrapper = styled.div`
   width: 40rem;
+  height: 100%;
   background-color: #fefefe;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   overflow-y: scroll;
-  padding-bottom: 3rem;
 `;
 
 const Title = styled.div`
@@ -237,7 +237,9 @@ const CommentContent = styled.div`
   flex-direction: column;
   width: 100%;
   padding-left: 1rem;
-  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  padding-top: 1rem;
+  border-bottom: 0.4px solid lightgray;
 `;
 
 const CommentTtitle = styled.h2`

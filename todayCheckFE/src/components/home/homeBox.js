@@ -62,13 +62,18 @@ const HomeBox = ({
 export default HomeBox;
 
 const HomeBoxContainer = styled.div`
-  width: 240px;
-  height: 300px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 23rem;
+  height: 20rem;
   border-radius: 5px;
   background-color: white;
   margin-top: 20px;
   margin-left: 1rem;
   margin-right: 1rem;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 `;
 
 const HomeBoxHead = styled.div`
@@ -89,6 +94,7 @@ const HomeBoxHead = styled.div`
 `;
 
 const HomeBoxPicture = styled.div`
+  width: 100%;
   img {
     width: 100%;
     height: 170px;
@@ -101,14 +107,15 @@ const HomeBoxTopic = styled.div`
 `;
 
 const HomeBoxTitle = styled.div`
-  margin: 3px 0;
+  margin-left: 1rem;
   font-weight: bold;
   text-overflow: ellipsis;
-  white-space: nowrap;
   overflow: hidden;
 `;
 
 const HomeBoxContent = styled.div`
+  margin-left: 1rem;
+  margin-top: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -145,6 +152,7 @@ const HomeBoxButton = styled.button`
   justify-content: center;
   width: 100px;
   height: 34px;
+  border-radius: 0 0 5px 0;
   background-color: #eb6440;
   color: white;
   &:active,
