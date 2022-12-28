@@ -109,7 +109,7 @@ public class MissionService implements IMissionService {
 	*/
 	
 	@Override
-	public boolean save(Mission mission, List<MultipartFile> multipartFiles, String cookie) throws IOException {
+	public boolean save(Mission mission, MultipartFile multipartFile, String cookie) throws IOException {
 		Optional<RefreshToken> o = jwtService.getRefreshToken(cookie);
 
 		RefreshToken token = o.orElse(null);
@@ -121,7 +121,7 @@ public class MissionService implements IMissionService {
 		HttpHeaders header = new HttpHeaders();
 
 		UserEntity user = userRepository.findById(token.getKeyEmail());
-
+		mission.setAdmin(user);
 
 		List<MissionCertification> certList = new ArrayList<>();
 
@@ -130,8 +130,8 @@ public class MissionService implements IMissionService {
 				.missionCertification(new ArrayList<>())
 				.build();
 
-		if (multipartFiles != null) {
-			for (MultipartFile multipartFile : multipartFiles) {
+		if (multipartFile != null) {
+			while (true) {
 				// 파일이 비어 있지 않을 때 작업을 시작해야 오류가 나지 않는다
 				if (!multipartFile.isEmpty()) {
 					// jpeg, png, gif 파일들만 받아서 처리할 예정
@@ -158,18 +158,14 @@ public class MissionService implements IMissionService {
 					imageFile = new File(fileDir + new_file_name);
 					multipartFile.transferTo(imageFile);
 
-					pm.addMissionCertification(MissionCertification.builder()
-							.userName(user.getUsername())
-							.image(new_file_name)
-							.build());
+					mission.setThumbnail(new_file_name);
 				}
+
+				break;
 			}
 		}
 
-		if (partMissionRepository.save(pm) == null) {
-			return false;
-		}
-
+		pm = partMissionRepository.save(pm);
 		return true;
 	}
 	
@@ -203,6 +199,9 @@ public class MissionService implements IMissionService {
 						.image(imageData)
 						.build());
 			}
+
+			data.getMission().setThumbnailUrl("/mission/thumbnail/" + data.getMission().getId());
+
 			list.add(ParticipantsMissionDTO.builder()
 					.keys(data.getKeys())
 					.mission(data.getMission())
@@ -276,6 +275,9 @@ public class MissionService implements IMissionService {
 						.image(imageData)
 						.build());
 			}
+
+			data.getMission().setThumbnailUrl("/mission/thumbnail/" + data.getMission().getId());
+
 			list.add(ParticipantsMissionDTO.builder()
 					.keys(data.getKeys())
 					.mission(data.getMission())

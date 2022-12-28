@@ -36,6 +36,8 @@ public class QMission extends EntityPathBase<Mission> {
 
     public final StringPath thumbnail = createString("thumbnail");
 
+    public final StringPath thumbnailUrl = createString("thumbnailUrl");
+
     public final StringPath title = createString("title");
 
     public QMission(String variable) {
