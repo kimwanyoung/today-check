@@ -370,9 +370,10 @@ const UserAvater = styled.div`
 
 const UserImageLabel = styled.label`
   img {
-    border: 1px solid black;
+    object-fit: cover;
+    border: 1px solid rgba(149, 157, 165, 0.2);
     width: 100%;
-    height: 100%;
+    height: 13rem;
     border-radius: 50%;
     cursor: pointer;
   }
