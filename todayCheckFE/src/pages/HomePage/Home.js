@@ -26,9 +26,9 @@ const Home = () => {
         <HomeBox
           key={idx}
           id={data?.mission.id}
-          postPicture={data?.mission?.postPicture}
-          adminName={data?.admin?.name}
-          adminPicture={data?.admin?.avater}
+          thumbnail={data?.mission?.thumbnailUrl}
+          adminName={data?.mission?.admin?.id}
+          adminPicture={data?.mission?.admin?.profileImages}
           participants={data?.mission.participants.length + 1}
           postTitle={data?.mission.title}
           postContent={data?.mission.content}
@@ -47,6 +47,7 @@ const RightContainer = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
+  flex-wrap: wrap;
   height: 100vh;
   width: 100vw;
   padding-left: 15rem;
@@ -57,7 +58,7 @@ const RightContainer = styled.div`
 `;
 
 const AddMisstion = styled.div`
-  position: absolute;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -2,30 +2,36 @@ import React from 'react';
 import styled from 'styled-components';
 import { HiUserGroup } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const HomeBox = ({
   id,
-  postPicture,
+  thumbnail,
   adminName,
   adminPicture,
   participants,
   postTitle,
   postContent,
 }) => {
+  const adminPic = require(`/Users/kwy/Desktop/today-check/todayCheckFE/src/images/${adminPicture}`);
   const handleErrorImg = e => {
     e.target.src = 'https://via.placeholder.com/150';
   };
+
+  useEffect(() => {
+    axios
+      .get(thumbnail)
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  }, []);
 
   return (
     <HomeBoxContainer>
       {/* admin user 정보  */}
       <HomeBoxHead>
         {/* src={adminPicture} */}
-        <img
-          src="https://via.placeholder.com/150"
-          alt="postPicture"
-          onError={handleErrorImg}
-        />
+        <img src={adminPic} alt="postPicture" onError={handleErrorImg} />
         <span>{adminName}</span>
       </HomeBoxHead>
 
@@ -83,13 +89,16 @@ const HomeBoxHead = styled.div`
   margin: 3px 0;
   padding-left: 5px;
   width: 100%;
-  height: 25px;
-  font-size: 12px;
+  height: 2rem;
   img {
-    width: 25px;
-    height: 25px;
+    width: 2rem;
+    height: 2rem;
     margin-right: 5px;
     border-radius: 50%;
+  }
+
+  span {
+    font-weight: 600;
   }
 `;
 
