@@ -51,7 +51,8 @@ public class MissionService implements IMissionService {
 	private final ProfileRepository profileRepos;
 	private final JwtService jwtService;
 	
-	private String fileDir = "C:\\devtool\\upload\\";
+//	private String fileDir = "C:\\devtool\\upload\\";
+	private String fileDir = "/Users/kwy/Desktop/today-check/todayCheck/image/";
 	/*
 	@PostConstruct
 	void init() throws Exception {

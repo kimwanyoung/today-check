@@ -13,7 +13,6 @@ const CreateMission = () => {
     content: '',
     startDate: '',
     endDate: '',
-    thumbnail: 'thumbnail',
   });
   const [image, setImage] = useState();
 
@@ -34,8 +33,7 @@ const CreateMission = () => {
     formData.append('content', missionInfo.content);
     formData.append('startDate', missionInfo.startDate + 'T12:00:00');
     formData.append('endDate', missionInfo.endDate + 'T12:00:00');
-    formData.append('thumbnail', missionInfo.thumbnail);
-    formData.append('multipartFiles', image);
+    formData.append('multipartFile', image);
 
     const postConfig = {
       method: 'post',
