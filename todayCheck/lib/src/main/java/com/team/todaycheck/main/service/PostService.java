@@ -42,7 +42,7 @@ public class PostService {
 	@Autowired UserRepository userRepos;
 	@Autowired CommentRepository commentRepos;
 	
-	public static String fileDir = "C:\\devtool\\upload\\";
+	public static String fileDir = "D:\\Projects\\today-check\\todayCheck\\image";
 
 	// public static String fileDir = "/Users/kwy/Documents/imageFile";
 	
