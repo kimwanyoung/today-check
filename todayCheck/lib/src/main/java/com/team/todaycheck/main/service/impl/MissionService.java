@@ -3,6 +3,7 @@ package com.team.todaycheck.main.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import javax.security.auth.login.AccountNotFoundException;
 import javax.transaction.Transactional;
 
 import com.team.todaycheck.main.exception.NotAuthorizationException;
+import com.team.todaycheck.main.service.PostService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +53,6 @@ public class MissionService implements IMissionService {
 	private final ProfileRepository profileRepos;
 	private final JwtService jwtService;
 	
-//	private String fileDir = "C:\\devtool\\upload\\";
-	private String fileDir = "/Users/kwy/Desktop/today-check/todayCheck/image/";
 	/*
 	@PostConstruct
 	void init() throws Exception {
@@ -156,7 +156,7 @@ public class MissionService implements IMissionService {
 					}
 					String new_file_name = Long.toString(System.nanoTime()) + originalFileExtension;
 
-					imageFile = new File(fileDir + new_file_name);
+					imageFile = new File(Paths.get(PostService.fileDir, new_file_name).toString());
 					multipartFile.transferTo(imageFile);
 
 					mission.setThumbnail(new_file_name);
@@ -185,7 +185,7 @@ public class MissionService implements IMissionService {
 			for(MissionCertification cert : certList) {
 				ResponseEntity<byte[]> imageData;
 				
-				imageFile = new File(fileDir + cert.getImage());
+				imageFile = new File(Paths.get(PostService.fileDir, cert.getImage()).toString());
 				try {
 					if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
 					imageData = (new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
@@ -261,7 +261,7 @@ public class MissionService implements IMissionService {
 			for(MissionCertification cert : certList) {
 				ResponseEntity<byte[]> imageData;
 				
-				imageFile = new File(fileDir + cert.getImage());
+				imageFile = new File(Paths.get(PostService.fileDir, cert.getImage()).toString());
 				try {
 					if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
 					imageData = (new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
@@ -367,7 +367,7 @@ public class MissionService implements IMissionService {
 			String extension = origName.substring(origName.lastIndexOf(".")); // 확장자 추출
 			String savedName = uuid + extension;
 			
-			image.transferTo(new File(fileDir + savedName)); // 파일 저장
+			image.transferTo(new File(Paths.get(PostService.fileDir, savedName).toString())); // 파일 저장
 			
 			MissionCertification result = MissionCertification.builder()
 				.image(savedName)
