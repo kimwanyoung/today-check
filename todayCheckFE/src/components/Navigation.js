@@ -78,7 +78,7 @@ const Navigation = () => {
 export default Navigation;
 
 const HeaderContainer = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 15rem;

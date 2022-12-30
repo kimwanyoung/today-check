@@ -340,7 +340,6 @@ const MainContainer = styled.div`
   align-items: center;
   flex-direction: column;
   width: 100vw;
-  height: 100vh;
   padding-left: 15rem;
   background-color: #efefef;
   overflow: scroll;
@@ -354,7 +353,7 @@ const UserWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 70%;
-  height: 40%;
+  height: 15rem;
   border-radius: 10px;
   background-color: #eff5f5;
   padding: 5rem;
@@ -370,9 +369,10 @@ const UserAvater = styled.div`
 
 const UserImageLabel = styled.label`
   img {
-    border: 1px solid black;
-    width: 100%;
-    height: 100%;
+    object-fit: cover;
+    border: 1px solid rgba(149, 157, 165, 0.2);
+    width: 13rem;
+    height: 13rem;
     border-radius: 50%;
     cursor: pointer;
   }
@@ -494,13 +494,14 @@ const JoinHeading = styled.h1`
   color: white;
   padding-left: 2.5rem;
   font-size: 1.3rem;
+  border-radius: 0.5rem 0 0 0;
 `;
 
 const JoinMissionlistWrapper = styled.div`
   padding-left: 1rem;
   margin-top: 1rem;
   width: 50rem;
-  height: 15rem;
+  height: 10rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -508,7 +509,6 @@ const JoinMissionlistWrapper = styled.div`
 
 const CreateMissionWrapper = styled.div`
   width: 50rem;
-  height: 15rem;
 `;
 
 const CreateHeading = styled.h1`
@@ -520,17 +520,16 @@ const CreateHeading = styled.h1`
   color: white;
   padding-left: 2.5rem;
   font-size: 1.3rem;
+  border-radius: 0.5rem 0 0 0;
 `;
 
 const CreateMissionlistWrapper = styled.div`
-  padding-left: 1rem;
   margin-top: 1rem;
   display: flex;
   justify-content: flex-start;
   align-content: center;
-  width: 50rem;
-  flex-flow: row wrap;
-  flex-grow: 2;
+  width: 100%;
+  flex-wrap: wrap;
 `;
 
 const UserBoxWrapper = styled.div`

@@ -35,7 +35,7 @@ const MypageBoxContainer = styled.div`
   flex-direction: column;
   margin-left: 1rem;
   margin-bottom: 1rem;
-  width: 13rem;
+  width: 11.5rem;
   height: 10rem;
   border-radius: 10px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
