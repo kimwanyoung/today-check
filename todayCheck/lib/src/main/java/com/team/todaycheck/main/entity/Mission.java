@@ -17,6 +17,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
@@ -44,10 +46,12 @@ public class Mission {
     private String content;
     
     @Column(nullable = false)
-    private String thumbnail = "";
+    @ColumnDefault("")
+    private String thumbnail;
 
     @Column(nullable = false)
-    private String thumbnailUrl = "";
+    @ColumnDefault("")
+    private String thumbnailUrl;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
