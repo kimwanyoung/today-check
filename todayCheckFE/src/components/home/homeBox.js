@@ -14,11 +14,10 @@ const HomeBox = ({
   postTitle,
   postContent,
 }) => {
-  const adminPic = require(`/Users/kwy/Desktop/today-check/todayCheckFE/src/images/${adminPicture}`);
+  // const adminPic = require(`/Users/kwy/Desktop/today-check/todayCheckFE/src/images/${adminPicture}`);
   const handleErrorImg = e => {
     e.target.src = 'https://via.placeholder.com/150';
   };
-
   useEffect(() => {
     axios
       .get(thumbnail)
@@ -31,7 +30,7 @@ const HomeBox = ({
       {/* admin user 정보  */}
       <HomeBoxHead>
         {/* src={adminPicture} */}
-        <img src={adminPic} alt="postPicture" onError={handleErrorImg} />
+        <img src={adminPicture} alt="postPicture" onError={handleErrorImg} />
         <span>{adminName}</span>
       </HomeBoxHead>
 
