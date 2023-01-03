@@ -14,7 +14,6 @@ const HomeBox = ({
   postTitle,
   postContent,
 }) => {
-  // const adminPic = require(`/Users/kwy/Desktop/today-check/todayCheckFE/src/images/${adminPicture}`);
   const handleErrorImg = e => {
     e.target.src = 'https://via.placeholder.com/150';
   };
@@ -30,7 +29,11 @@ const HomeBox = ({
       {/* admin user 정보  */}
       <HomeBoxHead>
         {/* src={adminPicture} */}
-        <img src={adminPicture} alt="postPicture" onError={handleErrorImg} />
+        <img
+          src={`todayCheckFE/src/images/${adminPicture}`}
+          alt="postPicture"
+          onError={handleErrorImg}
+        />
         <span>{adminName}</span>
       </HomeBoxHead>
 

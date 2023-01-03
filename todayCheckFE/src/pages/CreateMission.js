@@ -29,10 +29,25 @@ const CreateMission = () => {
   const handleSubmit = e => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('title', missionInfo.title);
-    formData.append('content', missionInfo.content);
-    formData.append('startDate', missionInfo.startDate + 'T12:00:00');
-    formData.append('endDate', missionInfo.endDate + 'T12:00:00');
+    // formData.append('title', missionInfo.title);
+    // formData.append('content', missionInfo.content);
+    // formData.append('startDate', missionInfo.startDate + 'T12:00:00');
+    // formData.append('endDate', missionInfo.endDate + 'T12:00:00');
+
+    const blob = new Blob(
+      [
+        JSON.stringify({
+          title: missionInfo.title,
+          content: missionInfo.title,
+          startDate: missionInfo.startDate + 'T12:00:00',
+          endDate: missionInfo.endDate + 'T12:00:00',
+          thumbnailUrl: '',
+        }),
+      ],
+      { type: 'application/json' }
+    );
+
+    formData.append('data', blob);
     formData.append('multipartFile', image);
 
     const postConfig = {

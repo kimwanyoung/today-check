@@ -45,7 +45,6 @@ const Posting = () => {
   const onErrorImage = e => {
     e.target.src = 'https://via.placeholder.com/350x200';
   };
-  console.log(posts);
 
   return (
     <PostingWrapper>
@@ -55,20 +54,20 @@ const Posting = () => {
           onClick={() => navigate('/postingDetail', { state: props })}
         >
           <img
-            src={`data:image/;base64,${props.image.body}`}
+            src={`data:image/;base64,${props?.image?.body}`}
             onError={onErrorImage}
             alt="thumbnail"
           />
           <PostCardContent>
-            <PostTitle>{props.title}</PostTitle>
-            <PostDesc>{props.description}</PostDesc>
-            <PostDate>{props.date.slice(0, 10)}</PostDate>
+            <PostTitle>{props?.title}</PostTitle>
+            <PostDesc>{props?.description}</PostDesc>
+            <PostDate>{props?.date.slice(0, 10)}</PostDate>
           </PostCardContent>
           <PostUser>
-            <p>{props.writer}</p>
+            <p>{props?.writer}</p>
             <p>
               <AiFillHeart />
-              {props.recommendation}
+              {props?.recommendation}
             </p>
           </PostUser>
         </PostCard>

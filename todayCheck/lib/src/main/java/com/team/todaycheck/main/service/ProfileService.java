@@ -34,7 +34,7 @@ public class ProfileService {
 	
 	@Autowired ProfileRepository profileRepos;
 	@Autowired UserRepository userRepos;
-	private String fileDir = "/Users/kwy/Documents/imageFile";
+	private String fileDir = "/Users/kwy/Desktop/today-check/todayCheckFE/src/images/";
 	
 	public ProfileDTO getProfile(String accoundId) throws AccountNotFoundException {
 		UserEntity user = profileRepos.findById(accoundId);
