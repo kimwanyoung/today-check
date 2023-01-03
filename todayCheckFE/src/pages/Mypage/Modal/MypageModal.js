@@ -80,12 +80,13 @@ const MypageModal = ({ missionClick, setMissionClick, postId }) => {
 export default MypageModal;
 
 const MypageModalWrapper = styled.div`
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
 `;
 
 const ModalBox = styled.div`
@@ -149,7 +150,7 @@ const CloseButton = styled(AiOutlineCloseCircle)`
 `;
 
 const UploadButton = styled.div`
-  background-color: #9292ff;
+  background-color: #eb6440;
   color: white;
   width: 15rem;
   height: 2rem;
@@ -161,6 +162,6 @@ const UploadButton = styled.div`
 
   :hover {
     cursor: pointer;
-    background-color: #7272ff;
+    background-color: #eb6440;
   }
 `;
