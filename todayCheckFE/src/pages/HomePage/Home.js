@@ -29,7 +29,7 @@ const Home = () => {
           thumbnail={data?.mission?.thumbnailUrl}
           adminName={data?.mission?.admin?.id}
           adminPicture={data?.mission?.admin?.profileImages}
-          participants={data?.mission.participants.length + 1}
+          participants={data?.mission?.participants?.length + 1}
           postTitle={data?.mission.title}
           postContent={data?.mission.content}
         />

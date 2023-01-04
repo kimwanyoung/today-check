@@ -11,13 +11,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter
 @Setter
@@ -34,7 +39,8 @@ public class Mission {
     @JoinColumn(name="admin_id")
     private UserEntity admin;
 
-    @OneToMany(mappedBy = "participants")
+    @JsonIgnore
+    @OneToMany(mappedBy = "mission")
     private List<ParticipantsMission> participants;
 
     @Column(nullable = false)
@@ -44,10 +50,10 @@ public class Mission {
     private String content;
     
     @Column(nullable = false)
-    private String thumbnail = "";
+    private String thumbnail;
 
     @Column(nullable = false)
-    private String thumbnailUrl = "";
+    private String thumbnailUrl;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

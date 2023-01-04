@@ -95,7 +95,7 @@ const PostingDetail = () => {
           </DateBox>
         </Title>
         <PostingImage
-          src={`data:image/;base64,${location.state.image.body}`}
+          src={`data:image/;base64,${location?.state?.image?.body}`}
           alt="post imag"
         />
         <UserInfo>

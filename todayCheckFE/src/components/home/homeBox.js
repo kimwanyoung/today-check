@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { HiUserGroup } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const HomeBox = ({
@@ -14,15 +14,18 @@ const HomeBox = ({
   postTitle,
   postContent,
 }) => {
-  const adminPic = require(`/Users/kwy/Desktop/today-check/todayCheckFE/src/images/${adminPicture}`);
+  const [userImage, setUserImage] = useState('');
   const handleErrorImg = e => {
     e.target.src = 'https://via.placeholder.com/150';
   };
 
   useEffect(() => {
     axios
-      .get(thumbnail)
-      .then(res => console.log(res))
+      .get(`/profile/profile/${adminName}`)
+      .then(res => {
+        console.log(res.data);
+        setUserImage(res.data.profileImages.body);
+      })
       .catch(err => console.log(err));
   }, []);
 
@@ -31,18 +34,18 @@ const HomeBox = ({
       {/* admin user 정보  */}
       <HomeBoxHead>
         {/* src={adminPicture} */}
-        <img src={adminPic} alt="postPicture" onError={handleErrorImg} />
+        <img
+          src={`data:image/;base64,${userImage}`}
+          alt="postPicture"
+          onError={handleErrorImg}
+        />
         <span>{adminName}</span>
       </HomeBoxHead>
 
       {/*  main picture */}
       <HomeBoxPicture>
         {/* src={postPicture} */}
-        <img
-          src="https://via.placeholder.com/150"
-          alt="post"
-          onError={handleErrorImg}
-        />
+        <img src={thumbnail} alt="post" onError={handleErrorImg} />
       </HomeBoxPicture>
 
       {/* title, content */}

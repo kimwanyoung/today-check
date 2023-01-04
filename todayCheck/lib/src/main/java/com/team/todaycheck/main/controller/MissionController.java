@@ -74,7 +74,7 @@ public class MissionController {
 			@ApiResponse(code = 401, message = "등록 실패"),
 			@ApiResponse(code = 500, message = "서버 오류"),
 	})
-	public ResponseEntity insert(Mission mission, MultipartFile multipartFile, @CookieValue(name = "refreshToken") String cookie) {
+	public ResponseEntity insert(@RequestPart(value="data") Mission mission, @RequestPart(value="multipartFile") MultipartFile multipartFile, @CookieValue(name = "refreshToken") String cookie) {
 		try {
 			if (!missionService.save(mission, multipartFile, cookie)){
 				return ResponseEntity.status(401).build();
