@@ -340,6 +340,7 @@ const MainContainer = styled.div`
   align-items: center;
   flex-direction: column;
   width: 100vw;
+  height: 100vh;
   padding-left: 15rem;
   background-color: #efefef;
   overflow: scroll;
