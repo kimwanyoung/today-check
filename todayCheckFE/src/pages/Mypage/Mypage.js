@@ -336,7 +336,7 @@ export default Mypage;
 
 const MainContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   width: 100vw;
@@ -483,7 +483,6 @@ const UserSpan = styled.div`
 
 const JoinMissionWrapper = styled.div`
   margin-top: 1rem;
-  height: auto;
 `;
 
 const JoinHeading = styled.h1`
@@ -499,7 +498,6 @@ const JoinHeading = styled.h1`
 `;
 
 const JoinMissionlistWrapper = styled.div`
-  padding-left: 1rem;
   margin-top: 1rem;
   width: 50rem;
   height: 10rem;

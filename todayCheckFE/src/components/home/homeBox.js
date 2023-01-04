@@ -18,7 +18,7 @@ const HomeBox = ({
   const handleErrorImg = e => {
     e.target.src = 'https://via.placeholder.com/150';
   };
-
+  const currentParticipants = participants ? participants : 0;
   useEffect(() => {
     axios
       .get(`/profile/profile/${adminName}`)
@@ -58,7 +58,7 @@ const HomeBox = ({
       <HomeBoxBottom>
         <HomeBoxParticipants>
           <HiUserGroup className="HomeBoxUserIcon" />
-          {participants} 참여중
+          {currentParticipants}명 참여중
         </HomeBoxParticipants>
         <Link to={`/missionDetail/${id}`}>
           <HomeBoxButton>참여하기</HomeBoxButton>
