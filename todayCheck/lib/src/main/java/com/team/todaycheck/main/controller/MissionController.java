@@ -81,6 +81,7 @@ public class MissionController {
 			}
 			return ResponseEntity.status(200).build();
 		} catch (Exception e) {
+			System.err.println(e.toString());
 			return ResponseEntity.status(500).build();
 		}
 	}

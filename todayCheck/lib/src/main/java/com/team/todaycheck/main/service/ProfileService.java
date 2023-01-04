@@ -3,6 +3,7 @@ package com.team.todaycheck.main.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +35,6 @@ public class ProfileService {
 	
 	@Autowired ProfileRepository profileRepos;
 	@Autowired UserRepository userRepos;
-	private String fileDir = "/Users/kwy/Documents/imageFile";
 	
 	public ProfileDTO getProfile(String accoundId) throws AccountNotFoundException {
 		UserEntity user = profileRepos.findById(accoundId);
@@ -58,7 +58,8 @@ public class ProfileService {
 				.build();
 		
 		HttpHeaders header = new HttpHeaders();
-		File imageFile = new File(fileDir + user.getProfileImages());
+		File imageFile = new File(Paths.get(PostService.fileDir, user.getProfileImages()).toUri());
+
 		try {
 			if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
 			result.setProfileImages(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
@@ -113,7 +114,7 @@ public class ProfileService {
 			String extension = origName.substring(origName.lastIndexOf(".")); // 확장자 추출
 			String savedName = uuid + extension;
 			
-			imgFile.transferTo(new File(fileDir + savedName)); // 파일 저장
+			imgFile.transferTo(new File(Paths.get(PostService.fileDir, savedName).toUri())); // 파일 저장
 			user.setProfileImages(savedName);
 		}
 		
