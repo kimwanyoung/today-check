@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { getAccessKey } from '../../cookie/Cookie';
 import { useEffect } from 'react';
 
@@ -10,6 +10,9 @@ const MissionDetail = () => {
   const userName = String(getAccessKey());
   const params = useParams();
   const paramsData = params.id;
+  const location = useLocation();
+  const postImg = location.state;
+  console.log(postImg);
   // const startDate = missionDetail?.mission?.startDate.slice(0, 10);
   // const endDate = missionDetail?.mission?.endDate.slice(0, 10);
   const [startDate, setStartDate] = useState(
@@ -82,7 +85,7 @@ const MissionDetail = () => {
         <>
           <MissionHeader>
             <MissionImage>
-              <img src={missionDetail?.postPicture} alt="postPic" />
+              <img src={postImg} alt="postPic" />
             </MissionImage>
             <MissionInfBox>
               <MissionTitle>{missionDetail?.mission?.title}</MissionTitle>
@@ -110,7 +113,7 @@ const MissionDetail = () => {
                   <ParticipantName>{props.name}</ParticipantName>
                 </ParticipantInfo>
                 <Picture>
-                  <img src={props.image} />
+                  <img src={postImg} />
                 </Picture>
               </ParticipantBox>
             ))}
