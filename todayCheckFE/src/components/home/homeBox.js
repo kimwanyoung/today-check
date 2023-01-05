@@ -4,6 +4,7 @@ import { HiUserGroup } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const HomeBox = ({
   id,
@@ -14,9 +15,14 @@ const HomeBox = ({
   postTitle,
   postContent,
 }) => {
+  const navigate = useNavigate();
   const [userImage, setUserImage] = useState('');
   const handleErrorImg = e => {
     e.target.src = 'https://via.placeholder.com/150';
+  };
+
+  const handleNavigate = () => {
+    navigate(`/missionDetail/${id}`, { state: thumbnail });
   };
   const currentParticipants = participants ? participants : 0;
   useEffect(() => {
@@ -60,9 +66,9 @@ const HomeBox = ({
           <HiUserGroup className="HomeBoxUserIcon" />
           {currentParticipants}명 참여중
         </HomeBoxParticipants>
-        <Link to={`/missionDetail/${id}`}>
+        <div onClick={handleNavigate}>
           <HomeBoxButton>참여하기</HomeBoxButton>
-        </Link>
+        </div>
       </HomeBoxBottom>
     </HomeBoxContainer>
   );
