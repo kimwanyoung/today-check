@@ -12,13 +12,13 @@ const Home = () => {
     axios
       .get('/mission')
       .then(response => {
-        console.log(response);
         setMissions(response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
   }, []);
+  console.log(missions);
 
   return (
     <RightContainer>

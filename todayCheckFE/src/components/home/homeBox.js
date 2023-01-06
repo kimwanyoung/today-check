@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { HiUserGroup } from 'react-icons/hi';
-import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
