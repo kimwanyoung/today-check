@@ -269,10 +269,12 @@ const Mypage = () => {
               </UserBoxWrapper>
             ) : (
               <>
-                <UserGreetings>안녕하세요</UserGreetings>
-                <UserName>
-                  <span>{fixId}</span>님
-                </UserName>
+                <UserGreetings>
+                  <UserName>
+                    안녕하세요! <span>{fixId}</span>님
+                  </UserName>
+                </UserGreetings>
+
                 <UserSpan>
                   <span>'오늘의 미션도 응원합니다'</span>
                 </UserSpan>
@@ -358,6 +360,7 @@ const UserWrapper = styled.div`
   border-radius: 10px;
   background-color: #eff5f5;
   padding: 5rem;
+  overflow: hidden;
 `;
 
 const UserAvater = styled.div`
@@ -451,23 +454,13 @@ const UserBox = styled.div`
 
 // 수정 버튼 누르기 전
 const UserGreetings = styled.div`
-  margin-top: 70px;
+  position: absolute;
+  top: 40%;
   font-size: 2.9rem;
 `;
 
-const UserName = styled.div`
-  display: block;
-  width: 300px;
-  max-height: 105px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: wrap;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  margin-top: 10px;
-  margin-left: 3rem;
+const UserName = styled.p`
   font-size: 2.4rem;
-  text-align: right;
 
   span {
     font-size: 3.4rem;
@@ -476,8 +469,9 @@ const UserName = styled.div`
 `;
 
 const UserSpan = styled.div`
-  margin-left: 34px;
-  margin-top: 1rem;
+  position: absolute;
+  top: 60%;
+  margin-left: 1.5rem;
   font-size: 1.6rem;
 `;
 
