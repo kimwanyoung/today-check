@@ -3,7 +3,6 @@ package com.team.todaycheck.main.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -42,8 +41,11 @@ public class PostService {
 	@Autowired PostRepository postRepos;
 	@Autowired UserRepository userRepos;
 	@Autowired CommentRepository commentRepos;
+	
+//	public static String fileDir = "C:\\devtool\\upload\\";
 
-	public static final String fileDir = "C:\\devtool\\upload";
+	 public static String fileDir = "/Users/kwy/Documents/imageFile";
+	
 	
 	public int addPost(PostDTO post , MultipartFile imgFile , String header) throws IllegalStateException, IOException {
 		String userId = getUserIdFromToken(header);
@@ -60,7 +62,7 @@ public class PostService {
 			String extension = origName.substring(origName.lastIndexOf(".")); // 확장자 추출
 			String savedName = uuid + extension;
 			
-			imgFile.transferTo(new File(Paths.get(PostService.fileDir, savedName).toUri())); // 파일 저장
+			imgFile.transferTo(new File(fileDir + savedName)); // 파일 저장
 			postData.setThumbnail(savedName);
 		}
 		
@@ -76,7 +78,7 @@ public class PostService {
 		List<PostDTO> resultDTO = new ArrayList<PostDTO>();
 		for(Post postData : result) {
 			PostDTO data = fromEntity(postData);
-			imageFile = new File(Paths.get(PostService.fileDir, data.getThumbnail()).toUri());
+			imageFile = new File(fileDir + data.getThumbnail());
 			try {
 				if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
 				data.setImage(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
@@ -93,7 +95,7 @@ public class PostService {
 		postRepos.updateView(postnumber);
 		HttpHeaders header = new HttpHeaders();
 		PostDTO data = PostService.fromEntity(postRepos.findByPostKey(postnumber));
-		File imageFile = new File(Paths.get(PostService.fileDir, data.getThumbnail()).toUri());
+		File imageFile = new File(fileDir + data.getThumbnail());
 		try {
 			if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
 			data.setImage(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
@@ -192,6 +194,6 @@ public class PostService {
 
 	public File getImageData(String postNumber) {
 		String fileName = postRepos.getImagefileName(Integer.parseInt(postNumber));
-		return new File(Paths.get(PostService.fileDir, fileName).toUri());
+		return new File(fileDir + fileName);
 	}
 }

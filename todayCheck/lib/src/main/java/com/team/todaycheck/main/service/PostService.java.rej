@@ -1,0 +1,10 @@
+diff a/todayCheck/lib/src/main/java/com/team/todaycheck/main/service/PostService.java b/todayCheck/lib/src/main/java/com/team/todaycheck/main/service/PostService.java	(rejected hunks)
+@@ -93,7 +93,7 @@
+ 		postRepos.updateView(postnumber);
+ 		HttpHeaders header = new HttpHeaders();
+ 		PostDTO data = PostService.fromEntity(postRepos.findByPostKey(postnumber));
+-		File imageFile = new File(fileDir + data.getThumbnail());
++		File imageFile = new File(Paths.get(PostService.fileDir, data.getThumbnail()).toUri());
+ 		try {
+ 			if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
+ 			data.setImage(new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK));
