@@ -344,8 +344,6 @@ public class MissionService implements IMissionService {
     			.participants(user)
     			.build();
     	
-    	partMissionRepository.save(participant);
-    	
     	return ResponseEntity.ok().build();
 	}
 

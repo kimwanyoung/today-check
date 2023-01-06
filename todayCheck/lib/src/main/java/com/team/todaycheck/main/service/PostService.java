@@ -44,7 +44,7 @@ public class PostService {
 	
 //	public static String fileDir = "C:\\devtool\\upload\\";
 
-	 public static String fileDir = "/Users/kwy/Desktop/today-check/todayCheckFE/src/images";
+	 public static String fileDir = "/Users/kwy/Documents/imageFile";
 	
 	
 	public int addPost(PostDTO post , MultipartFile imgFile , String header) throws IllegalStateException, IOException {
