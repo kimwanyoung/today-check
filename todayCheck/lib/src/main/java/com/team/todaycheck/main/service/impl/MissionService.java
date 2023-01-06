@@ -9,15 +9,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.security.auth.login.AccountNotFoundException;
 import javax.transaction.Transactional;
 
-import com.team.todaycheck.main.exception.NotAuthorizationException;
-import com.team.todaycheck.main.service.PostService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ObjectUtils;
@@ -34,12 +33,14 @@ import com.team.todaycheck.main.entity.MissionCertification;
 import com.team.todaycheck.main.entity.ParticipantsMission;
 import com.team.todaycheck.main.entity.RefreshToken;
 import com.team.todaycheck.main.entity.UserEntity;
+import com.team.todaycheck.main.exception.NotAuthorizationException;
 import com.team.todaycheck.main.repository.IMissionRepository;
 import com.team.todaycheck.main.repository.ParticipantMissionRepository;
 import com.team.todaycheck.main.repository.ProfileRepository;
 import com.team.todaycheck.main.repository.UserRepository;
 import com.team.todaycheck.main.service.IMissionService;
 import com.team.todaycheck.main.service.JwtService;
+import com.team.todaycheck.main.service.PostService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,6 +53,9 @@ public class MissionService implements IMissionService {
 	private final ParticipantMissionRepository partMissionRepository;
 	private final ProfileRepository profileRepos;
 	private final JwtService jwtService;
+	
+	@PersistenceContext
+    private EntityManager em;
 	
 	/*
 	@PostConstruct
@@ -318,7 +322,7 @@ public class MissionService implements IMissionService {
 	@Override
 	public ResponseEntity<Object> joinMission(long id , String cookie) {
 		Mission mission = findById(id);
-    	
+		
     	if (mission == null) {
     		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     	}
@@ -343,6 +347,9 @@ public class MissionService implements IMissionService {
     			.mission(mission)
     			.participants(user)
     			.build();
+    	
+    	partMissionRepository.save(participant);
+    	
     	
     	return ResponseEntity.ok().build();
 	}
