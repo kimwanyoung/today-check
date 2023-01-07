@@ -5,6 +5,16 @@ import { useParams, useLocation } from 'react-router-dom';
 import { getAccessKey } from '../../cookie/Cookie';
 import { useEffect } from 'react';
 
+const USER_TEST = [
+  {
+    id: 'tester',
+    phoneNumber: null,
+    profileImages: '68af0fc6-f1b2-4f8a-9b49-2e5ac48c5da6.png',
+    userId: 1,
+    username: 'user',
+  },
+];
+
 const MissionDetail = () => {
   const [missionDetail, setMissionDetail] = useState([]);
   const userName = String(getAccessKey());
@@ -12,9 +22,7 @@ const MissionDetail = () => {
   const paramsData = params.id;
   const location = useLocation();
   const postImg = location.state;
-  console.log(postImg);
-  // const startDate = missionDetail?.mission?.startDate.slice(0, 10);
-  // const endDate = missionDetail?.mission?.endDate.slice(0, 10);
+  const [userProfile, setUserProfile] = useState();
   const [startDate, setStartDate] = useState(
     missionDetail?.mission?.startDate.slice(0, 10)
   );
@@ -40,6 +48,14 @@ const MissionDetail = () => {
       .catch(function (error) {
         console.log(error);
       });
+
+    axios
+      .get(`/profile/profile/${USER_TEST[0].username}`)
+      .then(res => {
+        console.log(res.data);
+        setUserProfile(res.data);
+      })
+      .catch(err => console.log(err));
   }, []);
 
   const handleJoin = async e => {
@@ -104,17 +120,17 @@ const MissionDetail = () => {
           </MissionHeader>
 
           <ParticipantWrapper>
-            {missionDetail.participants?.map(props => (
+            {USER_TEST.map(props => (
               <ParticipantBox key={props.id}>
                 <ParticipantInfo>
                   <ParticipantImage>
-                    <img src={props.avater} />
+                    <img
+                      src={`data:image/;base64,${userProfile?.profileImages.body}`}
+                      alt="user profile"
+                    />
                   </ParticipantImage>
-                  <ParticipantName>{props.name}</ParticipantName>
+                  <ParticipantName>{props.username}</ParticipantName>
                 </ParticipantInfo>
-                <Picture>
-                  <img src={postImg} />
-                </Picture>
               </ParticipantBox>
             ))}
           </ParticipantWrapper>
@@ -147,8 +163,9 @@ const MissionWrapper = styled.section`
 
 const MissionImage = styled.div`
   img {
-    width: 350px;
-    height: 230px;
+    width: 18rem;
+    height: 16rem;
+    border-radius: 5px;
   }
 `;
 
