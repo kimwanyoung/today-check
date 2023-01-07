@@ -5,16 +5,6 @@ import { useParams, useLocation } from 'react-router-dom';
 import { getAccessKey } from '../../cookie/Cookie';
 import { useEffect } from 'react';
 
-const USER_TEST = [
-  {
-    id: 'tester',
-    phoneNumber: null,
-    profileImages: '68af0fc6-f1b2-4f8a-9b49-2e5ac48c5da6.png',
-    userId: 1,
-    username: 'user',
-  },
-];
-
 const MissionDetail = () => {
   const [missionDetail, setMissionDetail] = useState([]);
   const userName = String(getAccessKey());
@@ -22,7 +12,6 @@ const MissionDetail = () => {
   const paramsData = params.id;
   const location = useLocation();
   const postImg = location.state;
-  const [userProfile, setUserProfile] = useState();
   const [startDate, setStartDate] = useState(
     missionDetail?.mission?.startDate.slice(0, 10)
   );
@@ -48,14 +37,6 @@ const MissionDetail = () => {
       .catch(function (error) {
         console.log(error);
       });
-
-    axios
-      .get(`/profile/profile/${USER_TEST[0].username}`)
-      .then(res => {
-        console.log(res.data);
-        setUserProfile(res.data);
-      })
-      .catch(err => console.log(err));
   }, []);
 
   const handleJoin = async e => {
@@ -98,43 +79,26 @@ const MissionDetail = () => {
   return (
     <MissionWrapper>
       {missionDetail && (
-        <>
-          <MissionHeader>
-            <MissionImage>
-              <img src={postImg} alt="postPic" />
-            </MissionImage>
-            <MissionInfBox>
-              <MissionTitle>{missionDetail?.mission?.title}</MissionTitle>
-              <MissionContent>{missionDetail?.mission?.content}</MissionContent>
-              <MissionDate>
-                기간: {startDate} ~ {endDate}
-              </MissionDate>
-              {join ? (
-                <CompletionButton onClick={handleDelete}>
-                  참여취소
-                </CompletionButton>
-              ) : (
-                <MissionButton onClick={handleJoin}>참여하기</MissionButton>
-              )}
-            </MissionInfBox>
-          </MissionHeader>
-
-          <ParticipantWrapper>
-            {USER_TEST.map(props => (
-              <ParticipantBox key={props.id}>
-                <ParticipantInfo>
-                  <ParticipantImage>
-                    <img
-                      src={`data:image/;base64,${userProfile?.profileImages.body}`}
-                      alt="user profile"
-                    />
-                  </ParticipantImage>
-                  <ParticipantName>{props.username}</ParticipantName>
-                </ParticipantInfo>
-              </ParticipantBox>
-            ))}
-          </ParticipantWrapper>
-        </>
+        <MissionHeader>
+          <MissionImage>
+            <img src={postImg} alt="postPic" />
+          </MissionImage>
+          <MissionInfBox>
+            <Participants />
+            <MissionTitle>{missionDetail?.mission?.title}</MissionTitle>
+            <MissionContent>{missionDetail?.mission?.content}</MissionContent>
+            <MissionDate>
+              기간: {startDate} ~ {endDate}
+            </MissionDate>
+            {join ? (
+              <CompletionButton onClick={handleDelete}>
+                참여취소
+              </CompletionButton>
+            ) : (
+              <MissionButton onClick={handleJoin}>참여하기</MissionButton>
+            )}
+          </MissionInfBox>
+        </MissionHeader>
       )}
     </MissionWrapper>
   );
@@ -162,6 +126,7 @@ const MissionWrapper = styled.section`
 `;
 
 const MissionImage = styled.div`
+  margin-top: 0.2rem;
   img {
     width: 18rem;
     height: 16rem;
@@ -171,8 +136,7 @@ const MissionImage = styled.div`
 
 const MissionInfBox = styled.div`
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: center;
   flex-direction: column;
   width: 18rem;
   height: 16rem;
@@ -185,19 +149,18 @@ const MissionTitle = styled.span`
   width: 100%;
   height: 48px;
   overflow: hidden;
-  text-align: center;
   color: black;
   font-size: 1.4rem;
   margin-top: 1.5rem;
+  margin-left: 2rem;
   font-weight: bold;
 `;
 
 const MissionContent = styled.span`
-  margin: 0 auto;
+  margin-left: 2rem;
   color: black;
   margin-top: 0.5rem;
-  text-align: center;
-  width: 250px;
+  width: 100%;
   height: 6rem;
   font-size: 1rem;
 `;
@@ -232,51 +195,4 @@ const CompletionButton = styled.button`
   border-radius: 5px;
   margin-top: 0.5rem;
   background-color: #497174;
-`;
-
-const ParticipantWrapper = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  align-content: center;
-  flex-flow: row wrap;
-  flex-grow: 2;
-  width: 100%;
-  padding: 0 2rem;
-`;
-
-const ParticipantBox = styled.div`
-  margin-top: 3rem;
-  display: block;
-  width: 230px;
-  height: 300px;
-  border-top: 5px solid gray;
-  padding-top: 1rem;
-`;
-
-const ParticipantInfo = styled.div`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-`;
-
-const ParticipantImage = styled.div`
-  display: inline;
-  margin-left: 2px;
-  img {
-    width: 30px;
-    height: 30px;
-    border-radius: 100%;
-  }
-`;
-
-const ParticipantName = styled.span`
-  margin-left: 5px;
-`;
-
-const Picture = styled.div`
-  margin-top: 2rem;
-  img {
-    width: 100%;
-    height: 200px;
-  }
 `;

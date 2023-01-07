@@ -268,17 +268,11 @@ const Mypage = () => {
                 </UserBox>
               </UserBoxWrapper>
             ) : (
-              <>
-                <UserGreetings>
-                  <UserName>
-                    안녕하세요! <span>{fixId}</span>님
-                  </UserName>
-                </UserGreetings>
-
-                <UserSpan>
-                  <span>'오늘의 미션도 응원합니다'</span>
-                </UserSpan>
-              </>
+              <UserGreetings>
+                <UserName>
+                  안녕하세요! <span>{fixId}</span>님
+                </UserName>
+              </UserGreetings>
             )}
           </form>
         </UserInformations>
