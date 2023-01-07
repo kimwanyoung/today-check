@@ -64,7 +64,7 @@ const MypageBoxTitle = styled.div`
   color: black;
   height: 3rem;
   margin-left: 1rem;
-  font-size: 1.3rem;
+  font-size: 1rem;
 `;
 
 const MypageBoxDate = styled.div`
