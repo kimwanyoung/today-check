@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { GrAddCircle } from 'react-icons/gr';
 import axios from 'axios';
 import PostingModal from './Modal/PostingModal';
-import { getAccessToken, setAccessToken } from '../../cookie/Cookie';
+import { setAccessToken } from '../../cookie/Cookie';
 import { useNavigate } from 'react-router-dom';
 import { AiFillHeart } from 'react-icons/ai';
 
