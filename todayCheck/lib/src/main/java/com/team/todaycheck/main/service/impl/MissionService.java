@@ -56,6 +56,7 @@ public class MissionService implements IMissionService {
 	
 	@PersistenceContext
     private EntityManager em;
+	public static String fileDir = "C:\\devtool\\upload\\";
 	
 	/*
 	@PostConstruct
@@ -170,15 +171,58 @@ public class MissionService implements IMissionService {
 			}
 		}
 
+		missionRepository.save(mission);
 		pm = partMissionRepository.save(pm);
 		return true;
 	}
 	
+	@Override 
+	public List<MissionDTO> findAllMissions() {
+		List<Mission> result = missionRepository.findAllMission();
+		List<MissionDTO> list = new ArrayList<MissionDTO>();
+		File imageFile;
+		HttpHeaders header = new HttpHeaders();
+		
+		for(Mission data : result) {
+			
+			ResponseEntity<byte[]> imgBaseData;
+			UserEntity admin = data.getAdmin();
+			imageFile = new File(fileDir + admin.getProfileImages());
+			try {
+				if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
+				imgBaseData = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK);
+			} catch (IOException e) { // 썸네일이 없을 때
+				imgBaseData = null;
+			}
+			
+			ParticipantDTO adminData = ParticipantDTO.builder()
+					.id(admin.getUserId())
+					.email(admin.getAddress())
+					.name(admin.getUsername())
+					.imageBase(imgBaseData)
+					.build();
+			
+			list.add(MissionDTO.builder()
+					.id(data.getId())
+					.participants_number(data.getParticipants().size())
+					.postTitle(data.getTitle())
+					.admin(adminData)
+					.postPicture(data.getThumbnailUrl())
+					.postContent(data.getContent())
+					.startDate(data.getStartDate())
+					.endDate(data.getEndDate())
+					.build());
+		}
+		return list;
+	}
+	
 	@Override
 	public List<ParticipantsMissionDTO> findAll() {
-		List<ParticipantsMission> result = partMissionRepository.findAllMission();
+		/*
+		List<ParticipantsMission> result = missionRepository.findAllMission();
 		List<ParticipantsMissionDTO> list = new ArrayList<ParticipantsMissionDTO>();
 		File imageFile;
+		
 		HttpHeaders header = new HttpHeaders();
 		
 		for(ParticipantsMission data : result) {
@@ -214,7 +258,10 @@ public class MissionService implements IMissionService {
 					.missionCertification(dto)
 					.build());
 		}
+		
 		return list;
+		*/
+		return null;
 	}
 	
 
@@ -282,11 +329,22 @@ public class MissionService implements IMissionService {
 			}
 
 			data.getMission().setThumbnailUrl("/mission/thumbnail/" + data.getMission().getId());
-
+			
+			ResponseEntity<byte[]> imgBaseData;
+			UserEntity admin = data.getParticipants();
+			imageFile = new File(fileDir + admin.getProfileImages());
+			try {
+				if(Files.probeContentType(imageFile.toPath()) != null) header.set("Content-Type" , Files.probeContentType(imageFile.toPath()));
+				imgBaseData = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(imageFile) , header , HttpStatus.OK);
+			} catch (IOException e) { // 썸네일이 없을 때
+				imgBaseData = null;
+			}
+			
 			list.add(ParticipantsMissionDTO.builder()
 					.keys(data.getKeys())
-					.mission(data.getMission())
+					.mission(null)
 					.participants(data.getParticipants())
+					.profile(imgBaseData)
 					.missionCertification(dto)
 					.build());
 		}
@@ -294,6 +352,7 @@ public class MissionService implements IMissionService {
 		
 	}
 
+	
 	@Override
 	public Mission findById(Long id) {
 		return missionRepository.findById(id).get();
@@ -342,14 +401,14 @@ public class MissionService implements IMissionService {
     			return ResponseEntity.status(HttpStatus.CONFLICT).build();
     		}
     	}
-    	
+    	/**/
     	ParticipantsMission participant = ParticipantsMission.builder()
     			.mission(mission)
     			.participants(user)
     			.build();
     	
-    	partMissionRepository.save(participant);
-    	
+    	//partMissionRepository.save(participant);
+    	mission.addParticipants(participant);
     	
     	return ResponseEntity.ok().build();
 	}

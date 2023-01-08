@@ -2,6 +2,8 @@ package com.team.todaycheck.main.DTO;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.team.todaycheck.main.entity.Mission;
 import com.team.todaycheck.main.entity.UserEntity;
 
@@ -21,4 +23,5 @@ public class ParticipantsMissionDTO {
 	private Mission mission;
 	private UserEntity participants;
 	private List<MissionCertificationDTO> missionCertification;
+	private ResponseEntity<byte[]> profile;
 }

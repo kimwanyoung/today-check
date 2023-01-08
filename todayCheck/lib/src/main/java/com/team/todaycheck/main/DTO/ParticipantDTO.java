@@ -1,5 +1,7 @@
 package com.team.todaycheck.main.DTO;
 
+import org.springframework.http.ResponseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,5 +18,6 @@ public class ParticipantDTO {
 	private String email;
 	private String name;
 	private String avater;
+	private ResponseEntity<byte[]> imageBase;
 	private String image;
 }

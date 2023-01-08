@@ -32,7 +32,7 @@ public class ParticipantsMission {
 	private Long keys;
 	
 	@JoinColumn(name = "mission_id")
-	@ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Mission mission;
 	
 	@JoinColumn(name = "participants_id")

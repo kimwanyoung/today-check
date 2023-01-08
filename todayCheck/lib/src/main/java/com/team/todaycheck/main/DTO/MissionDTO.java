@@ -22,6 +22,9 @@ public class MissionDTO {
 	
 	@ApiParam(value = "참여자들")
 	private List<ParticipantDTO> participants;
+	
+	@ApiParam(value = "참여자수")
+	private int participants_number;
 
 	@ApiParam(value = "미션 포스트 타이틀")
     private String postTitle;

@@ -45,8 +45,8 @@ public class MissionController {
     		@ApiResponse(code = 200, message = "성공적으로 조회됨"),
     		@ApiResponse(code = 500, message = "서버 오류"),
 	})
-    public List<ParticipantsMissionDTO> getAll() {
-    	return missionService.findAll();
+    public List<MissionDTO> getAll() {
+    	return missionService.findAllMissions();
     }
 
     /**
@@ -81,6 +81,7 @@ public class MissionController {
 			}
 			return ResponseEntity.status(200).build();
 		} catch (Exception e) {
+			System.out.println(e);
 			return ResponseEntity.status(500).build();
 		}
 	}

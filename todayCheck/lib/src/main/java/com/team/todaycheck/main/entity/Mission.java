@@ -3,6 +3,7 @@ package com.team.todaycheck.main.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,7 +41,7 @@ public class Mission {
     private UserEntity admin;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "mission")
+    @OneToMany(mappedBy = "mission" , cascade = CascadeType.PERSIST)
     private List<ParticipantsMission> participants;
 
     @Column(nullable = false)
@@ -62,4 +63,9 @@ public class Mission {
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate;
+    
+    public void addParticipants(ParticipantsMission data) {
+    	participants.add(data);
+    	data.setMission(this);
+    }
 }

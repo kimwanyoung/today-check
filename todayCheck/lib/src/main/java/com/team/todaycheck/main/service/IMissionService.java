@@ -27,5 +27,7 @@ public interface IMissionService {
 	ResponseEntity joinMission(long id, String cookie);
 	MessageDTO certifyMission(Long id, MultipartFile image, String cookie) throws AccountNotFoundException, IllegalStateException, IOException;
 	MissionCertificationDTO getCertifyMission(Long id);
+
+	List<MissionDTO> findAllMissions();
 	
 }

@@ -26,17 +26,17 @@ public class CustomParticipantMissionRepositoryImpl extends QuerydslRepositorySu
 	
 	@Override
 	public List<ParticipantsMission> findMission(Long keys) {
+		/*
 		return queryFactory.select(participantsMission).from(participantsMission).leftJoin(participantsMission.mission , mission).fetchJoin()
 			.leftJoin(participantsMission.participants).fetchJoin()
 			.leftJoin(participantsMission.missionCertification , missionCertification).fetchJoin()
 			.where(mission.id.eq(keys)).distinct().fetch();
-	}
-
-	@Override
-	public List<ParticipantsMission> findAllMission() {
-		return queryFactory.select(participantsMission).from(participantsMission).leftJoin(participantsMission.mission , mission).fetchJoin()
+			*/
+		return queryFactory.select(participantsMission).from(participantsMission)
+				.innerJoin(participantsMission.participants).fetchJoin()
+				.innerJoin(participantsMission.mission , mission).fetchJoin()
 				.leftJoin(participantsMission.missionCertification , missionCertification).fetchJoin()
-				.leftJoin(participantsMission.participants).fetchJoin().distinct().fetch();
+				.where(mission.id.eq(keys)).distinct().fetch();
 	}
 
 	@Override
