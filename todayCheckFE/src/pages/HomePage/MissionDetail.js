@@ -14,6 +14,7 @@ const MissionDetail = () => {
   const [missionDetail, setMissionDetail] = useState([]);
   const [participants, setParticipants] = useState([]);
   const [imgBody, setImgBody] = useState();
+  const [attendance, setAttendance] = useState([]);
   const [startDate, setStartDate] = useState(
     missionDetail?.mission?.startDate.slice(0, 10)
   );
@@ -31,6 +32,7 @@ const MissionDetail = () => {
         setMissionDetail(response.data[0]);
         setStartDate(response.data[0].mission.startDate.slice(0, 10));
         setEndDate(response.data[0].mission.endDate.slice(0, 10));
+        setAttendance(response.data[1].missionCertification);
         setParticipants(response.data[1].participants);
         const participantsList = missionDetail.participants?.map(
           props => props.name
@@ -56,19 +58,6 @@ const MissionDetail = () => {
         console.log(error);
       });
   }, []);
-
-  // const getUserProfileImg = async name => {
-  //   let imgBody;
-  //   await axios
-  //     .get(`/profile/profile/${name}`)
-  //     .then(res => {
-  //       imgBody = res.data.profileImages.body;
-  //     })
-  //     .catch(err => {
-  //       imgBody = null;
-  //     });
-  //   return imgBody;
-  // };
 
   const handleJoin = async e => {
     e.preventDefault();
@@ -147,6 +136,16 @@ const MissionDetail = () => {
       </ParticipantWrapper>
       <Attendance>
         <p>출석부</p>
+        {attendance?.map((prop, idx) => (
+          <CertificatedUser key={idx}>
+            <p>{prop?.userName} 출석!</p>
+            <p>{prop?.date}</p>
+            <img
+              src={`data:image/;base64,${prop?.image.body}`}
+              alt="미션 인증 이미지"
+            />
+          </CertificatedUser>
+        ))}
       </Attendance>
     </MissionWrapper>
   );
@@ -307,5 +306,24 @@ const Attendance = styled.div`
     font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 1rem;
+  }
+`;
+
+const CertificatedUser = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  width: 10rem;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  border-radius: 0.3rem;
+  background-color: #eff5f5;
+
+  p {
+    font-size: 0.8rem;
+  }
+  img {
+    width: 100%;
+    height: 100%;
   }
 `;
