@@ -44,19 +44,6 @@ const MissionDetail = () => {
           .get(`/profile/profile/${response.data[0].mission.admin.id}`)
           .then(res => setAdminProfile(res.data.profileImages.body))
           .catch(err => console.log(err));
-
-        axios
-          .get(`/profile/profile/${response.data[1].participants.id}`)
-          .then(res => {
-            setImgBody(res.data.profileImages.body);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
   }, []);
 
   const handleJoin = async e => {

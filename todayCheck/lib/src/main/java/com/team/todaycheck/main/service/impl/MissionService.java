@@ -56,7 +56,8 @@ public class MissionService implements IMissionService {
 	
 	@PersistenceContext
     private EntityManager em;
-	public static String fileDir = "C:\\devtool\\upload\\";
+//	public static String fileDir = "C:\\devtool\\upload\\";
+	public static String fileDir = "/Users/kwy/Documents/imageFile";
 	
 	/*
 	@PostConstruct
