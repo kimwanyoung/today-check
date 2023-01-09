@@ -23,14 +23,14 @@ const HomeBox = ({
     navigate(`/missionDetail/${id}`, { state: thumbnail });
   };
   const currentParticipants = participants ? participants : 0;
-
+  console.log(adminPicture);
   return (
     <HomeBoxContainer>
       {/* admin user 정보  */}
       <HomeBoxHead>
         {/* src={adminPicture} */}
         <img
-          src={`data:image/;base64,${adminPicture.body}`}
+          src={`data:image/;base64,${adminPicture?.body}`}
           alt="postPicture"
           onError={handleErrorImg}
         />
