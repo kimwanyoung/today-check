@@ -15,7 +15,6 @@ const HomeBox = ({
   postContent,
 }) => {
   const navigate = useNavigate();
-  const [userImage, setUserImage] = useState('');
   const handleErrorImg = e => {
     e.target.src = 'https://via.placeholder.com/150';
   };
@@ -24,23 +23,14 @@ const HomeBox = ({
     navigate(`/missionDetail/${id}`, { state: thumbnail });
   };
   const currentParticipants = participants ? participants : 0;
-  useEffect(() => {
-    axios
-      .get(`/profile/profile/${adminName}`)
-      .then(res => {
-        console.log(res.data);
-        setUserImage(res.data.profileImages.body);
-      })
-      .catch(err => console.log(err));
-  }, []);
-
+  console.log(adminPicture);
   return (
     <HomeBoxContainer>
       {/* admin user 정보  */}
       <HomeBoxHead>
         {/* src={adminPicture} */}
         <img
-          src={`data:image/;base64,${userImage}`}
+          src={`data:image/;base64,${adminPicture?.body}`}
           alt="postPicture"
           onError={handleErrorImg}
         />

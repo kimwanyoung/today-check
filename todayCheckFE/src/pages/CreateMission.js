@@ -26,14 +26,10 @@ const CreateMission = () => {
   const handleImage = e => {
     setImage(e.target.files[0]);
   };
+
   const handleSubmit = e => {
     e.preventDefault();
     const formData = new FormData();
-    // formData.append('title', missionInfo.title);
-    // formData.append('content', missionInfo.content);
-    // formData.append('startDate', missionInfo.startDate + 'T12:00:00');
-    // formData.append('endDate', missionInfo.endDate + 'T12:00:00');
-
     const blob = new Blob(
       [
         JSON.stringify({
@@ -60,7 +56,10 @@ const CreateMission = () => {
     };
 
     axios(postConfig)
-      .then(res => navigate('/'))
+      .then(res => {
+        console.log(res);
+        navigate('/');
+      })
       .catch(err => console.log(err));
   };
 
