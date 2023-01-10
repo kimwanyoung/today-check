@@ -85,6 +85,7 @@ const HeaderContainer = styled.div`
   height: 100vh;
   background-color: #eff5f5;
   padding-top: 2rem;
+  box-shadow: 5px 0 5px -5px rgba(0, 0, 0, 0.2);
 `;
 
 const TodayCheckLogo = styled.img`
