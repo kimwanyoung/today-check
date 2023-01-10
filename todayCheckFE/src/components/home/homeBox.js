@@ -20,7 +20,9 @@ const HomeBox = ({
   };
 
   const handleNavigate = () => {
-    navigate(`/missionDetail/${id}`, { state: thumbnail });
+    navigate(`/missionDetail/${id}`, {
+      state: { thumbnail: thumbnail, adminPicture: adminPicture },
+    });
   };
   const currentParticipants = participants ? participants : 0;
   console.log(adminPicture);
