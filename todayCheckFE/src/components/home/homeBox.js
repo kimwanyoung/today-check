@@ -21,7 +21,13 @@ const HomeBox = ({
 
   const handleNavigate = () => {
     navigate(`/missionDetail/${id}`, {
-      state: { thumbnail: thumbnail, adminPicture: adminPicture },
+      state: {
+        thumbnail: thumbnail,
+        adminPicture: adminPicture,
+        adminName: adminName,
+        postTitle: postTitle,
+        postContent: postContent,
+      },
     });
   };
   const currentParticipants = participants ? participants : 0;
