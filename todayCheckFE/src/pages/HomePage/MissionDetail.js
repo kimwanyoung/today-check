@@ -9,6 +9,7 @@ const MissionDetail = () => {
   const location = useLocation();
   const missionThumbnail = location?.state?.thumbnail;
   const adminProfile = location.state.adminPicture;
+  console.log(location.state);
 
   useEffect(() => {
     axios
@@ -26,7 +27,16 @@ const MissionDetail = () => {
       <DetailTop>
         <CardWrapper>
           <MissionImg src={missionThumbnail} />
-          <MissionCard />
+          <MissionCard>
+            <MissionTitle>{location.state.postTitle}</MissionTitle>
+            <AdminInfo>
+              <img
+                src={`data:image/;base64,${adminProfile?.body}`}
+                alt="post admin"
+              />
+              <AdminName>{location.state.adminName}</AdminName>
+            </AdminInfo>
+          </MissionCard>
         </CardWrapper>
       </DetailTop>
     </MissionDetailWrapper>
@@ -63,7 +73,34 @@ const MissionImg = styled.img`
 `;
 
 const MissionCard = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
   width: 50%;
   height: 100%;
   background-color: #eff5f5;
+
+  img {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+`;
+
+const AdminInfo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const AdminName = styled.p`
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-left: 1rem;
+`;
+
+const MissionTitle = styled.h3`
+  font-size: 1.4rem;
+  font-weight: 600;
 `;
