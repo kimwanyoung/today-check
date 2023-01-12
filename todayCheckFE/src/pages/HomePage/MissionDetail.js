@@ -1,6 +1,7 @@
 import { useParams, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getAccessToken } from '../../cookie/Cookie';
+import { FaCrown } from 'react-icons/fa';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -9,6 +10,8 @@ const MissionDetail = () => {
   const location = useLocation();
   const missionThumbnail = location?.state?.thumbnail;
   const adminProfile = location.state.adminPicture;
+  const startDate = location.state.startDate.slice(0, 10);
+  const endDate = location.state.endDate.slice(0, 10);
   console.log(location.state);
 
   useEffect(() => {
@@ -38,13 +41,19 @@ const MissionDetail = () => {
           <MissionImg src={missionThumbnail} />
           <MissionCard>
             <MissionTitle>{location.state.postTitle}</MissionTitle>
-            <AdminInfo>
-              <img
-                src={`data:image/;base64,${adminProfile?.body}`}
-                alt="post admin"
-              />
-              <AdminName>{location.state.adminName}</AdminName>
-            </AdminInfo>
+            <MissionDate>
+              {startDate} ~ {endDate}
+            </MissionDate>
+            <AdminBox>
+              <AdminInfo>
+                <img
+                  src={`data:image/;base64,${adminProfile?.body}`}
+                  alt="post admin"
+                />
+                <Crown />
+                <AdminName>{location.state.adminName}</AdminName>
+              </AdminInfo>
+            </AdminBox>
             <JoinMission>
               <JoinBtn onClick={missionJoin}>참여하기</JoinBtn>
             </JoinMission>
@@ -87,7 +96,7 @@ const MissionImg = styled.img`
 const MissionCard = styled.div`
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-around;
   flex-direction: column;
   padding-bottom: 3rem;
@@ -111,10 +120,10 @@ const AdminInfo = styled.div`
 const AdminName = styled.p`
   font-size: 1.2rem;
   font-weight: 600;
-  margin-left: 1rem;
 `;
 
 const MissionTitle = styled.h3`
+  margin-left: 2rem;
   font-size: 1.4rem;
   font-weight: 600;
 `;
@@ -127,7 +136,7 @@ const JoinMission = styled.div`
   bottom: 0;
   width: 100%;
   height: 3rem;
-  border-top: 1px solid black;
+  border-top: 1px solid lightgray;
 `;
 
 const JoinBtn = styled.button`
@@ -138,4 +147,25 @@ const JoinBtn = styled.button`
   font-size: 1rem;
   font-weight: 600;
   border: 1px solid #eff5f5;
+`;
+
+const AdminBox = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  margin-left: 2rem;
+`;
+
+const Crown = styled(FaCrown)`
+  color: #eb6440;
+  margin-left: 0.5rem;
+`;
+
+const MissionDate = styled.p`
+  margin-left: 2rem;
+`;
+
+const DetailBottom = styled.div`
+  width: 100vw;
 `;

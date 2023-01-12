@@ -32,6 +32,8 @@ const Home = () => {
           participants={data?.participants_number}
           postTitle={data?.postTitle}
           postContent={data?.content}
+          startDate={data?.startDate}
+          endDate={data?.endDate}
         />
       ))}
       <AddMisstion onClick={() => navigate('/createMission')}>

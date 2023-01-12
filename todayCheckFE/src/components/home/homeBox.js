@@ -13,6 +13,8 @@ const HomeBox = ({
   participants,
   postTitle,
   postContent,
+  startDate,
+  endDate,
 }) => {
   const navigate = useNavigate();
   const handleErrorImg = e => {
@@ -27,6 +29,8 @@ const HomeBox = ({
         adminName: adminName,
         postTitle: postTitle,
         postContent: postContent,
+        startDate: startDate,
+        endDate: endDate,
       },
     });
   };
