@@ -22,6 +22,15 @@ const MissionDetail = () => {
       .catch(err => console.log(err));
   });
 
+  const missionJoin = () => {
+    axios
+      .post(`/participant/${params.id}`, {
+        id: params.id,
+      })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
+
   return (
     <MissionDetailWrapper>
       <DetailTop>
@@ -36,6 +45,9 @@ const MissionDetail = () => {
               />
               <AdminName>{location.state.adminName}</AdminName>
             </AdminInfo>
+            <JoinMission>
+              <JoinBtn onClick={missionJoin}>참여하기</JoinBtn>
+            </JoinMission>
           </MissionCard>
         </CardWrapper>
       </DetailTop>
@@ -73,10 +85,12 @@ const MissionImg = styled.img`
 `;
 
 const MissionCard = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-around;
   flex-direction: column;
+  padding-bottom: 3rem;
   width: 50%;
   height: 100%;
   background-color: #eff5f5;
@@ -103,4 +117,25 @@ const AdminName = styled.p`
 const MissionTitle = styled.h3`
   font-size: 1.4rem;
   font-weight: 600;
+`;
+
+const JoinMission = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  bottom: 0;
+  width: 100%;
+  height: 3rem;
+  border-top: 1px solid black;
+`;
+
+const JoinBtn = styled.button`
+  width: 6rem;
+  height: 100%;
+  background-color: #eb6440;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1px solid #eff5f5;
 `;
