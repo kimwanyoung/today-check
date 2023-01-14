@@ -1,5 +1,5 @@
 import { useParams, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getAccessToken } from '../../cookie/Cookie';
 import { FaCrown } from 'react-icons/fa';
 import axios from 'axios';
@@ -8,6 +8,7 @@ import styled from 'styled-components';
 const MissionDetail = () => {
   const params = useParams();
   const location = useLocation();
+  const [participants, setParticipants] = useState([]);
   const missionThumbnail = location?.state?.thumbnail;
   const adminProfile = location.state.adminPicture;
   const startDate = location.state.startDate.slice(0, 10);
@@ -21,16 +22,21 @@ const MissionDetail = () => {
           Authorization: getAccessToken(),
         },
       })
-      .then(res => console.log(res))
+      .then(res => {
+        setParticipants(res.data);
+        console.log(res.data);
+      })
       .catch(err => console.log(err));
-  });
+  }, []);
 
   const missionJoin = () => {
     axios
       .post(`/participant/${params.id}`, {
         id: params.id,
       })
-      .then(res => console.log(res))
+      .then(res => {
+        console.log(res);
+      })
       .catch(err => console.log(err));
   };
 
@@ -41,9 +47,6 @@ const MissionDetail = () => {
           <MissionImg src={missionThumbnail} />
           <MissionCard>
             <MissionTitle>{location.state.postTitle}</MissionTitle>
-            <MissionDate>
-              {startDate} ~ {endDate}
-            </MissionDate>
             <AdminBox>
               <AdminInfo>
                 <img
@@ -53,6 +56,9 @@ const MissionDetail = () => {
                 <Crown />
                 <AdminName>{location.state.adminName}</AdminName>
               </AdminInfo>
+              <MissionDate>
+                {startDate} ~ {endDate}
+              </MissionDate>
             </AdminBox>
             <JoinMission>
               <JoinBtn onClick={missionJoin}>참여하기</JoinBtn>
@@ -60,6 +66,20 @@ const MissionDetail = () => {
           </MissionCard>
         </CardWrapper>
       </DetailTop>
+      <DetailBottom>
+        <ParticipantInfo>
+          <ParTitle>참여자</ParTitle>
+          {participants?.map(props => (
+            <ParticipantProfile key={props.keys}>
+              <img
+                src={`data:image/;base64,${props.profile.body}`}
+                alt="user"
+              />
+              <AdminName>{props.participants.id}</AdminName>
+            </ParticipantProfile>
+          ))}
+        </ParticipantInfo>
+      </DetailBottom>
     </MissionDetailWrapper>
   );
 };
@@ -163,9 +183,38 @@ const Crown = styled(FaCrown)`
 `;
 
 const MissionDate = styled.p`
-  margin-left: 2rem;
+  margin-top: 1rem;
 `;
 
 const DetailBottom = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100vw;
+  padding-left: 15rem;
+`;
+
+const ParticipantInfo = styled.div`
+  width: 40rem;
+  height: 3rem;
+`;
+
+const ParticipantProfile = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6rem;
+  height: 100%;
+
+  img {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+`;
+
+const ParTitle = styled.h2`
+  margin-top: 2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
 `;
