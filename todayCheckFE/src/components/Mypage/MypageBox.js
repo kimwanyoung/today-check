@@ -3,11 +3,9 @@ import styled from 'styled-components';
 
 const MypageBox = ({
   title,
-  content,
   startDate,
   id,
   endDate,
-  thumbnail,
   missionClick,
   setMissionClick,
 }) => {
@@ -17,7 +15,6 @@ const MypageBox = ({
   const handleErrorImg = e => {
     e.target.src = 'https://via.placeholder.com/150';
   };
-  console.log(id);
 
   return (
     <MypageBoxContainer onClick={() => setMissionClick(!missionClick)}>

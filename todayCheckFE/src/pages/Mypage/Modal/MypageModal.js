@@ -1,24 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import axios from 'axios';
 import { setAccessToken, getAccessToken } from '../../../cookie/Cookie';
 
 const MypageModal = ({ missionClick, setMissionClick, postId }) => {
-  const [imgFile, setImgFile] = useState('');
+  const imgFile = useRef();
+  const [imageFile, setImageFile] = useState('');
   const [img, setImg] = useState('');
-  console.log(imgFile);
 
-  const saveImgFile = fileBlob => {
+  console.log('미리보기 : ', imgFile);
+  console.log('전송용 : ', img);
+  const saveImgFile = () => {
+    const file = imgFile.current.files[0];
     const reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
+    reader.readAsDataURL(file);
     return new Promise(resolve => {
       reader.onload = () => {
-        setImgFile(reader.result);
+        setImageFile(reader.result);
         resolve();
       };
     });
   };
+
   const handleSubmit = () => {
     const postInfo = new FormData();
     postInfo.append('image', img);
@@ -61,14 +65,15 @@ const MypageModal = ({ missionClick, setMissionClick, postId }) => {
             id="fileUpload"
             type="file"
             accept="image/*"
+            ref={imgFile}
             onChange={e => {
-              saveImgFile(e.target.files[0]);
+              saveImgFile();
               setImg(e.target.files[0]);
             }}
           />
           <ImageLabel htmlFor="fileUpload">
-            {imgFile ? (
-              <img src={imgFile} alt="이미지 업로드" />
+            {img ? (
+              <img src={imageFile} alt="이미지 업로드" />
             ) : (
               <div>이미지 업로드</div>
             )}
