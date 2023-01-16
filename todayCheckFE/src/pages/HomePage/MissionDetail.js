@@ -1,329 +1,311 @@
-import React, { useState } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getAccessToken } from '../../cookie/Cookie';
+import { FaCrown } from 'react-icons/fa';
+import { getAccessKey } from '../../cookie/Cookie';
 import axios from 'axios';
 import styled from 'styled-components';
-import { useParams, useLocation } from 'react-router-dom';
-import { getAccessKey } from '../../cookie/Cookie';
-import { useEffect } from 'react';
 
 const MissionDetail = () => {
-  const userName = String(getAccessKey());
   const params = useParams();
-  const paramsData = params.id;
   const location = useLocation();
-  const postImg = location.state;
-  const [missionDetail, setMissionDetail] = useState([]);
   const [participants, setParticipants] = useState([]);
-  const [imgBody, setImgBody] = useState();
-  const [attendance, setAttendance] = useState([]);
-  const [startDate, setStartDate] = useState(
-    missionDetail?.mission?.startDate.slice(0, 10)
-  );
-  const [adminProfile, setAdminProfile] = useState();
-  const [endDate, setEndDate] = useState(
-    missionDetail?.mission?.endDate.slice(0, 10)
-  );
-  const [join, setJoin] = useState();
+  const [currentUser, setCurrentUser] = useState('');
+  const [participantNameArr, setParticipantNameArr] = useState([]);
+  const [missionCertification, setMissionCertification] = useState([]);
+  const missionThumbnail = location?.state?.thumbnail;
+  const adminProfile = location.state.adminPicture;
+  const startDate = location.state.startDate.slice(0, 10);
+  const endDate = location.state.endDate.slice(0, 10);
 
   useEffect(() => {
     axios
-      .get(`/mission/${paramsData}`, { id: paramsData })
-      .then(response => {
-        console.log(response);
-        setMissionDetail(response.data[0]);
-        setStartDate(response.data[0].mission.startDate.slice(0, 10));
-        setEndDate(response.data[0].mission.endDate.slice(0, 10));
-        setAttendance(response.data[1].missionCertification);
-        setParticipants(response.data[1].participants);
-        const participantsList = missionDetail.participants?.map(
-          props => props.name
-        );
-        const participantsInclude = participantsList?.includes(userName);
-        setJoin(participantsInclude);
-
-        axios
-          .get(`/profile/profile/${response.data[0].mission.admin.id}`)
-          .then(res => setAdminProfile(res.data.profileImages.body))
-          .catch(err => console.log(err));
-
-        axios
-          .get(`/profile/profile/${response.data[1].participants.id}`)
-          .then(res => {
-            setImgBody(res.data.profileImages.body);
-          })
-          .catch(err => {
-            console.log(err);
-          });
+      .get(`/mission/${params.id}`, {
+        headers: {
+          Authorization: getAccessToken(),
+        },
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+      .then(res => {
+        const parArr = res.data.map(props => {
+          return props.participants.id;
+        });
+        setParticipants(res.data);
+        setParticipantNameArr(parArr);
+        setMissionCertification(res.data[0].missionCertification);
+        console.log(res.data[0].missionCertification);
+      })
+      .catch(err => console.log(err));
+
+    axios
+      .get(`/profile/profile/${getAccessKey()}`)
+      .then(res => setCurrentUser(res.data.id))
+      .catch(err => console.log(err));
   }, []);
 
-  const handleJoin = async e => {
-    e.preventDefault();
-    try {
-      await axios
-        .post(`/participant/${paramsData}`, {
-          id: paramsData,
-        })
-        .then(response => {
-          setJoin(!join);
-        })
-        .catch(error => {
-          console.log(error);
-          alert('로그인 후 이용해주세요');
-        });
-    } catch (e) {
-      console.log(e);
-    }
+  const missionJoin = () => {
+    axios
+      .post(`/participant/${params.id}`, {
+        id: params.id,
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => console.log(err));
   };
 
-  const handleDelete = async e => {
-    e.preventDefault();
-    try {
-      await axios
-        .delete(`/participant/${paramsData}`, {
-          id: paramsData,
-        })
-        .then(response => {
-          setJoin(!join);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    } catch (e) {
-      console.log(e);
-    }
+  const missionOut = () => {
+    axios
+      .delete(`/participant/${params.id}`, {
+        id: params.id,
+      })
+      .then(res => {
+        console.log(res);
+        window.location.reload();
+      })
+      .catch(err => console.log(err));
   };
-  console.log();
 
   return (
-    <MissionWrapper>
-      {missionDetail && (
-        <MissionHeader>
-          <MissionImage>
-            <img src={postImg} alt="postPic" />
-          </MissionImage>
-          <MissionInfBox>
-            <MissionTitle>{missionDetail?.mission?.title}</MissionTitle>
-            <MissionContent>{missionDetail?.mission?.content}</MissionContent>
-            <MissionCreator>
-              <img src={`data:image/;base64,${adminProfile}`} alt="admin pic" />
-              <AdminName>
-                <p>생성자</p>
-                <h3>{missionDetail?.mission?.admin?.id}</h3>
-              </AdminName>
-            </MissionCreator>
-            <MissionDate>
-              기간: {startDate} ~ {endDate}
-            </MissionDate>
-            {join ? (
-              <CompletionButton onClick={handleDelete}>
-                참여취소
-              </CompletionButton>
-            ) : (
-              <MissionButton onClick={handleJoin}>참여하기</MissionButton>
-            )}
-          </MissionInfBox>
-        </MissionHeader>
-      )}
-      <ParticipantWrapper>
-        <p>참여자</p>
-        <Participant>
-          <img src={`data:image/;base64,${imgBody}`} alt="participants pic" />
-          <p>{participants.id}</p>
-        </Participant>
-      </ParticipantWrapper>
-      <Attendance>
-        <p>출석부</p>
-        {attendance?.map((prop, idx) => (
-          <CertificatedUser key={idx}>
-            <p>{prop?.userName} 출석!</p>
-            <p>{prop?.date}</p>
-            <img
-              src={`data:image/;base64,${prop?.image.body}`}
-              alt="미션 인증 이미지"
-            />
-          </CertificatedUser>
-        ))}
-      </Attendance>
-    </MissionWrapper>
+    <MissionDetailWrapper>
+      <DetailTop>
+        <CardWrapper>
+          <MissionImg src={missionThumbnail} />
+          <MissionCard>
+            <MissionTitle>{location.state.postTitle}</MissionTitle>
+            <AdminBox>
+              <AdminInfo>
+                <img
+                  src={`data:image/;base64,${adminProfile?.body}`}
+                  alt="post admin"
+                />
+                <Crown />
+                <AdminName>{location.state.adminName}</AdminName>
+              </AdminInfo>
+              <MissionDate>
+                {startDate} ~ {endDate}
+              </MissionDate>
+            </AdminBox>
+            <JoinMission>
+              {participantNameArr?.includes(currentUser) ? (
+                <JoinBtn onClick={missionOut}>미션탈퇴</JoinBtn>
+              ) : (
+                <JoinBtn onClick={missionJoin}>참여하기</JoinBtn>
+              )}
+            </JoinMission>
+          </MissionCard>
+        </CardWrapper>
+      </DetailTop>
+      <DetailBottom>
+        <ParticipantInfo>
+          <DetailTitle>참여자</DetailTitle>
+          {participants?.map(props => (
+            <ParticipantProfile key={props.keys}>
+              <img
+                src={`data:image/;base64,${props.profile.body}`}
+                alt="user"
+              />
+              <AdminName>{props.participants.id}</AdminName>
+            </ParticipantProfile>
+          ))}
+        </ParticipantInfo>
+        <Attendance>
+          <DetailTitle>출석 인증</DetailTitle>
+          {missionCertification?.map(props => (
+            <AttendanceMission key={props.keys}>
+              <img
+                src={`data:image/;base64,${props.image.body}`}
+                alt="출석 인증 이미지"
+              />
+              <AttendanceInfo>
+                <p>인증자 : {props.userName}</p>
+                <p>인증날짜 : {props.date}</p>
+              </AttendanceInfo>
+            </AttendanceMission>
+          ))}
+        </Attendance>
+      </DetailBottom>
+    </MissionDetailWrapper>
   );
 };
-
 export default MissionDetail;
 
-const MissionHeader = styled.div`
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 45%;
-  background-color: #eb6440;
-`;
-
-const MissionWrapper = styled.section`
+const MissionDetailWrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background-color: #efefef;
-  overflow: scroll;
+`;
+
+const DetailTop = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 40vh;
+  background-color: #eb6440;
   padding-left: 15rem;
 `;
 
-const MissionImage = styled.div`
-  margin-top: 0.2rem;
-  img {
-    width: 18rem;
-    height: 16rem;
-    border-radius: 5px;
-  }
+const CardWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40rem;
+  height: 15rem;
 `;
 
-const MissionInfBox = styled.div`
+const MissionImg = styled.img`
+  width: 50%;
+  height: 100%;
+`;
+
+const MissionCard = styled.div`
+  position: relative;
   display: flex;
+  align-items: flex-start;
   justify-content: space-around;
   flex-direction: column;
-  width: 18rem;
-  height: 16rem;
-  margin-left: 0.8rem;
+  padding-bottom: 3rem;
+  width: 50%;
+  height: 100%;
   background-color: #eff5f5;
-  border-radius: 5px;
-`;
-
-const MissionTitle = styled.span`
-  width: 100%;
-  overflow: hidden;
-  color: black;
-  font-size: 1.4rem;
-  margin-top: 1.5rem;
-  margin-left: 2rem;
-  font-weight: bold;
-`;
-
-const MissionContent = styled.span`
-  margin-left: 2rem;
-  color: black;
-  margin-top: 0.5rem;
-  width: 100%;
-  font-size: 1rem;
-`;
-
-const MissionDate = styled.div`
-  color: black;
-  margin: 0 auto;
-  text-align: center;
-  width: 100%;
-`;
-
-const MissionButton = styled.button`
-  display: block;
-  margin: 0 auto;
-  text-align: center;
-  width: 250px;
-  font-size: 1rem;
-  height: 2.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  color: white;
-  background-color: #497174;
-`;
-
-const CompletionButton = styled.button`
-  display: block;
-  margin: 0 auto;
-  text-align: center;
-  width: 250px;
-  font-size: 1rem;
-  height: 2.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  background-color: #497174;
-`;
-
-const MissionCreator = styled.div`
-  display: flex;
-  width: 100%;
 
   img {
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    margin-left: 2rem;
   }
 `;
 
-const AdminName = styled.div`
+const AdminInfo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const AdminName = styled.p`
+  font-size: 1.2rem;
+  font-weight: 600;
+`;
+
+const MissionTitle = styled.h3`
+  margin-left: 2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+`;
+
+const JoinMission = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  bottom: 0;
+  width: 100%;
+  height: 3rem;
+  border: 1px solid lightgray;
+`;
+
+const JoinBtn = styled.button`
+  width: 6rem;
+  height: 100%;
+  background-color: #eb6440;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+`;
+
+const AdminBox = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  margin-left: 2rem;
+`;
+
+const Crown = styled(FaCrown)`
+  color: #eb6440;
+  margin-left: 0.5rem;
+`;
+
+const MissionDate = styled.p`
+  margin-top: 1rem;
+`;
+
+const DetailBottom = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100vw;
+  padding-left: 15rem;
+`;
+
+const ParticipantInfo = styled.div`
+  width: 40rem;
+`;
+
+const ParticipantProfile = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6rem;
+  height: 100%;
+
+  img {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+`;
+
+const DetailTitle = styled.h2`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 3rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border-radius: 1rem 0 0 0;
+  background-color: rgba(235, 100, 64, 0.6);
+  color: white;
+`;
+
+const Attendance = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: center;
   flex-direction: column;
-  margin-left: 1rem;
-  font-size: 1rem;
-  font-weight: 500;
-
-  h3 {
-    font-size: 1.2rem;
-    color: #eb6440;
-  }
+  flex-wrap: nowrap;
+  width: 40rem;
 `;
 
-const ParticipantWrapper = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-direction: column;
-  width: 50%;
-  margin: 0 auto;
-
-  p {
-    margin-top: 1rem;
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-`;
-
-const Participant = styled.div`
+const AttendanceMission = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 12rem;
+  height: 13rem;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
   img {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
+    width: 100%;
+    height: 70%;
   }
 `;
 
-const Attendance = styled.div`
-  width: 50%;
-  margin: 0 auto;
-  height: 2rem;
-
-  p {
-    margin-top: 1rem;
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-`;
-
-const CertificatedUser = styled.div`
+const AttendanceInfo = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+  align-items: flex-start;
+  justify-content: space-between;
   flex-direction: column;
-  width: 10rem;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-  border-radius: 0.3rem;
-  background-color: #eff5f5;
+  width: 100%;
+  height: 3rem;
 
   p {
     font-size: 0.8rem;
-  }
-  img {
-    width: 100%;
-    height: 100%;
+    margin-left: 0.3rem;
   }
 `;

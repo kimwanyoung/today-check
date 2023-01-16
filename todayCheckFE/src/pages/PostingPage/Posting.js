@@ -19,6 +19,7 @@ const Posting = () => {
       `
       )
       .then(res => {
+        console.log(res);
         setPosts(res.data);
 
         if (res.data.code === '-5') {

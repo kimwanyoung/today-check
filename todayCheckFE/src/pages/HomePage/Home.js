@@ -12,26 +12,28 @@ const Home = () => {
     axios
       .get('/mission')
       .then(response => {
+        console.log(response);
         setMissions(response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
   }, []);
-  console.log(missions);
 
   return (
     <RightContainer>
       {missions?.map((data, idx) => (
         <HomeBox
           key={idx}
-          id={data?.mission.id}
-          thumbnail={data?.mission?.thumbnailUrl}
-          adminName={data?.mission?.admin?.id}
-          adminPicture={data?.mission?.admin?.profileImages}
-          participants={data?.mission?.participants?.length + 1}
-          postTitle={data?.mission.title}
-          postContent={data?.mission.content}
+          id={data?.id}
+          thumbnail={data?.postPicture}
+          adminName={data?.admin?.name}
+          adminPicture={data?.admin?.imageBase}
+          participants={data?.participants_number}
+          postTitle={data?.postTitle}
+          postContent={data?.content}
+          startDate={data?.startDate}
+          endDate={data?.endDate}
         />
       ))}
       <AddMisstion onClick={() => navigate('/createMission')}>

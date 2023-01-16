@@ -55,9 +55,10 @@ public class MissionService implements IMissionService {
 	private final JwtService jwtService;
 
 	@PersistenceContext
-	private EntityManager em;
-	public static String fileDir = "C:\\devtool\\upload\\";
-
+    private EntityManager em;
+//	public static String fileDir = "C:\\devtool\\upload\\";
+	public static String fileDir = "/Users/kwy/Documents/imageFile";
+	
 	/*
 	 * @PostConstruct void init() throws Exception { if (userRepository.count() < 3)
 	 * { loginService.createId(RegistryDTO.builder() .id("demo@example.com")

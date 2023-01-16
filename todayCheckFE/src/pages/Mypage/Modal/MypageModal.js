@@ -7,7 +7,7 @@ import { setAccessToken, getAccessToken } from '../../../cookie/Cookie';
 const MypageModal = ({ missionClick, setMissionClick, postId }) => {
   const [imgFile, setImgFile] = useState('');
   const [img, setImg] = useState('');
-  console.log(postId);
+  console.log(imgFile);
 
   const saveImgFile = fileBlob => {
     const reader = new FileReader();
@@ -35,7 +35,6 @@ const MypageModal = ({ missionClick, setMissionClick, postId }) => {
 
     axios(postConfig)
       .then(res => {
-        console.log(res);
         alert('인증 이미지 업로드 완료!');
         if (res.data.code === '-5') {
           axios
@@ -68,7 +67,11 @@ const MypageModal = ({ missionClick, setMissionClick, postId }) => {
             }}
           />
           <ImageLabel htmlFor="fileUpload">
-            {imgFile ? <img src={imgFile} /> : <div>이미지 업로드</div>}
+            {imgFile ? (
+              <img src={imgFile} alt="이미지 업로드" />
+            ) : (
+              <div>이미지 업로드</div>
+            )}
           </ImageLabel>
           <UploadButton onClick={handleSubmit}>제출하기</UploadButton>
         </form>
