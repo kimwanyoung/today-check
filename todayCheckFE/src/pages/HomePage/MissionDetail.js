@@ -59,7 +59,6 @@ const MissionDetail = () => {
         id: params.id,
       })
       .then(res => {
-        console.log(res);
         window.location.reload();
       })
       .catch(err => console.log(err));
@@ -98,15 +97,17 @@ const MissionDetail = () => {
       <DetailBottom>
         <ParticipantInfo>
           <DetailTitle>참여자</DetailTitle>
-          {participants?.map(props => (
-            <ParticipantProfile key={props.keys}>
-              <img
-                src={`data:image/;base64,${props.profile.body}`}
-                alt="user"
-              />
-              <AdminName>{props.participants.id}</AdminName>
-            </ParticipantProfile>
-          ))}
+          <ParticipantInfoWrapper>
+            {participants?.map(props => (
+              <ParticipantProfile key={props.keys}>
+                <img
+                  src={`data:image/;base64,${props.profile.body}`}
+                  alt="user"
+                />
+                <AdminName>{props.participants.id}</AdminName>
+              </ParticipantProfile>
+            ))}
+          </ParticipantInfoWrapper>
         </ParticipantInfo>
         <Attendance>
           <DetailTitle>출석 인증</DetailTitle>
@@ -308,4 +309,11 @@ const AttendanceInfo = styled.div`
     font-size: 0.8rem;
     margin-left: 0.3rem;
   }
+`;
+
+const ParticipantInfoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
 `;
