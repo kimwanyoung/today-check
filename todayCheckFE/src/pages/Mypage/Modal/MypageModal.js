@@ -5,12 +5,11 @@ import axios from 'axios';
 import { setAccessToken, getAccessToken } from '../../../cookie/Cookie';
 
 const MypageModal = ({ missionClick, setMissionClick, postId }) => {
+  //postId 동시에 들어옴
   const imgFile = useRef();
   const [imageFile, setImageFile] = useState('');
   const [img, setImg] = useState('');
 
-  console.log('미리보기 : ', imgFile);
-  console.log('전송용 : ', img);
   const saveImgFile = () => {
     const file = imgFile.current.files[0];
     const reader = new FileReader();
@@ -25,8 +24,7 @@ const MypageModal = ({ missionClick, setMissionClick, postId }) => {
 
   const handleSubmit = () => {
     const postInfo = new FormData();
-    postInfo.append('image', img);
-
+    postInfo.append('image', imgFile.current.files[0]);
     const postConfig = {
       method: 'post',
       url: `/participant/certification/${postId}`,
