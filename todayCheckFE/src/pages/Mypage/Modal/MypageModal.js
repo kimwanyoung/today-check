@@ -5,7 +5,6 @@ import axios from 'axios';
 import { setAccessToken, getAccessToken } from '../../../cookie/Cookie';
 
 const MypageModal = ({ missionClick, setMissionClick, postId }) => {
-  //postId 동시에 들어옴
   const imgFile = useRef();
   const [imageFile, setImageFile] = useState('');
   const [img, setImg] = useState('');
@@ -20,6 +19,10 @@ const MypageModal = ({ missionClick, setMissionClick, postId }) => {
         resolve();
       };
     });
+  };
+
+  const handleClickUpload = () => {
+    imgFile.current.click();
   };
 
   const handleSubmit = () => {
@@ -47,10 +50,10 @@ const MypageModal = ({ missionClick, setMissionClick, postId }) => {
                 alert('인증 이미지 업로드 완료!');
               });
             })
-            .catch(err => console.log(err));
+            .catch(err => console.error(err));
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => console.error(err));
   };
 
   return (
@@ -69,7 +72,7 @@ const MypageModal = ({ missionClick, setMissionClick, postId }) => {
               setImg(e.target.files[0]);
             }}
           />
-          <ImageLabel htmlFor="fileUpload">
+          <ImageLabel onClick={handleClickUpload}>
             {img ? (
               <img src={imageFile} alt="이미지 업로드" />
             ) : (
