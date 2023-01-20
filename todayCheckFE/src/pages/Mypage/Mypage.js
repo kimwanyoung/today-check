@@ -13,7 +13,6 @@ import {
 } from '../../cookie/Cookie';
 import MypageBox from '../../components/Mypage/MypageBox';
 import TextField from '@mui/material/TextField';
-import MypageModal from './Modal/MypageModal';
 import { BiSave } from 'react-icons/bi';
 
 const Mypage = () => {
@@ -21,7 +20,6 @@ const Mypage = () => {
   const [missionData, setMissionData] = useState();
   const [joinMission, setJoinMission] = useState([]);
   const [createMission, setCreateMissionData] = useState([]);
-  const [missionClick, setMissionClick] = useState(false);
   const [userId, setUserId] = useState(String(getAccessKey()));
   const accessToken = String(getAccessToken());
 
@@ -48,7 +46,6 @@ const Mypage = () => {
         headers: { Authorization: `${accessToken}` },
       })
       .then(response => {
-        console.log(response);
         setMissionData(response.data);
         setJoinMission(response.data.joinMission);
         setCreateMissionData(response.data.createMission);
@@ -60,7 +57,7 @@ const Mypage = () => {
         setImgFile(response.data.profileImages.body);
       })
       .catch(err => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -103,7 +100,6 @@ const Mypage = () => {
             .post('/login', { id: fixId, password: password })
             .then(response => {
               if (response.data.code === '-1') {
-                console.log(response);
                 return alert('로그인에 실패했습니다');
               }
               setRefreshToken(response.data.refreshToken);
@@ -160,7 +156,7 @@ const Mypage = () => {
             });
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => console.error(err));
   };
 
   return (
@@ -282,26 +278,15 @@ const Mypage = () => {
         <JoinMissionlistWrapper>
           {joinMission &&
             joinMission?.map((data, index) => (
-              <>
-                <MypageBox
-                  key={index}
-                  id={data.id}
-                  title={data.title}
-                  content={data.content}
-                  startDate={data.startDate}
-                  endDate={data.endDate}
-                  thumbnail={data.thumbnail}
-                  setMissionClick={setMissionClick}
-                  missionClick={missionClick}
-                />
-                {missionClick && (
-                  <MypageModal
-                    postId={data.id}
-                    setMissionClick={setMissionClick}
-                    missionClick={missionClick}
-                  />
-                )}
-              </>
+              <MypageBox
+                key={index}
+                id={data.id}
+                title={data.title}
+                content={data.content}
+                startDate={data.startDate}
+                endDate={data.endDate}
+                thumbnail={data.thumbnail}
+              />
             ))}
         </JoinMissionlistWrapper>
       </JoinMissionWrapper>
@@ -318,8 +303,6 @@ const Mypage = () => {
                 startDate={data.startDate}
                 endDate={data.endDate}
                 thumbnail={data.thumbnail}
-                setMissionClick={setMissionClick}
-                missionClick={missionClick}
               />
             ))}
         </CreateMissionlistWrapper>
@@ -460,13 +443,6 @@ const UserName = styled.p`
     font-size: 3.4rem;
     color: #eb6440;
   }
-`;
-
-const UserSpan = styled.div`
-  position: absolute;
-  top: 60%;
-  margin-left: 1.5rem;
-  font-size: 1.6rem;
 `;
 
 const JoinMissionWrapper = styled.div`
