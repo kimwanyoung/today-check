@@ -56,41 +56,7 @@ public class MissionService implements IMissionService {
 
 	@PersistenceContext
     private EntityManager em;
-//	public static String fileDir = "C:\\devtool\\upload\\";
-	public static String fileDir = "/Users/kwy/Documents/imageFile";
-	
-	/*
-	 * @PostConstruct void init() throws Exception { if (userRepository.count() < 3)
-	 * { loginService.createId(RegistryDTO.builder() .id("demo@example.com")
-	 * .password("") .build());
-	 * 
-	 * loginService.createId(RegistryDTO.builder() .id("demo2@example.com")
-	 * .password("") .build());
-	 * 
-	 * loginService.createId(RegistryDTO.builder() .id("demo3@example.com")
-	 * .password("") .build()); }
-	 * 
-	 * 
-	 * if (partMissionRepository.count() == 0) {
-	 * 
-	 * UserEntity user = userRepository.findById("demo@example.com"); // demo data
-	 * for (int i = 0; i < 10; i++) { List<UserEntity> participants = new
-	 * ArrayList<>(); participants.add(UserEntity.builder() .userId(2L).build());
-	 * participants.add(UserEntity.builder() .userId(3L).build());
-	 * 
-	 * LocalDateTime endDate = LocalDateTime.now(); endDate.plusMonths(1);
-	 * 
-	 * Mission mission = Mission.builder() .title("go gym everyday")
-	 * .content("to go gym every day in 2 months!")
-	 * .thumbnail("https://via.placeholder.com/350x150")
-	 * .admin(UserEntity.builder().userId(1L).build()) .participants(null)
-	 * .startDate(LocalDateTime.now()) .endDate(endDate) .build();
-	 * 
-	 * ParticipantsMission result = ParticipantsMission.builder() .mission(mission)
-	 * .participants(user) .build();
-	 * 
-	 * partMissionRepository.save(result); } } }
-	 */
+	public static String fileDir = "C:\\devtool\\upload\\";
 
 	@Override
 	public boolean save(Mission mission, MultipartFile multipartFile, String cookie) throws IOException {

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,7 +64,7 @@ public class ParticipantController {
     }
 	
 	@RequestMapping(value = "/certification/{id}" , method = RequestMethod.POST)
-	public MessageDTO certifyMission(@PathVariable("id") Long id , @RequestParam(name = "image") MultipartFile image , 
+	public MessageDTO certifyMission(@PathVariable("id") Long id , @RequestPart(name = "image") MultipartFile image , 
 			@CookieValue(name = "refreshToken") String cookie) throws AccountNotFoundException, IllegalStateException, IOException {
 		return missionService.certifyMission(id , image , cookie);
 	}
