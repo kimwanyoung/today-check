@@ -1,34 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import MypageModal from '../../pages/Mypage/Modal/MypageModal';
 
-const MypageBox = ({
-  title,
-  content,
-  startDate,
-  id,
-  endDate,
-  thumbnail,
-  missionClick,
-  setMissionClick,
-}) => {
+const MypageBox = ({ title, startDate, id, endDate }) => {
   const MypageBoxStartDate = String(startDate).slice(0, 10);
   const MypageBoxEndDate = String(endDate).slice(0, 10);
+  const [isClicked, setIsClicked] = useState(false);
 
   const handleErrorImg = e => {
     e.target.src = 'https://via.placeholder.com/150';
   };
-  console.log(id);
-
   return (
-    <MypageBoxContainer onClick={() => setMissionClick(!missionClick)}>
-      <MyPageImg src={`/mission/thumbnail/${id}`} onError={handleErrorImg} />
-      <MypageBoxTitle>
-        <span>{title}</span>
-      </MypageBoxTitle>
-      <MypageBoxDate>
-        {MypageBoxStartDate} ~ {MypageBoxEndDate}
-      </MypageBoxDate>
-    </MypageBoxContainer>
+    <>
+      <MypageBoxContainer onClick={() => setIsClicked(prev => !prev)}>
+        <MyPageImg src={`/mission/thumbnail/${id}`} onError={handleErrorImg} />
+        <MypageBoxTitle>
+          <span>{title}</span>
+        </MypageBoxTitle>
+        <MypageBoxDate>
+          {MypageBoxStartDate} ~ {MypageBoxEndDate}
+        </MypageBoxDate>
+      </MypageBoxContainer>
+      {isClicked && (
+        <MypageModal
+          missionClick={isClicked}
+          setMissionClick={setIsClicked}
+          postId={id}
+        />
+      )}
+    </>
   );
 };
 
